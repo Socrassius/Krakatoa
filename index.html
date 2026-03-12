@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catálogo de Celulares</title>
+    <title>Catálogo de Equipos y Audio</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     
     <style>
@@ -41,7 +41,6 @@
             transition: all 0.3s ease;
         }
 
-        /* Encabezado */
         header {
             background-color: var(--bg-card);
             border-bottom: 1px solid var(--border-color);
@@ -74,7 +73,6 @@
             font-family: 'Inter', sans-serif;
         }
 
-        /* Buscador y Filtros */
         .controles {
             max-width: 1200px;
             margin: 0 auto;
@@ -114,7 +112,6 @@
         .btn-filtro:hover { border-color: var(--border-hover); color: var(--text-main); }
         .btn-filtro.activo { background: var(--text-main); color: var(--bg-card); border-color: var(--text-main); }
 
-        /* Grilla de productos */
         .contenedor { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
         .grilla-productos { 
             display: grid; 
@@ -122,7 +119,6 @@
             gap: 20px; 
         }
 
-        /* Tarjeta de producto */
         .tarjeta {
             background: var(--bg-card);
             border-radius: 8px;
@@ -139,7 +135,6 @@
             box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
         }
 
-        /* Etiquetas encima de la foto */
         .badges-top {
             position: absolute;
             top: 12px;
@@ -159,7 +154,6 @@
         }
         .badge.discount { background-color: var(--badge-discount); color: var(--bg-card); }
 
-        /* Etiqueta de Capacidad (GB) Arriba a la derecha */
         .badge-capacidad {
             position: absolute;
             top: 12px;
@@ -195,7 +189,6 @@
         .marca { font-size: 0.75em; color: var(--text-secondary); text-transform: uppercase; font-weight: 600; margin-bottom: 4px; }
         .modelo { font-size: 1.1em; font-weight: 600; color: var(--text-main); margin: 0 0 10px 0; line-height: 1.3; }
         
-        /* Lista de Especificaciones */
         .specs {
             list-style: none;
             padding: 0;
@@ -239,18 +232,20 @@
 
     <header>
         <div class="header-top">
-            <h1>CATÁLOGO DE EQUIPOS</h1>
-            <button class="btn-dark" onclick="toggleDark()">Modo Oscuro</button>
-        </div>
+    <img src="logo.png" alt="Logo del local" class="logo-header">
+    
+    <button class="btn-dark" onclick="toggleDark()">Modo Oscuro</button>
+</div>
         
         <div class="controles">
-            <input type="text" id="buscador" placeholder="Buscar por modelo o marca..." onkeyup="filtrarProductos()">
+            <input type="text" id="buscador" placeholder="Buscar por modelo, marca o categoría..." onkeyup="filtrarProductos()">
             
             <div class="filtros">
-                <button class="btn-filtro activo" onclick="setCategoria('todos')">Todos los equipos</button>
+                <button class="btn-filtro activo" onclick="setCategoria('todos')">Todos</button>
                 <button class="btn-filtro" onclick="setCategoria('apple')">Apple</button>
                 <button class="btn-filtro" onclick="setCategoria('samsung')">Samsung</button>
                 <button class="btn-filtro" onclick="setCategoria('motorola')">Motorola</button>
+                <button class="btn-filtro" onclick="setCategoria('auriculares')">Auriculares</button>
             </div>
         </div>
     </header>
@@ -258,10 +253,45 @@
     <div class="contenedor">
         <div class="grilla-productos" id="catalogo">
             
-            <div class="tarjeta" data-nombre="Celular Apple iPhone 16e 256GB" data-categoria="apple">
+            <div class="tarjeta" data-nombre="Auriculares Apple AirPods 4" data-categoria="apple auriculares">
+                <div class="img-container"><img src="https://maximstore.com/_next/image?url=https%3A%2F%2Fback.maximstore.com%2Fstatic%2Fimages%2Ff647349c-bd21-48a1-af03-3414e0166518.png&w=960&q=75" alt="AirPods 4"></div>
+                <div class="info">
+                    <div class="marca">Apple</div>
+                    <h2 class="modelo">AirPods 4</h2>
+                    <ul class="specs">
+                        <li>Chip H2 de Apple</li>
+                        <li>Audio Espacial Personalizado</li>
+			<li>Cancelacion de Ruido</li>
+                        <li>Estuche con USB-C</li>
+                        <li>Hasta 30h de reproducción</li>
+                    </ul>
+                    <div class="precios">
+                        <div class="precio-nuevo">US$ 268</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tarjeta" data-nombre="Auriculares Apple AirPods Pro 3" data-categoria="apple auriculares">
+                <div class="img-container"><img src="https://maximstore.com/_next/image?url=https%3A%2F%2Fback.maximstore.com%2Fstatic%2Fimages%2F6cffceaf-d318-41a4-9e55-2cfa5c305f4a.png&w=960&q=75" alt="AirPods Pro 3"></div>
+                <div class="info">
+                    <div class="marca">Apple</div>
+                    <h2 class="modelo">AirPods Pro 3</h2>
+                    <ul class="specs">
+                        <li>Chip H3 Avanzado</li>
+                        <li>Cancelación Activa de Ruido</li>
+                        <li>Audio Espacial 3D</li>
+                        <li>Estuche MagSafe USB-C</li>
+                    </ul>
+                    <div class="precios">
+                        <div class="precio-nuevo">US$ 330</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tarjeta" data-nombre="Celular Apple iPhone 16e 256GB" data-categoria="apple celulares">
                 <div class="badges-top"><span class="badge discount">-15% OFF</span></div>
                 <div class="badge-capacidad">256GB</div>
-                <div class="img-container"><img src="https://via.placeholder.com/200x250/ffffff/555555?text=iPhone+16e" alt="iPhone 16e"></div>
+                <div class="img-container"><img src="https://www.apple.com/newsroom/images/2025/02/apple-debuts-iphone-16e-a-powerful-new-member-of-the-iphone-16-family/article/Apple-iPhone-16e-front-and-back-250219_inline.jpg.large.jpg" alt="iPhone 16e"></div>
                 <div class="info">
                     <div class="marca">Apple</div>
                     <h2 class="modelo">iPhone 16e</h2>
@@ -278,10 +308,10 @@
                 </div>
             </div>
 
-            <div class="tarjeta" data-nombre="Celular Apple iPhone 16 128GB" data-categoria="apple">
+            <div class="tarjeta" data-nombre="Celular Apple iPhone 16 128GB" data-categoria="apple celulares">
                 <div class="badges-top"><span class="badge discount">-12% OFF</span></div>
                 <div class="badge-capacidad">128GB</div>
-                <div class="img-container"><img src="https://via.placeholder.com/200x250/ffffff/555555?text=iPhone+16" alt="iPhone 16"></div>
+                <div class="img-container"><img src="https://back.maximstore.com/static/images/7f3185fb-23ed-4c53-9017-739fa050e5a8.png" alt="iPhone 16"></div>
                 <div class="info">
                     <div class="marca">Apple</div>
                     <h2 class="modelo">iPhone 16</h2>
@@ -298,10 +328,10 @@
                 </div>
             </div>
 
-            <div class="tarjeta" data-nombre="Celular Apple iPhone 16 256GB" data-categoria="apple">
+            <div class="tarjeta" data-nombre="Celular Apple iPhone 16 256GB" data-categoria="apple celulares">
                 <div class="badges-top"><span class="badge discount">-10% OFF</span></div>
                 <div class="badge-capacidad">256GB</div>
-                <div class="img-container"><img src="https://via.placeholder.com/200x250/ffffff/555555?text=iPhone+16" alt="iPhone 16"></div>
+                <div class="img-container"><img src="https://back.maximstore.com/static/images/7f3185fb-23ed-4c53-9017-739fa050e5a8.png" alt="iPhone 16"></div>
                 <div class="info">
                     <div class="marca">Apple</div>
                     <h2 class="modelo">iPhone 16</h2>
@@ -318,9 +348,9 @@
                 </div>
             </div>
 
-            <div class="tarjeta" data-nombre="Celular Apple iPhone 17 256GB" data-categoria="apple">
+            <div class="tarjeta" data-nombre="Celular Apple iPhone 17 256GB" data-categoria="apple celulares">
                 <div class="badge-capacidad">256GB</div>
-                <div class="img-container"><img src="https://via.placeholder.com/200x250/ffffff/555555?text=iPhone+17" alt="iPhone 17"></div>
+                <div class="img-container"><img src="https://maximstore.com/_next/image?url=https%3A%2F%2Fback.maximstore.com%2Fstatic%2Fimages%2F4b022d33-af09-4bc7-a5db-2758edf94274.png&w=960&q=75" alt="iPhone 17"></div>
                 <div class="info">
                     <div class="marca">Apple</div>
                     <h2 class="modelo">iPhone 17</h2>
@@ -336,9 +366,9 @@
                 </div>
             </div>
 
-            <div class="tarjeta" data-nombre="Celular Apple iPhone AIR 256GB" data-categoria="apple">
+            <div class="tarjeta" data-nombre="Celular Apple iPhone AIR 256GB" data-categoria="apple celulares">
                 <div class="badge-capacidad">256GB</div>
-                <div class="img-container"><img src="https://via.placeholder.com/200x250/ffffff/555555?text=iPhone+AIR" alt="iPhone AIR"></div>
+                <div class="img-container"><img src="https://maximstore.com/_next/image?url=https%3A%2F%2Fback.maximstore.com%2Fstatic%2Fimages%2F72af7f4f-0fb4-4059-a4cd-fa9d7dda6e03.png&w=960&q=75" alt="iPhone AIR"></div>
                 <div class="info">
                     <div class="marca">Apple</div>
                     <h2 class="modelo">iPhone AIR</h2>
@@ -354,9 +384,9 @@
                 </div>
             </div>
 
-            <div class="tarjeta" data-nombre="Celular Apple iPhone AIR 512GB" data-categoria="apple">
+            <div class="tarjeta" data-nombre="Celular Apple iPhone AIR 512GB" data-categoria="apple celulares">
                 <div class="badge-capacidad">512GB</div>
-                <div class="img-container"><img src="https://via.placeholder.com/200x250/ffffff/555555?text=iPhone+AIR" alt="iPhone AIR"></div>
+                <div class="img-container"><img src="https://maximstore.com/_next/image?url=https%3A%2F%2Fback.maximstore.com%2Fstatic%2Fimages%2F72af7f4f-0fb4-4059-a4cd-fa9d7dda6e03.png&w=960&q=75" alt="iPhone AIR"></div>
                 <div class="info">
                     <div class="marca">Apple</div>
                     <h2 class="modelo">iPhone AIR</h2>
@@ -372,9 +402,9 @@
                 </div>
             </div>
 
-            <div class="tarjeta" data-nombre="Celular Apple iPhone 17 512GB" data-categoria="apple">
+            <div class="tarjeta" data-nombre="Celular Apple iPhone 17 512GB" data-categoria="apple celulares">
                 <div class="badge-capacidad">512GB</div>
-                <div class="img-container"><img src="https://via.placeholder.com/200x250/ffffff/555555?text=iPhone+17" alt="iPhone 17"></div>
+                <div class="img-container"><img src="https://maximstore.com/_next/image?url=https%3A%2F%2Fback.maximstore.com%2Fstatic%2Fimages%2F4b022d33-af09-4bc7-a5db-2758edf94274.png&w=960&q=75" alt="iPhone 17"></div>
                 <div class="info">
                     <div class="marca">Apple</div>
                     <h2 class="modelo">iPhone 17</h2>
@@ -390,9 +420,9 @@
                 </div>
             </div>
 
-            <div class="tarjeta" data-nombre="Celular Apple iPhone 17 PRO 256GB" data-categoria="apple">
+            <div class="tarjeta" data-nombre="Celular Apple iPhone 17 PRO 256GB" data-categoria="apple celulares">
                 <div class="badge-capacidad">256GB</div>
-                <div class="img-container"><img src="https://via.placeholder.com/200x250/ffffff/555555?text=iPhone+17+Pro" alt="iPhone 17 PRO"></div>
+                <div class="img-container"><img src="https://maximstore.com/_next/image?url=https%3A%2F%2Fback.maximstore.com%2Fstatic%2Fimages%2Fcd6c9058-100d-4fec-850f-0a986120d8b2.png&w=960&q=75" alt="iPhone 17 PRO"></div>
                 <div class="info">
                     <div class="marca">Apple</div>
                     <h2 class="modelo">iPhone 17 PRO</h2>
@@ -408,9 +438,9 @@
                 </div>
             </div>
 
-            <div class="tarjeta" data-nombre="Celular Apple iPhone 17 PRO MAX 256GB" data-categoria="apple">
+            <div class="tarjeta" data-nombre="Celular Apple iPhone 17 PRO MAX 256GB" data-categoria="apple celulares">
                 <div class="badge-capacidad">256GB</div>
-                <div class="img-container"><img src="https://via.placeholder.com/200x250/ffffff/555555?text=17+Pro+Max" alt="iPhone 17 PRO MAX"></div>
+                <div class="img-container"><img src="https://maximstore.com/_next/image?url=https%3A%2F%2Fback.maximstore.com%2Fstatic%2Fimages%2F5ade608d-106e-4086-b129-c36a2a838811.png&w=960&q=75" alt="iPhone 17 PRO MAX"></div>
                 <div class="info">
                     <div class="marca">Apple</div>
                     <h2 class="modelo">iPhone 17 PRO MAX</h2>
@@ -426,9 +456,9 @@
                 </div>
             </div>
 
-            <div class="tarjeta" data-nombre="Celular Apple iPhone 17 PRO 512GB" data-categoria="apple">
+            <div class="tarjeta" data-nombre="Celular Apple iPhone 17 PRO 512GB" data-categoria="apple celulares">
                 <div class="badge-capacidad">512GB</div>
-                <div class="img-container"><img src="https://via.placeholder.com/200x250/ffffff/555555?text=iPhone+17+Pro" alt="iPhone 17 PRO"></div>
+                <div class="img-container"><img src="https://maximstore.com/_next/image?url=https%3A%2F%2Fback.maximstore.com%2Fstatic%2Fimages%2Fcd6c9058-100d-4fec-850f-0a986120d8b2.png&w=960&q=75" alt="iPhone 17 PRO"></div>
                 <div class="info">
                     <div class="marca">Apple</div>
                     <h2 class="modelo">iPhone 17 PRO</h2>
@@ -444,7 +474,7 @@
                 </div>
             </div>
 
-            <div class="tarjeta" data-nombre="Celular Samsung S25 FE 256GB" data-categoria="samsung">
+            <div class="tarjeta" data-nombre="Celular Samsung S25 FE 256GB" data-categoria="samsung celulares">
                 <div class="badge-capacidad">256GB</div>
                 <div class="img-container"><img src="https://via.placeholder.com/200x250/ffffff/555555?text=Galaxy+S25+FE" alt="Samsung S25 FE"></div>
                 <div class="info">
@@ -462,7 +492,7 @@
                 </div>
             </div>
 
-            <div class="tarjeta" data-nombre="Celular Samsung S26+ 512GB" data-categoria="samsung">
+            <div class="tarjeta" data-nombre="Celular Samsung S26+ 512GB" data-categoria="samsung celulares">
                 <div class="badge-capacidad">512GB</div>
                 <div class="img-container"><img src="https://via.placeholder.com/200x250/ffffff/555555?text=Galaxy+S26%2B" alt="Samsung S26+"></div>
                 <div class="info">
@@ -480,7 +510,7 @@
                 </div>
             </div>
 
-            <div class="tarjeta" data-nombre="Celular Samsung S26 Dual Chip 512GB" data-categoria="samsung">
+            <div class="tarjeta" data-nombre="Celular Samsung S26 Dual Chip 512GB" data-categoria="samsung celulares">
                 <div class="badge-capacidad">512GB</div>
                 <div class="img-container"><img src="https://via.placeholder.com/200x250/ffffff/555555?text=Galaxy+S26" alt="Samsung S26 Dual Chip"></div>
                 <div class="info">
@@ -498,7 +528,7 @@
                 </div>
             </div>
 
-            <div class="tarjeta" data-nombre="Celular Samsung S26 Dual Chip 256GB" data-categoria="samsung">
+            <div class="tarjeta" data-nombre="Celular Samsung S26 Dual Chip 256GB" data-categoria="samsung celulares">
                 <div class="badge-capacidad">256GB</div>
                 <div class="img-container"><img src="https://via.placeholder.com/200x250/ffffff/555555?text=Galaxy+S26" alt="Samsung S26 Dual Chip"></div>
                 <div class="info">
@@ -516,7 +546,7 @@
                 </div>
             </div>
 
-            <div class="tarjeta" data-nombre="Celular Samsung S26 Ultra 512GB" data-categoria="samsung">
+            <div class="tarjeta" data-nombre="Celular Samsung S26 Ultra 512GB" data-categoria="samsung celulares">
                 <div class="badge-capacidad">512GB</div>
                 <div class="img-container"><img src="https://via.placeholder.com/200x250/ffffff/555555?text=S26+Ultra" alt="Samsung S26 Ultra"></div>
                 <div class="info">
@@ -534,7 +564,7 @@
                 </div>
             </div>
 
-            <div class="tarjeta" data-nombre="Celular Samsung S26 Ultra 256GB" data-categoria="samsung">
+            <div class="tarjeta" data-nombre="Celular Samsung S26 Ultra 256GB" data-categoria="samsung celulares">
                 <div class="badge-capacidad">256GB</div>
                 <div class="img-container"><img src="https://via.placeholder.com/200x250/ffffff/555555?text=S26+Ultra" alt="Samsung S26 Ultra"></div>
                 <div class="info">
@@ -552,7 +582,7 @@
                 </div>
             </div>
 
-            <div class="tarjeta" data-nombre="Celular Motorola EDGE 60 Pro 512GB" data-categoria="motorola">
+            <div class="tarjeta" data-nombre="Celular Motorola EDGE 60 Pro 512GB" data-categoria="motorola celulares">
                 <div class="badge-capacidad">512GB</div>
                 <div class="img-container"><img src="https://via.placeholder.com/200x250/ffffff/555555?text=Edge+60+Pro" alt="Motorola EDGE 60 Pro"></div>
                 <div class="info">
@@ -570,7 +600,7 @@
                 </div>
             </div>
 
-            <div class="tarjeta" data-nombre="Celular Motorola EDGE 50 Ultra 512GB" data-categoria="motorola">
+            <div class="tarjeta" data-nombre="Celular Motorola EDGE 50 Ultra 512GB" data-categoria="motorola celulares">
                 <div class="badge-capacidad">512GB</div>
                 <div class="img-container"><img src="https://via.placeholder.com/200x250/ffffff/555555?text=Edge+50+Ultra" alt="Motorola EDGE 50 Ultra"></div>
                 <div class="info">
@@ -616,7 +646,10 @@
                 let categoriaProducto = tarjetas[i].getAttribute('data-categoria').toLowerCase();
                 
                 let coincideTexto = nombreProducto.includes(input);
-                let coincideCategoria = (categoriaActual === 'todos' || categoriaProducto === categoriaActual);
+                
+                // Ahora usamos "includes" para que lea si la categoría del producto (ej: "apple auriculares")
+                // contiene la palabra que estamos filtrando (ej: "apple" o "auriculares")
+                let coincideCategoria = (categoriaActual === 'todos' || categoriaProducto.includes(categoriaActual));
 
                 if (coincideTexto && coincideCategoria) {
                     tarjetas[i].classList.remove('oculto');
