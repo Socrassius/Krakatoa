@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de Celulares</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Variables de color estilo E-commerce moderno */
+        :root {
+            --bg-body: #f4f4f5;
+            --bg-card: #ffffff;
+            --text-main: #111827;
+            --text-secondary: #6b7280;
+            --border-color: #e5e7eb;
+            --border-hover: #d1d5db;
+            --badge-discount: #111827;
+            --badge-capacidad-bg: #f3f4f6;
+            --badge-capacidad-text: #374151;
+        }
+
+        body.dark-mode {
+            --bg-body: #111827;
+            --bg-card: #1f2937;
+            --text-main: #f9fafb;
+            --text-secondary: #9ca3af;
+            --border-color: #374151;
+            --border-hover: #4b5563;
+            --badge-discount: #ffffff;
+            --badge-capacidad-bg: #374151;
+            --badge-capacidad-text: #f9fafb;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            margin: 0;
+            padding: 0;
+            transition: all 0.3s ease;
+        }
+
+        /* Encabezado */
+        header {
+            background-color: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+            padding: 20px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding-bottom: 15px;
+        }
+
+        h1 { margin: 0; font-size: 1.5em; font-weight: 700; letter-spacing: -0.5px; }
+
+        .btn-dark {
+            background-color: transparent;
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.85em;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Buscador y Filtros */
+        .controles {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            max-width: 500px;
+            padding: 12px 16px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 15px;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            outline: none;
+        }
+        input[type="text"]:focus { border-color: var(--text-main); }
+
+        .filtros { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+        
+        .btn-filtro {
+            padding: 6px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            background: var(--bg-card);
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.9em;
+            transition: all 0.2s;
+        }
+        .btn-filtro:hover { border-color: var(--border-hover); color: var(--text-main); }
+        .btn-filtro.activo { background: var(--text-main); color: var(--bg-card); border-color: var(--text-main); }
+
+        /* Grilla de productos */
+        .contenedor { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+        .grilla-productos { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); 
+            gap: 20px; 
+        }
+
+        /* Tarjeta de producto */
+        .tarjeta {
+            background: var(--bg-card);
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            transition: box-shadow 0.2s, border-color 0.2s;
+            padding-bottom: 20px;
+        }
+        .tarjeta:hover {
+            border-color: var(--border-hover);
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
+        }
+
+        /* Etiquetas encima de la foto */
+        .badges-top {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            z-index: 10;
+        }
+        .badge {
+            font-size: 0.7em;
+            font-weight: 700;
+            padding: 4px 8px;
+            border-radius: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .badge.discount { background-color: var(--badge-discount); color: var(--bg-card); }
+
+        /* Etiqueta de Capacidad (GB) Arriba a la derecha */
+        .badge-capacidad {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background-color: var(--badge-capacidad-bg);
+            color: var(--badge-capacidad-text);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.75em;
+            font-weight: 600;
+            border: 1px solid var(--border-color);
+            z-index: 10;
+        }
+
+        .img-container {
+            width: 100%;
+            height: 220px;
+            padding: 30px 20px 10px 20px;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .img-container img { max-width: 100%; max-height: 100%; object-fit: contain; }
+
+        .info {
+            padding: 0 20px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .marca { font-size: 0.75em; color: var(--text-secondary); text-transform: uppercase; font-weight: 600; margin-bottom: 4px; }
+        .modelo { font-size: 1.1em; font-weight: 600; color: var(--text-main); margin: 0 0 10px 0; line-height: 1.3; }
+        
+        /* Lista de Especificaciones */
+        .specs {
+            list-style: none;
+            padding: 0;
+            margin: 0 0 15px 0;
+            font-size: 0.8em;
+            color: var(--text-secondary);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .specs li {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .specs li::before {
+            content: "•";
+            color: var(--border-hover);
+            font-size: 1.2em;
+        }
+
+        .precios { margin-top: auto; }
+        .precio-viejo { 
+            font-size: 0.85em; 
+            color: var(--text-secondary); 
+            text-decoration: line-through; 
+            margin-bottom: 2px;
+            display: block;
+        }
+        .precio-nuevo { 
+            font-size: 1.6em; 
+            font-weight: 700; 
+            color: var(--text-main); 
+            letter-spacing: -0.5px;
+        }
+
+        .oculto { display: none; }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-top">
+            <h1>CATÁLOGO DE EQUIPOS</h1>
+            <button class="btn-dark" onclick="toggleDark()">Modo Oscuro</button>
+        </div>
+        
+        <div class="controles">
+            <input type="text" id="buscador" placeholder="Buscar por modelo o marca..." onkeyup="filtrarProductos()">
+            
+            <div class="filtros">
+                <button class="btn-filtro activo" onclick="setCategoria('todos')">Todos los equipos</button>
+                <button class="btn-filtro" onclick="setCategoria('apple')">Apple</button>
+                <button class="btn-filtro" onclick="setCategoria('samsung')">Samsung</button>
+                <button class="btn-filtro" onclick="setCategoria('motorola')">Motorola</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="contenedor">
+        <div class="grilla-productos" id="catalogo">
+            
+            <div class="tarjeta" data-nombre="Celular Apple iPhone 16e 256GB" data-categoria="apple">
+                <div class="badges-top"><span class="badge discount">-15% OFF</span></div>
+                <div class="badge-capacidad">256GB</div>
+                <div class="img-container"><img src="https://via.placeholder.com/200x250/ffffff/555555?text=iPhone+16e" alt="iPhone 16e"></div>
+                <div class="info">
+                    <div class="marca">Apple</div>
+                    <h2 class="modelo">iPhone 16e</h2>
+                    <ul class="specs">
+                        <li>Pantalla 6.1" OLED</li>
+                        <li>Chip A18 Bionic</li>
+                        <li>Cámara 48MP</li>
+                        <li>Batería 3561 mAh</li>
+                    </ul>
+                    <div class="precios">
+                        <span class="precio-viejo">US$ 956</span>
+                        <div class="precio-nuevo">US$ 832</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tarjeta" data-nombre="Celular Apple iPhone 16 128GB" data-categoria="apple">
+                <div class="badges-top"><span class="badge discount">-12% OFF</span></div>
+                <div class="badge-capacidad">128GB</div>
+                <div class="img-container"><img src="https://via.placeholder.com/200x250/ffffff/555555?text=iPhone+16" alt="iPhone 16"></div>
+                <div class="info">
+                    <div class="marca">Apple</div>
+                    <h2 class="modelo">iPhone 16</h2>
+                    <ul class="specs">
+                        <li>Pantalla 6.1" Super Retina</li>
+                        <li>Chip A18 Bionic</li>
+                        <li>Dual 48MP + 12MP</li>
+                        <li>Batería 3561 mAh</li>
+                    </ul>
+                    <div class="precios">
+                        <span class="precio-viejo">US$ 989</span>
+                        <div class="precio-nuevo">US$ 871</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tarjeta" data-nombre="Celular Apple iPhone 16 256GB" data-categoria="apple">
+                <div class="badges-top"><span class="badge discount">-10% OFF</span></div>
+                <div class="badge-capacidad">256GB</div>
+                <div class="img-container"><img src="https://via.placeholder.com/200x250/ffffff/555555?text=iPhone+16" alt="iPhone 16"></div>
+                <div class="info">
+                    <div class="marca">Apple</div>
+                    <h2 class="modelo">iPhone 16</h2>
+                    <ul class="specs">
+                        <li>Pantalla 6.1" Super Retina</li>
+                        <li>Chip A18 Bionic</li>
+                        <li>Dual 48MP + 12MP</li>
+                        <li>Batería 3561 mAh</li>
+                    </ul>
+                    <div class="precios">
+                        <span class="precio-viejo">US$ 1130</span>
+                        <div class="precio-nuevo">US$ 1018</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tarjeta" data-nombre="Celular Apple iPhone 17 256GB" data-categoria="apple">
+                <div class="badge-capacidad">256GB</div>
+                <div class="img-container"><img src="https://via.placeholder.com/200x250/ffffff/555555?text=iPhone+17" alt="iPhone 17"></div>
+                <div class="info">
+                    <div class="marca">Apple</div>
+                    <h2 class="modelo">iPhone 17</h2>
+                    <ul class="specs">
+                        <li>Pantalla 6.3" 120Hz</li>
+                        <li>Chip A19</li>
+                        <li>Dual 48MP + 48MP</li>
+                        <li>Carga rápida MagSafe</li>
+                    </ul>
+                    <div class="precios">
+                        <div class="precio-nuevo">US$ 1068</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tarjeta" data-nombre="Celular Apple iPhone AIR 256GB" data-categoria="apple">
+                <div class="badge-capacidad">256GB</div>
+                <div class="img-container"><img src="https://via.placeholder.com/200x250/ffffff/555555?text=iPhone+AIR" alt="iPhone AIR"></div>
+                <div class="info">
+                    <div class="marca">Apple</div>
+                    <h2 class="modelo">iPhone AIR</h2>
+                    <ul class="specs">
+                        <li>Diseño Ultra Fino</li>
+                        <li>Pantalla 6.6" 120Hz</li>
+                        <li>Chip A19</li>
+                        <li>Cámara 48MP</li>
+                    </ul>
+                    <div class="precios">
+                        <div class="precio-nuevo">US$ 1144</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tarjeta" data-nombre="Celular Apple iPhone AIR 512GB" data-categoria="apple">
+                <div class="badge-capacidad">512GB</div>
+                <div class="img-container"><img src="https://via.placeholder.com/200x250/ffffff/555555?text=iPhone+AIR" alt="iPhone AIR"></div>
+                <div class="info">
+                    <div class="marca">Apple</div>
+                    <h2 class="modelo">iPhone AIR</h2>
+                    <ul class="specs">
+                        <li>Diseño Ultra Fino</li>
+                        <li>Pantalla 6.6" 120Hz</li>
+                        <li>Chip A19</li>
+                        <li>Cámara 48MP</li>
+                    </ul>
+                    <div class="precios">
+                        <div class="precio-nuevo">US$ 1296</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tarjeta" data-nombre="Celular Apple iPhone 17 512GB" data-categoria="apple">
+                <div class="badge-capacidad">512GB</div>
+                <div class="img-container"><img src="https://via.placeholder.com/200x250/ffffff/555555?text=iPhone+17" alt="iPhone 17"></div>
+                <div class="info">
+                    <div class="marca">Apple</div>
+                    <h2 class="modelo">iPhone 17</h2>
+                    <ul class="specs">
+                        <li>Pantalla 6.3" 120Hz</li>
+                        <li>Chip A19</li>
+                        <li>Dual 48MP + 48MP</li>
+                        <li>Carga rápida MagSafe</li>
+                    </ul>
+                    <div class="precios">
+                        <div class="precio-nuevo">US$ 1332</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tarjeta" data-nombre="Celular Apple iPhone 17 PRO 256GB" data-categoria="apple">
+                <div class="badge-capacidad">256GB</div>
+                <div class="img-container"><img src="https://via.placeholder.com/200x250/ffffff/555555?text=iPhone+17+Pro" alt="iPhone 17 PRO"></div>
+                <div class="info">
+                    <div class="marca">Apple</div>
+                    <h2 class="modelo">iPhone 17 PRO</h2>
+                    <ul class="specs">
+                        <li>Pantalla 6.3" ProMotion</li>
+                        <li>Chip A19 Pro</li>
+                        <li>Triple 48MP (Telefoto 5x)</li>
+                        <li>Estructura de Titanio</li>
+                    </ul>
+                    <div class="precios">
+                        <div class="precio-nuevo">US$ 1420</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tarjeta" data-nombre="Celular Apple iPhone 17 PRO MAX 256GB" data-categoria="apple">
+                <div class="badge-capacidad">256GB</div>
+                <div class="img-container"><img src="https://via.placeholder.com/200x250/ffffff/555555?text=17+Pro+Max" alt="iPhone 17 PRO MAX"></div>
+                <div class="info">
+                    <div class="marca">Apple</div>
+                    <h2 class="modelo">iPhone 17 PRO MAX</h2>
+                    <ul class="specs">
+                        <li>Pantalla 6.9" ProMotion</li>
+                        <li>Chip A19 Pro</li>
+                        <li>Triple 48MP (Telefoto 5x)</li>
+                        <li>Batería +4600 mAh</li>
+                    </ul>
+                    <div class="precios">
+                        <div class="precio-nuevo">US$ 1360</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tarjeta" data-nombre="Celular Apple iPhone 17 PRO 512GB" data-categoria="apple">
+                <div class="badge-capacidad">512GB</div>
+                <div class="img-container"><img src="https://via.placeholder.com/200x250/ffffff/555555?text=iPhone+17+Pro" alt="iPhone 17 PRO"></div>
+                <div class="info">
+                    <div class="marca">Apple</div>
+                    <h2 class="modelo">iPhone 17 PRO</h2>
+                    <ul class="specs">
+                        <li>Pantalla 6.3" ProMotion</li>
+                        <li>Chip A19 Pro</li>
+                        <li>Triple 48MP (Telefoto 5x)</li>
+                        <li>Estructura de Titanio</li>
+                    </ul>
+                    <div class="precios">
+                        <div class="precio-nuevo">US$ 1650</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tarjeta" data-nombre="Celular Samsung S25 FE 256GB" data-categoria="samsung">
+                <div class="badge-capacidad">256GB</div>
+                <div class="img-container"><img src="https://via.placeholder.com/200x250/ffffff/555555?text=Galaxy+S25+FE" alt="Samsung S25 FE"></div>
+                <div class="info">
+                    <div class="marca">Samsung</div>
+                    <h2 class="modelo">Samsung S25 FE</h2>
+                    <ul class="specs">
+                        <li>Pantalla 6.4" AMOLED 120Hz</li>
+                        <li>Exynos 2400e</li>
+                        <li>Cámara Triple 50MP</li>
+                        <li>Batería 4500 mAh</li>
+                    </ul>
+                    <div class="precios">
+                        <div class="precio-nuevo">US$ 689</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tarjeta" data-nombre="Celular Samsung S26+ 512GB" data-categoria="samsung">
+                <div class="badge-capacidad">512GB</div>
+                <div class="img-container"><img src="https://via.placeholder.com/200x250/ffffff/555555?text=Galaxy+S26%2B" alt="Samsung S26+"></div>
+                <div class="info">
+                    <div class="marca">Samsung</div>
+                    <h2 class="modelo">Samsung S26+</h2>
+                    <ul class="specs">
+                        <li>Pantalla 6.7" Dynamic AMOLED</li>
+                        <li>Snapdragon 8 Elite</li>
+                        <li>Cámara Triple 50MP</li>
+                        <li>Batería 4900 mAh</li>
+                    </ul>
+                    <div class="precios">
+                        <div class="precio-nuevo">US$ 1400</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tarjeta" data-nombre="Celular Samsung S26 Dual Chip 512GB" data-categoria="samsung">
+                <div class="badge-capacidad">512GB</div>
+                <div class="img-container"><img src="https://via.placeholder.com/200x250/ffffff/555555?text=Galaxy+S26" alt="Samsung S26 Dual Chip"></div>
+                <div class="info">
+                    <div class="marca">Samsung</div>
+                    <h2 class="modelo">Samsung S26 Dual Chip</h2>
+                    <ul class="specs">
+                        <li>Pantalla 6.2" Dynamic AMOLED</li>
+                        <li>Dual SIM Física</li>
+                        <li>Cámara Triple 50MP</li>
+                        <li>Batería 4000 mAh</li>
+                    </ul>
+                    <div class="precios">
+                        <div class="precio-nuevo">US$ 1209</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tarjeta" data-nombre="Celular Samsung S26 Dual Chip 256GB" data-categoria="samsung">
+                <div class="badge-capacidad">256GB</div>
+                <div class="img-container"><img src="https://via.placeholder.com/200x250/ffffff/555555?text=Galaxy+S26" alt="Samsung S26 Dual Chip"></div>
+                <div class="info">
+                    <div class="marca">Samsung</div>
+                    <h2 class="modelo">Samsung S26 Dual Chip</h2>
+                    <ul class="specs">
+                        <li>Pantalla 6.2" Dynamic AMOLED</li>
+                        <li>Dual SIM Física</li>
+                        <li>Cámara Triple 50MP</li>
+                        <li>Batería 4000 mAh</li>
+                    </ul>
+                    <div class="precios">
+                        <div class="precio-nuevo">US$ 1014</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tarjeta" data-nombre="Celular Samsung S26 Ultra 512GB" data-categoria="samsung">
+                <div class="badge-capacidad">512GB</div>
+                <div class="img-container"><img src="https://via.placeholder.com/200x250/ffffff/555555?text=S26+Ultra" alt="Samsung S26 Ultra"></div>
+                <div class="info">
+                    <div class="marca">Samsung</div>
+                    <h2 class="modelo">Samsung S26 Ultra</h2>
+                    <ul class="specs">
+                        <li>Pantalla 6.8" Plana Antirreflejo</li>
+                        <li>S-Pen Integrado</li>
+                        <li>Cámara Cuádruple 200MP</li>
+                        <li>Batería 5000 mAh</li>
+                    </ul>
+                    <div class="precios">
+                        <div class="precio-nuevo">US$ 1725</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tarjeta" data-nombre="Celular Samsung S26 Ultra 256GB" data-categoria="samsung">
+                <div class="badge-capacidad">256GB</div>
+                <div class="img-container"><img src="https://via.placeholder.com/200x250/ffffff/555555?text=S26+Ultra" alt="Samsung S26 Ultra"></div>
+                <div class="info">
+                    <div class="marca">Samsung</div>
+                    <h2 class="modelo">Samsung S26 Ultra</h2>
+                    <ul class="specs">
+                        <li>Pantalla 6.8" Plana Antirreflejo</li>
+                        <li>S-Pen Integrado</li>
+                        <li>Cámara Cuádruple 200MP</li>
+                        <li>Batería 5000 mAh</li>
+                    </ul>
+                    <div class="precios">
+                        <div class="precio-nuevo">US$ 1525</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tarjeta" data-nombre="Celular Motorola EDGE 60 Pro 512GB" data-categoria="motorola">
+                <div class="badge-capacidad">512GB</div>
+                <div class="img-container"><img src="https://via.placeholder.com/200x250/ffffff/555555?text=Edge+60+Pro" alt="Motorola EDGE 60 Pro"></div>
+                <div class="info">
+                    <div class="marca">Motorola</div>
+                    <h2 class="modelo">Motorola EDGE 60 Pro</h2>
+                    <ul class="specs">
+                        <li>Pantalla 6.7" pOLED 165Hz</li>
+                        <li>Snapdragon 8 Elite</li>
+                        <li>Cámara 50MP OIS</li>
+                        <li>Carga Turbo 125W</li>
+                    </ul>
+                    <div class="precios">
+                        <div class="precio-nuevo">US$ 650</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="tarjeta" data-nombre="Celular Motorola EDGE 50 Ultra 512GB" data-categoria="motorola">
+                <div class="badge-capacidad">512GB</div>
+                <div class="img-container"><img src="https://via.placeholder.com/200x250/ffffff/555555?text=Edge+50+Ultra" alt="Motorola EDGE 50 Ultra"></div>
+                <div class="info">
+                    <div class="marca">Motorola</div>
+                    <h2 class="modelo">Motorola EDGE 50 Ultra</h2>
+                    <ul class="specs">
+                        <li>Pantalla 6.7" pOLED 144Hz</li>
+                        <li>Snapdragon 8s Gen 3</li>
+                        <li>Cámara 50MP + Teleobjetivo</li>
+                        <li>Acabado Madera/Cuero</li>
+                    </ul>
+                    <div class="precios">
+                        <div class="precio-nuevo">US$ 780</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        // --- LÓGICA DE INTERFAZ ---
+        function toggleDark() {
+            document.body.classList.toggle('dark-mode');
+        }
+
+        let categoriaActual = 'todos';
+
+        function setCategoria(cat) {
+            categoriaActual = cat;
+            let botones = document.getElementsByClassName('btn-filtro');
+            for(let btn of botones) { btn.classList.remove('activo'); }
+            event.target.classList.add('activo');
+            filtrarProductos();
+        }
+
+        function filtrarProductos() {
+            let input = document.getElementById('buscador').value.toLowerCase();
+            let tarjetas = document.getElementsByClassName('tarjeta');
+
+            for (let i = 0; i < tarjetas.length; i++) {
+                let nombreProducto = tarjetas[i].getAttribute('data-nombre').toLowerCase();
+                let categoriaProducto = tarjetas[i].getAttribute('data-categoria').toLowerCase();
+                
+                let coincideTexto = nombreProducto.includes(input);
+                let coincideCategoria = (categoriaActual === 'todos' || categoriaProducto === categoriaActual);
+
+                if (coincideTexto && coincideCategoria) {
+                    tarjetas[i].classList.remove('oculto');
+                } else {
+                    tarjetas[i].classList.add('oculto');
+                }
+            }
+        }
+    </script>
+</body>
+</html>
