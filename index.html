@@ -1,718 +1,311 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catálogo de Celulares y Audio</title>
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-TU_CODIGO_AQUI"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-    
-      gtag('config', 'G-TU_CODIGO_AQUI');
-    </script>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
-    <style>
-        /* Variables de color estilo E-commerce moderno */
-        :root {
-            --bg-body: #f4f4f5;
-            --bg-card: #ffffff;
-            --text-main: #111827;
-            --text-secondary: #6b7280;
-            --border-color: #e5e7eb;
-            --border-hover: #d1d5db;
-            --badge-discount: #111827;
-            --badge-capacidad-bg: #f3f4f6;
-            --badge-capacidad-text: #374151;
-        }
-        
-        body.dark-mode {
-            --bg-body: #111827;
-            --bg-card: #1f2937;
-            --text-main: #f9fafb;
-            --text-secondary: #9ca3af;
-            --border-color: #374151;
-            --border-hover: #4b5563;
-            --badge-discount: #ffffff;
-            --badge-capacidad-bg: #374151;
-            --badge-capacidad-text: #f9fafb;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Krakatoa — Celulares, Notebooks & Audio</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-body);
-            color: var(--text-main);
-            margin: 0;
-            padding: 0;
-            transition: all 0.3s ease;
-        }
+    :root {
+      --bg: #0a0a0a;
+      --surface: #141414;
+      --surface2: #1c1c1c;
+      --border: rgba(255,255,255,0.07);
+      --border2: rgba(255,255,255,0.14);
+      --text: #f0ede8;
+      --muted: #777;
+      --accent: #e8632a;
+    }
 
-        header {
-            background-color: var(--bg-card);
-            border-bottom: 1px solid var(--border-color);
-            /* MODIFICADO: Se redujo el espacio vertical (arriba/abajo) a 5px, manteniendo 20px a los costados */
-            padding: 5px 20px; 
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
+    body { background: var(--bg); font-family: 'DM Sans', sans-serif; color: var(--text); min-height: 100vh; }
 
-        .header-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1200px;
-            margin: 0 auto;
-            /* MODIFICADO: Se ajustó el espacio inferior al mínimo para no ensanchar la barra */
-            padding-bottom: 5px; 
-            padding-top: 5px;
-        }
+    .wrap { max-width: 1200px; margin: 0 auto; padding: 0 24px 80px; }
 
-        .logo-header {
-             /* Aumentado a 100px para que las letras se vean grandes compensando el aire transparente */
-             max-height: 100px; 
-            width: auto;
-            vertical-align: middle;
-            margin-top: 30px;    /* Esto "come" el espacio en blanco de arriba */
-            margin-bottom: -10px;
-        }
+    header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 32px 0 40px; border-bottom: 0.5px solid var(--border); margin-bottom: 36px;
+    }
 
-        .btn-dark {
-            background-color: transparent;
-            color: var(--text-main);
-            border: 1px solid var(--border-color);
-            padding: 6px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 500;
-            font-size: 0.85em;
-            font-family: 'Inter', sans-serif;
-        }
+    .logo {
+      font-family: 'Syne', sans-serif; font-size: 28px; font-weight: 800;
+      letter-spacing: -0.5px; display: flex; align-items: center; gap: 10px;
+    }
 
-        .controles {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            align-items: center;
-        }
+    .logo-dot {
+      width: 9px; height: 9px; background: var(--accent);
+      border-radius: 50%; animation: pulse 2s ease-in-out infinite;
+    }
 
-        input[type="text"] {
-            width: 100%;
-            max-width: 500px;
-            padding: 12px 16px;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
-            font-size: 15px;
-            background-color: var(--bg-body);
-            color: var(--text-main);
-            font-family: 'Inter', sans-serif;
-            outline: none;
-        }
-        input[type="text"]:focus { border-color: var(--text-main); }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.4; transform: scale(0.65); }
+    }
 
-        .filtros { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
-        
-        .btn-filtro {
-            padding: 6px 14px;
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            background: var(--bg-card);
-            color: var(--text-secondary);
-            cursor: pointer;
-            font-weight: 500;
-            font-size: 0.9em;
-            transition: all 0.2s;
-        }
-        .btn-filtro:hover { border-color: var(--border-hover); color: var(--text-main); }
-        .btn-filtro.activo { background: var(--text-main); color: var(--bg-card); border-color: var(--text-main); }
+    .hright { font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 7px; }
+    .sdot { width: 6px; height: 6px; border-radius: 50%; background: #3ecf8e; }
 
-        .contenedor { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
-        .grilla-productos { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); 
-            gap: 20px; 
-        }
+    .cat-nav { display: flex; gap: 6px; margin-bottom: 28px; flex-wrap: wrap; }
 
-        .tarjeta {
-            background: var(--bg-card);
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-            overflow: hidden;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            transition: box-shadow 0.2s, border-color 0.2s;
-            padding-bottom: 20px;
-        }
-        .tarjeta:hover {
-            border-color: var(--border-hover);
-            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.05);
-        }
+    .cat-btn {
+      font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 500;
+      padding: 10px 22px; border-radius: 10px; border: 0.5px solid var(--border);
+      background: transparent; color: var(--muted); cursor: pointer;
+      transition: all 0.18s ease; display: flex; align-items: center; gap: 8px;
+    }
 
-        .badges-top {
-            position: absolute;
-            top: 12px;
-            left: 12px;
-            display: flex;
-            flex-direction: column;
-            gap: 5px;
-            z-index: 10;
-        }
-        .badge {
-            font-size: 0.7em;
-            font-weight: 700;
-            padding: 4px 8px;
-            border-radius: 4px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .badge.discount { background-color: var(--badge-discount); color: var(--bg-card); }
+    .cat-btn svg { width: 16px; height: 16px; opacity: 0.6; transition: opacity 0.18s; }
+    .cat-btn:hover { border-color: var(--border2); color: var(--text); }
+    .cat-btn:hover svg { opacity: 1; }
+    .cat-btn.active { background: var(--surface2); border-color: var(--border2); color: var(--text); }
+    .cat-btn.active svg { opacity: 1; }
+    .cat-btn.active .cdot { background: var(--accent); }
+    .cdot { width: 6px; height: 6px; border-radius: 50%; background: var(--muted); transition: background 0.18s; }
 
-        .badge-capacidad {
-            position: absolute;
-            top: 12px;
-            right: 12px;
-            background-color: var(--badge-capacidad-bg);
-            color: var(--badge-capacidad-text);
-            padding: 4px 8px;
-            border-radius: 6px;
-            font-size: 0.75em;
-            font-weight: 600;
-            border: 1px solid var(--border-color);
-            z-index: 10;
-        }
+    .brand-bar { display: flex; gap: 6px; margin-bottom: 20px; flex-wrap: wrap; align-items: center; }
+    .brand-label { font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--muted); margin-right: 4px; }
 
-        .img-container {
-            width: 100%;
-            height: 220px;
-            padding: 30px 20px 10px 20px;
-            box-sizing: border-box;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-        .img-container img { max-width: 100%; max-height: 100%; object-fit: contain; }
+    .brand-btn {
+      font-family: 'DM Sans', sans-serif; font-size: 12px; padding: 5px 14px;
+      border-radius: 100px; border: 0.5px solid var(--border); background: transparent;
+      color: var(--muted); cursor: pointer; transition: all 0.15s ease;
+    }
 
-        .info {
-            padding: 0 20px;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-        }
+    .brand-btn:hover { border-color: var(--border2); color: var(--text); }
+    .brand-btn.active { border-color: var(--accent); color: var(--accent); background: rgba(232,99,42,0.08); }
 
-        .marca { font-size: 0.75em; color: var(--text-secondary); text-transform: uppercase; font-weight: 600; margin-bottom: 4px; }
-        .modelo { font-size: 1.1em; font-weight: 600; color: var(--text-main); margin: 0 0 10px 0; line-height: 1.3; }
-        
-        .specs {
-            list-style: none;
-            padding: 0;
-            margin: 0 0 15px 0;
-            font-size: 0.8em;
-            color: var(--text-secondary);
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-        }
-        .specs li {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-        .specs li::before {
-            content: "•";
-            color: var(--border-hover);
-            font-size: 1.2em;
-        }
+    .count-bar { font-size: 12px; color: var(--muted); margin-bottom: 18px; }
+    .count-bar strong { color: var(--text); }
 
-        .precios { margin-top: auto; }
-        .precio-viejo { 
-            font-size: 0.85em; 
-            color: var(--text-secondary); 
-            text-decoration: line-through; 
-            margin-bottom: 2px;
-            display: block;
-        }
-        .precio-nuevo { 
-            font-size: 1.6em; 
-            font-weight: 700; 
-            color: var(--text-main); 
-            letter-spacing: -0.5px;
-        }
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 16px; }
 
-        .oculto { display: none; }
-    </style>
+    .card {
+      background: var(--surface); border: 0.5px solid var(--border);
+      border-radius: 18px; overflow: hidden; transition: all 0.22s ease;
+      display: flex; flex-direction: column;
+    }
+
+    .card:hover { border-color: var(--border2); transform: translateY(-4px); background: var(--surface2); }
+
+    .cimg {
+      background: #181818; height: 186px; display: flex;
+      align-items: center; justify-content: center; padding: 24px; position: relative;
+    }
+
+    .cimg img {
+      width: 100%; height: 100%; object-fit: contain;
+      filter: drop-shadow(0 6px 20px rgba(0,0,0,0.5));
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover .cimg img { transform: scale(1.06); }
+
+    .badge-off {
+      position: absolute; top: 11px; right: 11px;
+      background: var(--accent); color: #fff; font-size: 10px; font-weight: 700;
+      padding: 3px 10px; border-radius: 100px; font-family: 'Syne', sans-serif;
+    }
+
+    .badge-brand {
+      position: absolute; top: 11px; left: 11px;
+      background: rgba(255,255,255,0.05); border: 0.5px solid rgba(255,255,255,0.1);
+      color: var(--muted); font-size: 9px; font-weight: 500; padding: 3px 9px;
+      border-radius: 100px; text-transform: uppercase; letter-spacing: 1px;
+    }
+
+    .badge-storage {
+      position: absolute; bottom: 11px; left: 11px;
+      background: rgba(255,255,255,0.05); border: 0.5px solid var(--border);
+      color: var(--muted); font-size: 9px; padding: 3px 8px; border-radius: 6px;
+    }
+
+    .cbody { padding: 14px 16px 16px; flex: 1; display: flex; flex-direction: column; }
+
+    .cname { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 9px; line-height: 1.3; }
+
+    .cspecs { list-style: none; margin-bottom: 14px; flex: 1; }
+
+    .cspecs li {
+      font-size: 11px; color: var(--muted); padding: 3px 0;
+      display: flex; align-items: center; gap: 6px;
+      border-bottom: 0.5px solid rgba(255,255,255,0.04);
+    }
+
+    .cspecs li:last-child { border-bottom: none; }
+
+    .cspecs li::before {
+      content: ''; width: 3px; height: 3px;
+      border-radius: 50%; background: var(--accent); flex-shrink: 0;
+    }
+
+    .cfooter {
+      display: flex; align-items: flex-end; justify-content: space-between;
+      padding-top: 12px; border-top: 0.5px solid var(--border);
+    }
+
+    .price-old { font-size: 11px; color: var(--muted); text-decoration: line-through; margin-bottom: 2px; }
+
+    .price-new { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; color: var(--text); }
+    .price-new span { font-size: 12px; font-weight: 400; color: var(--muted); }
+
+    .btn-wa {
+      width: 34px; height: 34px; border-radius: 9px;
+      background: rgba(37,211,102,0.1); border: 0.5px solid rgba(37,211,102,0.2);
+      display: flex; align-items: center; justify-content: center;
+      text-decoration: none; transition: all 0.18s ease; flex-shrink: 0;
+    }
+
+    .btn-wa:hover { background: rgba(37,211,102,0.22); border-color: rgba(37,211,102,0.45); }
+    .btn-wa svg { width: 16px; height: 16px; fill: #25D366; }
+
+    .loading { text-align: center; padding: 80px 0; color: var(--muted); font-size: 14px; }
+    .empty { grid-column: 1/-1; text-align: center; padding: 60px 0; color: var(--muted); font-size: 14px; }
+
+    @media (max-width: 600px) {
+      .logo { font-size: 22px; }
+      .grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
+      .cimg { height: 150px; }
+    }
+  </style>
 </head>
 <body>
 
-    <header>
-        <div class="header-top">
-            <img src="craka.png" alt="Logo del local" class="logo-header">
-    
-            <button class="btn-dark" onclick="toggleDark()">Modo Oscuro</button>
-        </div>
-        
-        <div class="controles">
-            <input type="text" id="buscador" placeholder="Buscar por modelo, marca o categoría..." onkeyup="filtrarProductos()">
-            
-            <div class="filtros">
-                <button class="btn-filtro activo" onclick="setCategoria('todos')">Todos</button>
-                <button class="btn-filtro" onclick="setCategoria('apple')">Apple</button>
-                <button class="btn-filtro" onclick="setCategoria('samsung')">Samsung</button>
-                <button class="btn-filtro" onclick="setCategoria('motorola')">Motorola</button>
-                <button class="btn-filtro" onclick="setCategoria('auriculares')">Auriculares</button>
-            </div>
-        </div>
-    </header>
+<div class="wrap">
 
-    <div class="contenedor">
-        <div class="grilla-productos" id="catalogo">
-            
-            <div class="tarjeta" data-nombre="Auriculares Apple AirPods 4" data-categoria="apple auriculares">
-                <div class="img-container"><img src="https://maximstore.com/_next/image?url=https%3A%2F%2Fback.maximstore.com%2Fstatic%2Fimages%2Ff647349c-bd21-48a1-af03-3414e0166518.png&w=960&q=75" alt="AirPods 4"></div>
-                <div class="info">
-                    <div class="marca">Apple</div>
-                    <h2 class="modelo">AirPods 4</h2>
-                    <ul class="specs">
-                        <li>Chip H2 de Apple</li>
-                        <li>Audio Espacial Personalizado</li>
-                        <li>Cancelacion de Ruido</li>
-                        <li>Estuche con USB-C</li>
-                        <li>Hasta 30h de reproducción</li>
-                    </ul>
-                    <div class="precios">
-                        <div class="precio-nuevo">US$ 268</div>
-                    </div>
-                </div>
-            </div>
-            <div class="tarjeta" data-nombre="Auriculares Sony WH-CH720N" data-categoria="sony auriculares">
-                <div class="img-container"><img src="https://arsonyb2c.vtexassets.com/arquivos/ids/365181-1600-auto?v=638747953429300000&width=1600&height=auto&aspect=true" alt="Sony WH-CH720N"></div>
-                <div class="info">
-                    <div class="marca">Sony</div>
-                    <h2 class="modelo">WH-CH720N</h2>
-                    <ul class="specs">
-                        <li>Noise Cancelling con procesador V1</li>
-                        <li>Diseño súper ligero (192g)</li>
-                        <li>Conexión multipunto (2 dispositivos)</li>
-                        <li>Hasta 35h de batería</li>
-                    </ul>
-                    <div class="precios">
-                        <div class="precio-nuevo">US$ 169</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="tarjeta" data-nombre="Auriculares Apple AirPods Pro 3" data-categoria="apple auriculares">
-                <div class="img-container"><img src="https://maximstore.com/_next/image?url=https%3A%2F%2Fback.maximstore.com%2Fstatic%2Fimages%2F6cffceaf-d318-41a4-9e55-2cfa5c305f4a.png&w=960&q=75" alt="AirPods Pro 3"></div>
-                <div class="info">
-                    <div class="marca">Apple</div>
-                    <h2 class="modelo">AirPods Pro 3</h2>
-                    <ul class="specs">
-                        <li>Chip H3 Avanzado</li>
-                        <li>Cancelación Activa de Ruido</li>
-                        <li>Audio Espacial 3D</li>
-                        <li>Estuche MagSafe USB-C</li>
-                    </ul>
-                    <div class="precios">
-                        <div class="precio-nuevo">US$ 330</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="tarjeta" data-nombre="Celular Apple iPhone 16e 256GB" data-categoria="apple celulares">
-                <div class="badges-top"><span class="badge discount">-10% OFF</span></div>
-                <div class="badge-capacidad">256GB</div>
-                <div class="img-container"><img src="https://maximstore.com/_next/image?url=https%3A%2F%2Fback.maximstore.com%2Fstatic%2Fimages%2F5f9473a8-0d72-4a25-9b85-b9765f9acc1b.png&w=960&q=75"></div>
-                <div class="info">
-                    <div class="marca">Apple</div>
-                    <h2 class="modelo">iPhone 16e</h2>
-                    <ul class="specs">
-                        <li>Pantalla 6.1" OLED</li>
-                        <li>Chip A18 Bionic</li>
-                        <li>Cámara 48MP</li>
-                        <li>Batería 3561 mAh</li>
-                    </ul>
-                    <div class="precios">
-                        <span class="precio-viejo">US$ 986</span>
-                        <div class="precio-nuevo">US$ 887</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="tarjeta" data-nombre="Celular Apple iPhone 16 128GB" data-categoria="apple celulares">
-                <div class="badges-top"><span class="badge discount">-12% OFF</span></div>
-                <div class="badge-capacidad">128GB</div>
-                <div class="img-container"><img src="https://back.maximstore.com/static/images/7f3185fb-23ed-4c53-9017-739fa050e5a8.png" alt="iPhone 16"></div>
-                <div class="info">
-                    <div class="marca">Apple</div>
-                    <h2 class="modelo">iPhone 16</h2>
-                    <ul class="specs">
-                        <li>Pantalla 6.1" Super Retina</li>
-                        <li>Chip A18 Bionic</li>
-                        <li>Dual 48MP + 12MP</li>
-                        <li>Batería 3561 mAh</li>
-                    </ul>
-                    <div class="precios">
-                        <span class="precio-viejo">US$ 989</span>
-                        <div class="precio-nuevo">US$ 871</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="tarjeta" data-nombre="Celular Apple iPhone 16 256GB" data-categoria="apple celulares">
-                <div class="badges-top"><span class="badge discount">-10% OFF</span></div>
-                <div class="badge-capacidad">256GB</div>
-                <div class="img-container"><img src="https://back.maximstore.com/static/images/7f3185fb-23ed-4c53-9017-739fa050e5a8.png" alt="iPhone 16"></div>
-                <div class="info">
-                    <div class="marca">Apple</div>
-                    <h2 class="modelo">iPhone 16</h2>
-                    <ul class="specs">
-                        <li>Pantalla 6.1" Super Retina</li>
-                        <li>Chip A18 Bionic</li>
-                        <li>Dual 48MP + 12MP</li>
-                        <li>Batería 3561 mAh</li>
-                    </ul>
-                    <div class="precios">
-                        <span class="precio-viejo">US$ 1150</span>
-                        <div class="precio-nuevo">US$ 1035</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="tarjeta" data-nombre="Celular Apple iPhone 17 256GB" data-categoria="apple celulares">
-                <div class="badges-top"><span class="badge discount">-10% OFF</span></div>
-                <div class="badge-capacidad">256GB</div>
-                <div class="img-container"><img src="https://maximstore.com/_next/image?url=https%3A%2F%2Fback.maximstore.com%2Fstatic%2Fimages%2F4b022d33-af09-4bc7-a5db-2758edf94274.png&w=960&q=75" alt="iPhone 17"></div>
-                <div class="info">
-                    <div class="marca">Apple</div>
-                    <h2 class="modelo">iPhone 17</h2>
-                    <ul class="specs">
-                        <li>Pantalla 6.3" 120Hz</li>
-                        <li>Chip A19</li>
-                        <li>Dual 48MP + 48MP</li>
-                        <li>Carga rápida MagSafe</li>
-                    </ul>
-                    <div class="precios">
-                        <span class="precio-viejo">US$ 1197</span>
-                        <div class="precio-nuevo">US$ 1088</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="tarjeta" data-nombre="Celular Apple iPhone AIR 256GB" data-categoria="apple celulares">
-                <div class="badge-capacidad">256GB</div>
-                <div class="img-container"><img src="https://maximstore.com/_next/image?url=https%3A%2F%2Fback.maximstore.com%2Fstatic%2Fimages%2F72af7f4f-0fb4-4059-a4cd-fa9d7dda6e03.png&w=960&q=75" alt="iPhone AIR"></div>
-                <div class="info">
-                    <div class="marca">Apple</div>
-                    <h2 class="modelo">iPhone AIR</h2>
-                    <ul class="specs">
-                        <li>Diseño Ultra Fino</li>
-                        <li>Pantalla 6.6" 120Hz</li>
-                        <li>Chip A19</li>
-                        <li>Cámara 48MP</li>
-                    </ul>
-                    <div class="precios">
-                        <div class="precio-nuevo">US$ 1144</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="tarjeta" data-nombre="Celular Apple iPhone AIR 512GB" data-categoria="apple celulares">
-                <div class="badge-capacidad">512GB</div>
-                <div class="img-container"><img src="https://maximstore.com/_next/image?url=https%3A%2F%2Fback.maximstore.com%2Fstatic%2Fimages%2F72af7f4f-0fb4-4059-a4cd-fa9d7dda6e03.png&w=960&q=75" alt="iPhone AIR"></div>
-                <div class="info">
-                    <div class="marca">Apple</div>
-                    <h2 class="modelo">iPhone AIR</h2>
-                    <ul class="specs">
-                        <li>Diseño Ultra Fino</li>
-                        <li>Pantalla 6.6" 120Hz</li>
-                        <li>Chip A19</li>
-                        <li>Cámara 48MP</li>
-                    </ul>
-                    <div class="precios">
-                        <div class="precio-nuevo">US$ 1296</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="tarjeta" data-nombre="Celular Apple iPhone 17 512GB" data-categoria="apple celulares">
-                <div class="badge-capacidad">512GB</div>
-                <div class="img-container"><img src="https://maximstore.com/_next/image?url=https%3A%2F%2Fback.maximstore.com%2Fstatic%2Fimages%2F4b022d33-af09-4bc7-a5db-2758edf94274.png&w=960&q=75" alt="iPhone 17"></div>
-                <div class="info">
-                    <div class="marca">Apple</div>
-                    <h2 class="modelo">iPhone 17</h2>
-                    <ul class="specs">
-                        <li>Pantalla 6.3" 120Hz</li>
-                        <li>Chip A19</li>
-                        <li>Dual 48MP + 48MP</li>
-                        <li>Carga rápida MagSafe</li>
-                    </ul>
-                    <div class="precios">
-                        <div class="precio-nuevo">US$ 1332</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="tarjeta" data-nombre="Celular Apple iPhone 17 PRO 256GB" data-categoria="apple celulares">
-                <div class="badge-capacidad">256GB</div>
-                <div class="img-container"><img src="https://maximstore.com/_next/image?url=https%3A%2F%2Fback.maximstore.com%2Fstatic%2Fimages%2Fcd6c9058-100d-4fec-850f-0a986120d8b2.png&w=960&q=75" alt="iPhone 17 PRO"></div>
-                <div class="info">
-                    <div class="marca">Apple</div>
-                    <h2 class="modelo">iPhone 17 PRO</h2>
-                    <ul class="specs">
-                        <li>Pantalla 6.3" ProMotion</li>
-                        <li>Chip A19 Pro</li>
-                        <li>Triple 48MP (Telefoto 5x)</li>
-                        <li>Estructura de Titanio</li>
-                    </ul>
-                    <div class="precios">
-                        <div class="precio-nuevo">US$ 1420</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="tarjeta" data-nombre="Celular Apple iPhone 17 PRO MAX 256GB" data-categoria="apple celulares">
-                <div class="badge-capacidad">256GB</div>
-                <div class="img-container"><img src="https://maximstore.com/_next/image?url=https%3A%2F%2Fback.maximstore.com%2Fstatic%2Fimages%2F5ade608d-106e-4086-b129-c36a2a838811.png&w=960&q=75" alt="iPhone 17 PRO MAX"></div>
-                <div class="info">
-                    <div class="marca">Apple</div>
-                    <h2 class="modelo">iPhone 17 PRO MAX</h2>
-                    <ul class="specs">
-                        <li>Pantalla 6.9" ProMotion</li>
-                        <li>Chip A19 Pro</li>
-                        <li>Triple 48MP (Telefoto 5x)</li>
-                        <li>Batería +4600 mAh</li>
-                    </ul>
-                    <div class="precios">
-                        <div class="precio-nuevo">US$ 1660</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="tarjeta" data-nombre="Celular Apple iPhone 17 PRO 512GB" data-categoria="apple celulares">
-                <div class="badge-capacidad">512GB</div>
-                <div class="img-container"><img src="https://maximstore.com/_next/image?url=https%3A%2F%2Fback.maximstore.com%2Fstatic%2Fimages%2Fcd6c9058-100d-4fec-850f-0a986120d8b2.png&w=960&q=75" alt="iPhone 17 PRO"></div>
-                <div class="info">
-                    <div class="marca">Apple</div>
-                    <h2 class="modelo">iPhone 17 PRO</h2>
-                    <ul class="specs">
-                        <li>Pantalla 6.3" ProMotion</li>
-                        <li>Chip A19 Pro</li>
-                        <li>Triple 48MP (Telefoto 5x)</li>
-                        <li>Estructura de Titanio</li>
-                    </ul>
-                    <div class="precios">
-                        <div class="precio-nuevo">US$ 1550</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="tarjeta" data-nombre="Celular Samsung S25 FE 256GB" data-categoria="samsung celulares">
-                <div class="badge-capacidad">256GB</div>
-                <div class="img-container"><img src="https://bairesit.com.ar/Image/0/700_700-Celular-Samsung-Galaxy-S25FE-5G-256-8GB-Jetblack-11.webp" alt="Samsung S25 FE"></div>
-                <div class="info">
-                    <div class="marca">Samsung</div>
-                    <h2 class="modelo">Samsung S25 FE</h2>
-                    <ul class="specs">
-                        <li>Pantalla 6.4" AMOLED 120Hz</li>
-                        <li>Exynos 2400e</li>
-                        <li>Cámara Triple 50MP</li>
-                        <li>Batería 4500 mAh</li>
-                    </ul>
-                    <div class="precios">
-                        <div class="precio-nuevo">US$ 689</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="tarjeta" data-nombre="Celular Samsung S26+ 512GB" data-categoria="samsung celulares">
-                <div class="badge-capacidad">512GB</div>
-                <div class="img-container"><img src="https://multipoint.com.ar/Image/0/700_700-M2_Black_MIRACLE_-_STANDARD_Carrusel_1._PRODUCT_IMAGE_2400x2400.webp" alt="Samsung S26+"></div>
-                <div class="info">
-                    <div class="marca">Samsung</div>
-                    <h2 class="modelo">Samsung S26+</h2>
-                    <ul class="specs">
-                        <li>Pantalla 6.7" Dynamic AMOLED</li>
-                        <li>Snapdragon 8 Elite</li>
-                        <li>Cámara Triple 50MP</li>
-                        <li>Batería 4900 mAh</li>
-                    </ul>
-                    <div class="precios">
-                        <div class="precio-nuevo">US$ 1400</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="tarjeta" data-nombre="Celular Samsung S26 Dual Chip 512GB" data-categoria="samsung celulares">
-                <div class="badge-capacidad">512GB</div>
-                <div class="img-container"><img src="https://multipoint.com.ar/Image/0/700_700-0.webp" alt="Samsung S26 Dual Chip"></div>
-                <div class="info">
-                    <div class="marca">Samsung</div>
-                    <h2 class="modelo">Samsung S26 Dual Chip</h2>
-                    <ul class="specs">
-                        <li>Pantalla 6.2" Dynamic AMOLED</li>
-                        <li>Dual SIM Física</li>
-                        <li>Cámara Triple 50MP</li>
-                        <li>Batería 4000 mAh</li>
-                    </ul>
-                    <div class="precios">
-                        <div class="precio-nuevo">US$ 1209</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="tarjeta" data-nombre="Celular Samsung S26 Dual Chip 256GB" data-categoria="samsung celulares">
-                <div class="badge-capacidad">256GB</div>
-                <div class="img-container"><img src="https://multipoint.com.ar/Image/0/700_700-0.webp" alt="Samsung S26 Dual Chip"></div>
-                <div class="info">
-                    <div class="marca">Samsung</div>
-                    <h2 class="modelo">Samsung S26 Dual Chip</h2>
-                    <ul class="specs">
-                        <li>Pantalla 6.2" Dynamic AMOLED</li>
-                        <li>Dual SIM Física</li>
-                        <li>Cámara Triple 50MP</li>
-                        <li>Batería 4000 mAh</li>
-                    </ul>
-                    <div class="precios">
-                        <div class="precio-nuevo">US$ 1014</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="tarjeta" data-nombre="Celular Samsung S26 Ultra 512GB" data-categoria="samsung celulares">
-                <div class="badge-capacidad">512GB</div>
-                <div class="img-container"><img src="https://multipoint.com.ar/Image/0/700_700-M3%20Black%20MIRACLE%20-%20STANDARD%20Carrusel_1.%20PRODUCT%20IMAGE%202400x24001.webp" alt="Samsung S26 Ultra"></div>
-                <div class="info">
-                    <div class="marca">Samsung</div>
-                    <h2 class="modelo">Samsung S26 Ultra</h2>
-                    <ul class="specs">
-                        <li>Pantalla 6.8" Plana Antirreflejo</li>
-                        <li>S-Pen Integrado</li>
-                        <li>Cámara Cuádruple 200MP</li>
-                        <li>Batería 5000 mAh</li>
-                    </ul>
-                    <div class="precios">
-                        <div class="precio-nuevo">US$ 1725</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="tarjeta" data-nombre="Celular Samsung S26 Ultra 256GB" data-categoria="samsung celulares">
-                <div class="badge-capacidad">256GB</div>
-                <div class="img-container"><img src="https://multipoint.com.ar/Image/0/700_700-M3%20Black%20MIRACLE%20-%20STANDARD%20Carrusel_1.%20PRODUCT%20IMAGE%202400x24001.webp" alt="Samsung S26 Ultra"></div>
-                <div class="info">
-                    <div class="marca">Samsung</div>
-                    <h2 class="modelo">Samsung S26 Ultra</h2>
-                    <ul class="specs">
-                        <li>Pantalla 6.8" Plana Antirreflejo</li>
-                        <li>S-Pen Integrado</li>
-                        <li>Cámara Cuádruple 200MP</li>
-                        <li>Batería 5000 mAh</li>
-                    </ul>
-                    <div class="precios">
-                        <div class="precio-nuevo">US$ 1525</div>
-                    </div>
-                </div>
-            </div>
-             <div class="tarjeta" data-nombre="Celular Samsung Z FOLD 256GB" data-categoria="samsung celulares">
-                <div class="badge-capacidad">256GB</div>
-                <div class="img-container"><img src="https://samsungar.vtexassets.com/arquivos/ids/207779-1200-auto?width=1200&height=auto&aspect=true" alt="Z Fold"></div>
-                <div class="info">
-                    <div class="marca">Samsung</div>
-                    <h2 class="modelo">Samsung Z Fold 5</h2>
-                    <ul class="specs">
-                        <li>Camara 50.0 MP + 12.0 MP + 10.0 MP</li>
-                        <li>7.6" Dynamic AMOLED 2X</li>
-                        <li>Octa-Core 3.36GHz</li>
-                        <li>Batería 4900 mAh</li>
-                    </ul>
-                    <div class="precios">
-                        <div class="precio-nuevo">US$ 1525</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="tarjeta" data-nombre="Celular Motorola EDGE 60 Pro 512GB" data-categoria="motorola celulares">
-                <div class="badge-capacidad">512GB</div>
-                <div class="img-container"><img src="https://armoto.vtexassets.com/arquivos/ids/169212-1200-auto?v=638827408706400000&width=1200&height=auto&aspect=true" alt="Motorola EDGE 60 Pro"></div>
-                <div class="info">
-                    <div class="marca">Motorola</div>
-                    <h2 class="modelo">Motorola EDGE 60 Pro</h2>
-                    <ul class="specs">
-                        <li>Pantalla 6.7" pOLED 165Hz</li>
-                        <li>Snapdragon 8 Elite</li>
-                        <li>Cámara 50MP OIS</li>
-                        <li>Carga Turbo 125W</li>
-                    </ul>
-                    <div class="precios">
-                        <div class="precio-nuevo">US$ 650</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="tarjeta" data-nombre="Celular Motorola EDGE 50 Ultra 512GB" data-categoria="motorola celulares">
-                <div class="badge-capacidad">512GB</div>
-                <div class="img-container"><img src="https://armoto.vtexassets.com/arquivos/ids/166369-1200-auto?v=638949310430470000&width=1200&height=auto&aspect=true" alt="Motorola EDGE 50 Ultra"></div>
-                <div class="info">
-                    <div class="marca">Motorola</div>
-                    <h2 class="modelo">Motorola EDGE 50 Ultra</h2>
-                    <ul class="specs">
-                        <li>Pantalla 6.7" pOLED 144Hz</li>
-                        <li>Snapdragon 8s Gen 3</li>
-                        <li>Cámara 50MP + Teleobjetivo</li>
-                        <li>Acabado Madera/Cuero</li>
-                    </ul>
-                    <div class="precios">
-                        <div class="precio-nuevo">US$ 780</div>
-                    </div>
-                </div>
-            </div>
-
-        </div>
+  <header>
+    <div class="logo">
+      <div class="logo-dot"></div>
+      KRAKATOA
     </div>
+    <div class="hright">
+      <div class="sdot"></div>
+      Catálogo actualizado
+    </div>
+  </header>
 
-    <script>
-        // --- LÓGICA DE INTERFAZ ---
-        function toggleDark() {
-            document.body.classList.toggle('dark-mode');
-        }
+  <nav class="cat-nav">
+    <button class="cat-btn active" onclick="setCategory('celulares', this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="2" width="14" height="20" rx="2"/><circle cx="12" cy="17" r="1"/></svg>
+      Celulares <div class="cdot"></div>
+    </button>
+    <button class="cat-btn" onclick="setCategory('notebooks', this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="20" height="14" rx="2"/><path d="M1 20h22"/></svg>
+      Notebooks <div class="cdot"></div>
+    </button>
+    <button class="cat-btn" onclick="setCategory('audio', this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+      Audio <div class="cdot"></div>
+    </button>
+  </nav>
 
-        let categoriaActual = 'todos';
+  <div class="brand-bar" id="brand-bar"></div>
+  <div class="count-bar" id="count-bar"></div>
+  <div id="grid-wrap">
+    <div class="loading">Cargando productos...</div>
+  </div>
 
-        function setCategoria(cat) {
-            categoriaActual = cat;
-            let botones = document.getElementsByClassName('btn-filtro');
-            for(let btn of botones) { btn.classList.remove('activo'); }
-            event.target.classList.add('activo');
-            filtrarProductos();
-        }
+</div>
 
-        function filtrarProductos() {
-            let input = document.getElementById('buscador').value.toLowerCase();
-            let tarjetas = document.getElementsByClassName('tarjeta');
+<script>
+  // ─── CONFIGURACIÓN ───────────────────────────────────────────
+  // Reemplazá con el número de WhatsApp del local (549 + código sin 0 + número)
+  const WA_NUMBER = "549XXXXXXXXXX";
 
-            for (let i = 0; i < tarjetas.length; i++) {
-                let nombreProducto = tarjetas[i].getAttribute('data-nombre').toLowerCase();
-                let categoriaProducto = tarjetas[i].getAttribute('data-categoria').toLowerCase();
-                
-                let coincideTexto = nombreProducto.includes(input);
-                
-                // Ahora usamos "includes" para que lea si la categoría del producto (ej: "apple auriculares")
-                // contiene la palabra que estamos filtrando (ej: "apple" o "auriculares")
-                let coincideCategoria = (categoriaActual === 'todos' || categoriaProducto.includes(categoriaActual));
+  // ─── ESTADO ──────────────────────────────────────────────────
+  let allProducts = [];
+  let currentCat = "celulares";
+  let currentBrand = "Todos";
 
-                if (coincideTexto && coincideCategoria) {
-                    tarjetas[i].classList.remove('oculto');
-                } else {
-                    tarjetas[i].classList.add('oculto');
-                }
-            }
-        }
-    </script>
+  // ─── CARGA DESDE JSON ────────────────────────────────────────
+  fetch("productos.json")
+    .then(r => r.json())
+    .then(data => {
+      allProducts = data;
+      renderBrands();
+      renderGrid();
+    })
+    .catch(() => {
+      document.getElementById("grid-wrap").innerHTML =
+        '<p style="color:var(--muted);padding:40px;text-align:center">No se pudo cargar el catálogo. Verificá que productos.json esté en la misma carpeta.</p>';
+    });
+
+  // ─── MARCAS DINÁMICAS ────────────────────────────────────────
+  function renderBrands() {
+    const brands = ["Todos", ...new Set(
+      allProducts.filter(p => p.cat === currentCat).map(p => p.brand)
+    )];
+    document.getElementById("brand-bar").innerHTML =
+      `<span class="brand-label">Marca</span>` +
+      brands.map(b =>
+        `<button class="brand-btn${b === currentBrand ? ' active' : ''}" onclick="setBrand('${b}', this)">${b}</button>`
+      ).join('');
+  }
+
+  // ─── GRID DE CARDS ───────────────────────────────────────────
+  function renderGrid() {
+    const list = allProducts.filter(p => {
+      if (p.cat !== currentCat) return false;
+      if (currentBrand !== "Todos" && p.brand !== currentBrand) return false;
+      return true;
+    });
+
+    document.getElementById("count-bar").innerHTML =
+      `<strong>${list.length}</strong> producto${list.length !== 1 ? 's' : ''}`;
+
+    if (!list.length) {
+      document.getElementById("grid-wrap").innerHTML =
+        '<div class="grid"><div class="empty">No hay productos en esta categoría todavía.</div></div>';
+      return;
+    }
+
+    document.getElementById("grid-wrap").innerHTML =
+      `<div class="grid">${list.map(p => `
+        <div class="card">
+          <div class="cimg">
+            <img src="${p.img}" alt="${p.name}" loading="lazy" onerror="this.style.opacity='.15'">
+            ${p.off     ? `<div class="badge-off">-${p.off}%</div>` : ''}
+            <div class="badge-brand">${p.brand}</div>
+            ${p.storage ? `<div class="badge-storage">${p.storage}</div>` : ''}
+          </div>
+          <div class="cbody">
+            <div class="cname">${p.name}</div>
+            <ul class="cspecs">
+              ${p.specs.map(s => `<li>${s}</li>`).join('')}
+            </ul>
+            <div class="cfooter">
+              <div>
+                ${p.oldPrice ? `<div class="price-old">US$ ${p.oldPrice}</div>` : ''}
+                <div class="price-new"><span>US$ </span>${p.price}</div>
+              </div>
+              <a href="https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(`Hola! Me interesa el ${p.name} a US$ ${p.price}. ¿Está disponible?`)}"
+                 target="_blank" class="btn-wa" title="Consultar por WhatsApp">
+                <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+              </a>
+            </div>
+          </div>
+        </div>
+      `).join('')}</div>`;
+  }
+
+  // ─── NAVEGACIÓN ──────────────────────────────────────────────
+  function setCategory(cat, btn) {
+    currentCat = cat;
+    currentBrand = "Todos";
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderBrands();
+    renderGrid();
+  }
+
+  function setBrand(brand, btn) {
+    currentBrand = brand;
+    document.querySelectorAll('.brand-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderGrid();
+  }
+</script>
+
 </body>
-
 </html>

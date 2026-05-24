@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Krakatoa — Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg: #0a0a0a; --surface: #141414; --surface2: #1c1c1c; --surface3: #222;
+      --border: rgba(255,255,255,0.07); --border2: rgba(255,255,255,0.14);
+      --text: #f0ede8; --muted: #777; --accent: #e8632a;
+      --green: #3ecf8e; --green2: rgba(62,207,142,0.12);
+      --red: #e05c5c; --red2: rgba(224,92,92,0.12);
+    }
+
+    body { background: var(--bg); font-family: 'DM Sans', sans-serif; color: var(--text); font-size: 14px; }
+    .wrap { max-width: 1050px; margin: 0 auto; padding: 0 20px 60px; }
+
+    header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 24px 0 28px; border-bottom: 0.5px solid var(--border); margin-bottom: 28px;
+    }
+
+    .logo {
+      font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800;
+      letter-spacing: -0.5px; display: flex; align-items: center; gap: 8px;
+    }
+
+    .logo-dot { width: 7px; height: 7px; background: var(--accent); border-radius: 50%; animation: pulse 2s ease-in-out infinite; }
+
+    @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.65)} }
+
+    .badge-admin {
+      font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 500;
+      background: rgba(232,99,42,0.12); border: 0.5px solid var(--accent);
+      color: var(--accent); padding: 3px 10px; border-radius: 100px; letter-spacing: .5px;
+    }
+
+    .header-link {
+      font-size: 12px; color: var(--muted); text-decoration: none;
+      display: flex; align-items: center; gap: 6px; transition: color .15s;
+    }
+    .header-link:hover { color: var(--text); }
+    .header-link svg { width: 14px; height: 14px; }
+
+    .header-actions { display: flex; gap: 8px; align-items: center; }
+
+    .btn {
+      font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500;
+      padding: 7px 16px; border-radius: 8px; border: 0.5px solid var(--border2);
+      background: transparent; color: var(--text); cursor: pointer;
+      transition: all .15s; display: flex; align-items: center; gap: 6px;
+    }
+    .btn:hover { background: var(--surface2); }
+    .btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+    .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+    .btn.primary:hover { opacity: .88; }
+    .btn.success { background: var(--green2); border-color: var(--green); color: var(--green); }
+    .btn.success:hover { opacity: .8; }
+
+    .stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 24px; }
+    .stat { background: var(--surface); border: 0.5px solid var(--border); border-radius: 10px; padding: 14px 16px; }
+    .stat-label { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+    .stat-val { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 700; }
+    .stat-val small { font-size: 13px; font-weight: 400; color: var(--muted); }
+
+    .toolbar { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+    .cf-btn {
+      font-size: 12px; padding: 6px 14px; border-radius: 8px; border: 0.5px solid var(--border);
+      background: transparent; color: var(--muted); cursor: pointer; transition: all .15s;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .cf-btn:hover { border-color: var(--border2); color: var(--text); }
+    .cf-btn.active { background: var(--surface2); border-color: var(--border2); color: var(--text); }
+
+    table { width: 100%; border-collapse: collapse; }
+    thead tr { border-bottom: 0.5px solid var(--border2); }
+    thead th { font-size: 11px; font-weight: 500; color: var(--muted); text-align: left; padding: 0 10px 10px; letter-spacing: .5px; text-transform: uppercase; }
+    thead th:last-child { text-align: right; }
+    tbody tr { border-bottom: 0.5px solid var(--border); transition: background .15s; }
+    tbody tr:hover { background: var(--surface); }
+    tbody tr.editing { background: var(--surface2); border-color: var(--border2); }
+    tbody td { padding: 10px; vertical-align: middle; }
+
+    .prod-name { font-weight: 500; font-size: 13px; }
+    .prod-brand { font-size: 11px; color: var(--muted); margin-top: 1px; }
+    .cat-badge { font-size: 10px; padding: 2px 8px; border-radius: 100px; background: var(--surface2); border: 0.5px solid var(--border2); color: var(--muted); }
+    .price-cell { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; }
+    .old-price-cell { font-size: 11px; color: var(--muted); text-decoration: line-through; }
+    .off-badge { font-size: 10px; padding: 2px 7px; border-radius: 100px; background: rgba(232,99,42,0.12); border: 0.5px solid rgba(232,99,42,0.3); color: var(--accent); font-weight: 600; }
+
+    .edit-field {
+      background: var(--surface3); border: 0.5px solid var(--border2); color: var(--text);
+      font-family: 'DM Sans', sans-serif; font-size: 13px; padding: 5px 9px;
+      border-radius: 7px; width: 90px; transition: border-color .15s;
+    }
+    .edit-field:focus { outline: none; border-color: var(--accent); }
+
+    .action-btns { display: flex; gap: 6px; justify-content: flex-end; }
+    .icon-btn {
+      width: 30px; height: 30px; border-radius: 7px; border: 0.5px solid var(--border);
+      background: transparent; color: var(--muted); cursor: pointer;
+      display: flex; align-items: center; justify-content: center; transition: all .15s;
+    }
+    .icon-btn:hover { border-color: var(--border2); color: var(--text); background: var(--surface2); }
+    .icon-btn.save { border-color: var(--green); color: var(--green); background: var(--green2); }
+    .icon-btn.save:hover { opacity: .8; }
+    .icon-btn.cancel { border-color: var(--red); color: var(--red); background: var(--red2); }
+    .icon-btn.cancel:hover { opacity: .8; }
+    .icon-btn svg { width: 14px; height: 14px; }
+
+    /* MODAL AGREGAR */
+    .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 100; align-items: center; justify-content: center; }
+    .modal-bg.open { display: flex; }
+    .modal { background: var(--surface); border: 0.5px solid var(--border2); border-radius: 16px; padding: 28px; width: 440px; max-width: 95vw; max-height: 90vh; overflow-y: auto; }
+    .modal h3 { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; margin-bottom: 20px; }
+    .form-row { margin-bottom: 14px; }
+    .form-label { font-size: 11px; color: var(--muted); margin-bottom: 5px; display: block; letter-spacing: .3px; }
+    .form-input { width: 100%; background: var(--surface2); border: 0.5px solid var(--border2); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 13px; padding: 8px 12px; border-radius: 8px; }
+    .form-input:focus { outline: none; border-color: var(--accent); }
+    .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
+    .modal-footer { display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px; padding-top: 16px; border-top: 0.5px solid var(--border); }
+
+    /* MODAL JSON */
+    .json-modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 200; align-items: center; justify-content: center; }
+    .json-modal-bg.open { display: flex; }
+    .json-modal { background: var(--surface); border: 0.5px solid var(--border2); border-radius: 16px; padding: 24px; width: 700px; max-width: 96vw; }
+    .json-modal h3 { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; margin-bottom: 6px; }
+    .json-modal p { font-size: 12px; color: var(--muted); margin-bottom: 14px; line-height: 1.6; }
+    .json-modal code { color: var(--accent); }
+    .json-box { background: #0d0d0d; border: 0.5px solid var(--border2); border-radius: 10px; padding: 14px; font-family: monospace; font-size: 11px; color: #a8d8a8; max-height: 360px; overflow-y: auto; white-space: pre; line-height: 1.6; }
+    .json-footer { display: flex; gap: 8px; justify-content: flex-end; margin-top: 14px; }
+
+    .steps { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+    .step { display: flex; align-items: flex-start; gap: 10px; font-size: 12px; color: var(--muted); line-height: 1.5; }
+    .step-num { width: 20px; height: 20px; border-radius: 50%; background: var(--surface2); border: 0.5px solid var(--border2); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: var(--accent); flex-shrink: 0; margin-top: 1px; }
+
+    .toast { position: fixed; bottom: 24px; right: 24px; font-size: 13px; padding: 10px 18px; border-radius: 10px; z-index: 999; opacity: 0; transform: translateY(8px); transition: all .25s; pointer-events: none; }
+    .toast.show { opacity: 1; transform: translateY(0); }
+    .toast.ok { background: var(--green2); border: 0.5px solid var(--green); color: var(--green); }
+    .toast.err { background: var(--red2); border: 0.5px solid var(--red); color: var(--red); }
+
+    .empty-row td { text-align: center; padding: 40px; color: var(--muted); font-size: 13px; }
+
+    .loading-row td { text-align: center; padding: 40px; color: var(--muted); font-size: 13px; }
+
+    #login-screen {
+      position: fixed; inset: 0; background: var(--bg);
+      display: flex; align-items: center; justify-content: center; z-index: 9999;
+    }
+
+    .login-box {
+      background: var(--surface); border: 0.5px solid var(--border2);
+      border-radius: 20px; padding: 40px 36px; width: 360px; text-align: center;
+    }
+
+    .login-logo {
+      font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 800;
+      display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 6px;
+    }
+
+    .login-logo-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; animation: pulse 2s ease-in-out infinite; }
+
+    .login-sub { font-size: 12px; color: var(--muted); margin-bottom: 32px; }
+
+    .login-label { display: block; font-size: 11px; color: var(--muted); text-align: left; margin-bottom: 6px; letter-spacing: .3px; }
+
+    .login-input {
+      width: 100%; background: var(--surface2); border: 0.5px solid var(--border2);
+      color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px;
+      padding: 10px 14px; border-radius: 10px; margin-bottom: 12px; transition: border-color .15s;
+    }
+
+    .login-input:focus { outline: none; border-color: var(--accent); }
+
+    .login-btn {
+      width: 100%; background: var(--accent); border: none; color: #fff;
+      font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
+      padding: 11px; border-radius: 10px; cursor: pointer; transition: opacity .15s;
+    }
+
+    .login-btn:hover { opacity: .88; }
+
+    .login-error { font-size: 12px; color: var(--red); margin-top: 10px; min-height: 18px; }
+  </style>
+</head>
+<body>
+
+<div id="login-screen">
+  <div class="login-box">
+    <div class="login-logo"><div class="login-logo-dot"></div>KRAKATOA</div>
+    <div class="login-sub">Panel de administración</div>
+    <label class="login-label">Contraseña</label>
+    <input class="login-input" id="pwd-input" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')checkPassword()">
+    <button class="login-btn" onclick="checkPassword()">Ingresar</button>
+    <div class="login-error" id="login-error"></div>
+  </div>
+</div>
+
+<div class="wrap">
+  <header>
+    <div style="display:flex;align-items:center;gap:12px">
+      <div class="logo"><div class="logo-dot"></div>KRAKATOA <span class="badge-admin">ADMIN</span></div>
+      <a href="index.html" class="header-link">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        Ver catálogo
+      </a>
+    </div>
+    <div class="header-actions">
+      <button class="btn" onclick="openAddModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Agregar producto
+      </button>
+      <button class="btn success" onclick="openJsonModal()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Exportar JSON
+      </button>
+    </div>
+  </header>
+
+  <div class="stats" id="stats">
+    <div class="stat"><div class="stat-label">Total productos</div><div class="stat-val">—</div></div>
+    <div class="stat"><div class="stat-label">Categorías</div><div class="stat-val">—</div></div>
+    <div class="stat"><div class="stat-label">Con descuento</div><div class="stat-val">—</div></div>
+    <div class="stat"><div class="stat-label">Precio promedio</div><div class="stat-val">—</div></div>
+  </div>
+
+  <div class="toolbar" id="cat-filter"></div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Producto</th>
+        <th>Categoría</th>
+        <th>Precio</th>
+        <th>Precio anterior</th>
+        <th>Descuento</th>
+        <th style="text-align:right">Acciones</th>
+      </tr>
+    </thead>
+    <tbody id="tbody">
+      <tr class="loading-row"><td colspan="6">Cargando productos...</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- MODAL AGREGAR -->
+<div class="modal-bg" id="add-modal">
+  <div class="modal">
+    <h3>Agregar producto</h3>
+    <div class="form-row">
+      <label class="form-label">Nombre</label>
+      <input class="form-input" id="f-name" placeholder="ej. iPhone 17 Pro">
+    </div>
+    <div class="form-row-2">
+      <div>
+        <label class="form-label">Marca</label>
+        <input class="form-input" id="f-brand" placeholder="Apple">
+      </div>
+      <div>
+        <label class="form-label">Categoría</label>
+        <select class="form-input" id="f-cat">
+          <option value="celulares">Celulares</option>
+          <option value="notebooks">Notebooks</option>
+          <option value="audio">Audio</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row-2">
+      <div>
+        <label class="form-label">Precio (US$)</label>
+        <input class="form-input" id="f-price" type="number" placeholder="999">
+      </div>
+      <div>
+        <label class="form-label">Precio anterior (opcional)</label>
+        <input class="form-input" id="f-oldprice" type="number" placeholder="1199">
+      </div>
+    </div>
+    <div class="form-row-2">
+      <div>
+        <label class="form-label">Storage (opcional)</label>
+        <input class="form-input" id="f-storage" placeholder="256GB">
+      </div>
+      <div>
+        <label class="form-label">% Descuento (opcional)</label>
+        <input class="form-input" id="f-off" type="number" placeholder="10">
+      </div>
+    </div>
+    <div class="form-row">
+      <label class="form-label">URL de imagen</label>
+      <input class="form-input" id="f-img" placeholder="https://...">
+    </div>
+    <div class="form-row">
+      <label class="form-label">Especificaciones (una por línea, máx 4)</label>
+      <textarea class="form-input" id="f-specs" rows="4" placeholder="Pantalla 6.3&#10;Chip A19&#10;Cámara 48MP&#10;Batería 4000mAh" style="resize:vertical"></textarea>
+    </div>
+    <div class="modal-footer">
+      <button class="btn" onclick="closeAddModal()">Cancelar</button>
+      <button class="btn primary" onclick="saveNewProduct()">Guardar producto</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL JSON -->
+<div class="json-modal-bg" id="json-modal">
+  <div class="json-modal">
+    <h3>Exportar productos.json</h3>
+    <div class="steps">
+      <div class="step"><div class="step-num">1</div><span>Presioná <strong style="color:var(--text)">"Copiar JSON"</strong> abajo</span></div>
+      <div class="step"><div class="step-num">2</div><span>Abrí el archivo <code>productos.json</code> en tu repo de GitHub</span></div>
+      <div class="step"><div class="step-num">3</div><span>Seleccioná todo el contenido, pegá el JSON copiado y guardá</span></div>
+      <div class="step"><div class="step-num">4</div><span>Hacé commit y push — la web se actualiza automáticamente</span></div>
+    </div>
+    <div class="json-box" id="json-box"></div>
+    <div class="json-footer">
+      <button class="btn" onclick="closeJsonModal()">Cerrar</button>
+      <button class="btn success" onclick="copyJson()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+        Copiar JSON
+      </button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  // ─── CONTRASEÑA ──────────────────────────────────────────────
+  // Cambiá este valor por la contraseña que quieras
+  const ADMIN_PASSWORD = "krakatoa2025";
+
+  function checkPassword() {
+    const input = document.getElementById("pwd-input").value;
+    if (input === ADMIN_PASSWORD) {
+      document.getElementById("login-screen").style.display = "none";
+      sessionStorage.setItem("kk-auth", "1");
+      loadProducts();
+    } else {
+      const err = document.getElementById("login-error");
+      err.textContent = "Contraseña incorrecta";
+      document.getElementById("pwd-input").value = "";
+      document.getElementById("pwd-input").focus();
+      setTimeout(() => err.textContent = "", 2500);
+    }
+  }
+
+  if (sessionStorage.getItem("kk-auth") === "1") {
+    document.getElementById("login-screen").style.display = "none";
+    window.addEventListener("load", loadProducts);
+  }
+
+  let products = [];
+  let editingId = null;
+  let currentCat = "todos";
+  const CAT_LABELS = { celulares: "Celulares", notebooks: "Notebooks", audio: "Audio" };
+
+  // ─── CARGA INICIAL ───────────────────────────────────────────
+  function loadProducts() {
+    fetch("productos.json")
+      .then(r => r.json())
+      .then(data => {
+        products = data.map((p, i) => ({ ...p, _id: i }));
+        renderAll();
+      })
+      .catch(() => {
+        document.getElementById("tbody").innerHTML =
+          '<tr class="loading-row"><td colspan="6">No se pudo cargar productos.json. Verificá que esté en la misma carpeta.</td></tr>';
+      });
+  }
+
+  let nextId = 10000;
+
+  function renderAll() { renderStats(); renderCatFilter(); renderTable(); }
+
+  function renderStats() {
+    const t = products.length;
+    const cats = new Set(products.map(p => p.cat)).size;
+    const withOff = products.filter(p => p.off).length;
+    const avg = t ? Math.round(products.reduce((a, p) => a + p.price, 0) / t) : 0;
+    document.getElementById("stats").innerHTML = `
+      <div class="stat"><div class="stat-label">Total productos</div><div class="stat-val">${t}</div></div>
+      <div class="stat"><div class="stat-label">Categorías</div><div class="stat-val">${cats}</div></div>
+      <div class="stat"><div class="stat-label">Con descuento</div><div class="stat-val">${withOff}</div></div>
+      <div class="stat"><div class="stat-label">Precio promedio</div><div class="stat-val"><small>US$</small> ${avg}</div></div>
+    `;
+  }
+
+  function renderCatFilter() {
+    const cats = ["todos", ...new Set(products.map(p => p.cat))];
+    const labels = { todos: "Todos", ...CAT_LABELS };
+    document.getElementById("cat-filter").innerHTML = cats.map(c =>
+      `<button class="cf-btn${c === currentCat ? ' active' : ''}" onclick="setCat('${c}',this)">${labels[c] || c}</button>`
+    ).join('');
+  }
+
+  function setCat(cat, btn) {
+    currentCat = cat;
+    document.querySelectorAll('.cf-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    renderTable();
+  }
+
+  function renderTable() {
+    const list = currentCat === "todos" ? products : products.filter(p => p.cat === currentCat);
+    if (!list.length) {
+      document.getElementById("tbody").innerHTML = '<tr class="empty-row"><td colspan="6">No hay productos en esta categoría.</td></tr>';
+      return;
+    }
+    document.getElementById("tbody").innerHTML = list.map(p => {
+      if (editingId === p._id) {
+        return `<tr class="editing">
+          <td><div class="prod-name">${p.name}</div><div class="prod-brand">${p.brand}</div></td>
+          <td><span class="cat-badge">${CAT_LABELS[p.cat] || p.cat}</span></td>
+          <td><input class="edit-field" id="ep-${p._id}" type="number" value="${p.price}"></td>
+          <td><input class="edit-field" id="eop-${p._id}" type="number" value="${p.oldPrice || ''}"></td>
+          <td><input class="edit-field" id="eof-${p._id}" type="number" value="${p.off || ''}"></td>
+          <td>
+            <div class="action-btns">
+              <button class="icon-btn save" onclick="saveEdit(${p._id})" title="Guardar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+              </button>
+              <button class="icon-btn cancel" onclick="cancelEdit()" title="Cancelar">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              </button>
+            </div>
+          </td>
+        </tr>`;
+      }
+      return `<tr>
+        <td><div class="prod-name">${p.name}</div><div class="prod-brand">${p.brand}</div></td>
+        <td><span class="cat-badge">${CAT_LABELS[p.cat] || p.cat}</span></td>
+        <td><span class="price-cell">US$ ${p.price}</span></td>
+        <td>${p.oldPrice ? `<span class="old-price-cell">US$ ${p.oldPrice}</span>` : '<span style="color:var(--muted)">—</span>'}</td>
+        <td>${p.off ? `<span class="off-badge">-${p.off}%</span>` : '<span style="color:var(--muted)">—</span>'}</td>
+        <td>
+          <div class="action-btns">
+            <button class="icon-btn" onclick="startEdit(${p._id})" title="Editar precios">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+            </button>
+            <button class="icon-btn" onclick="deleteProduct(${p._id})" title="Eliminar">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
+            </button>
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+  }
+
+  function startEdit(id) { editingId = id; renderTable(); }
+  function cancelEdit() { editingId = null; renderTable(); }
+
+  function saveEdit(id) {
+    const p = products.find(x => x._id === id);
+    const price = parseFloat(document.getElementById(`ep-${id}`).value);
+    const oldPrice = parseFloat(document.getElementById(`eop-${id}`).value) || null;
+    const off = parseFloat(document.getElementById(`eof-${id}`).value) || null;
+    if (!price || price <= 0) { showToast("Ingresá un precio válido", "err"); return; }
+    p.price = price; p.oldPrice = oldPrice; p.off = off;
+    editingId = null;
+    renderAll();
+    showToast("Precio actualizado — recordá exportar el JSON");
+  }
+
+  function deleteProduct(id) {
+    if (!confirm("¿Eliminar este producto?")) return;
+    products = products.filter(p => p._id !== id);
+    if (editingId === id) editingId = null;
+    renderAll();
+    showToast("Producto eliminado — recordá exportar el JSON");
+  }
+
+  function openAddModal() { document.getElementById("add-modal").classList.add("open"); }
+  function closeAddModal() { document.getElementById("add-modal").classList.remove("open"); }
+
+  function saveNewProduct() {
+    const name = document.getElementById("f-name").value.trim();
+    const brand = document.getElementById("f-brand").value.trim();
+    const cat = document.getElementById("f-cat").value;
+    const price = parseFloat(document.getElementById("f-price").value);
+    const oldPrice = parseFloat(document.getElementById("f-oldprice").value) || null;
+    const storage = document.getElementById("f-storage").value.trim() || null;
+    const off = parseFloat(document.getElementById("f-off").value) || null;
+    const img = document.getElementById("f-img").value.trim();
+    const specs = document.getElementById("f-specs").value.trim().split("\n").map(s => s.trim()).filter(Boolean).slice(0, 4);
+    if (!name || !brand || !price) { showToast("Completá nombre, marca y precio", "err"); return; }
+    products.push({ _id: nextId++, cat, brand, name, img, price, oldPrice, off, storage, specs });
+    closeAddModal();
+    ["f-name","f-brand","f-price","f-oldprice","f-storage","f-off","f-img","f-specs"].forEach(id => document.getElementById(id).value = "");
+    renderAll();
+    showToast("Producto agregado — recordá exportar el JSON");
+  }
+
+  function openJsonModal() {
+    const clean = products.map(({ _id, ...rest }) => rest);
+    document.getElementById("json-box").textContent = JSON.stringify(clean, null, 2);
+    document.getElementById("json-modal").classList.add("open");
+  }
+  function closeJsonModal() { document.getElementById("json-modal").classList.remove("open"); }
+
+  function copyJson() {
+    navigator.clipboard.writeText(document.getElementById("json-box").textContent)
+      .then(() => showToast("JSON copiado al portapapeles"));
+  }
+
+  function showToast(msg, type = "ok") {
+    const t = document.getElementById("toast");
+    t.textContent = msg;
+    t.className = `toast ${type} show`;
+    setTimeout(() => t.classList.remove("show"), 3000);
+  }
+
+  document.getElementById("add-modal").addEventListener("click", e => { if (e.target === document.getElementById("add-modal")) closeAddModal(); });
+  document.getElementById("json-modal").addEventListener("click", e => { if (e.target === document.getElementById("json-modal")) closeJsonModal(); });
+</script>
+
+</body>
+</html>

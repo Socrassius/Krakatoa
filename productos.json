@@ -1,0 +1,222 @@
+[
+  {
+    "cat": "celulares",
+    "brand": "Apple",
+    "name": "iPhone 16e",
+    "img": "https://maximstore.com/_next/image?url=https%3A%2F%2Fback.maximstore.com%2Fstatic%2Fimages%2F5f9473a8-0d72-4a25-9b85-b9765f9acc1b.png&w=960&q=75",
+    "price": 887,
+    "oldPrice": 986,
+    "off": 10,
+    "storage": "256GB",
+    "specs": ["Pantalla 6.1\" OLED", "Chip A18 Bionic", "Cámara 48MP", "Batería 3561 mAh"]
+  },
+  {
+    "cat": "celulares",
+    "brand": "Apple",
+    "name": "iPhone 16",
+    "img": "https://back.maximstore.com/static/images/7f3185fb-23ed-4c53-9017-739fa050e5a8.png",
+    "price": 871,
+    "oldPrice": 989,
+    "off": 12,
+    "storage": "128GB",
+    "specs": ["Pantalla 6.1\" Super Retina", "Chip A18 Bionic", "Dual 48MP + 12MP", "Batería 3561 mAh"]
+  },
+  {
+    "cat": "celulares",
+    "brand": "Apple",
+    "name": "iPhone 16",
+    "img": "https://back.maximstore.com/static/images/7f3185fb-23ed-4c53-9017-739fa050e5a8.png",
+    "price": 1035,
+    "oldPrice": 1150,
+    "off": 10,
+    "storage": "256GB",
+    "specs": ["Pantalla 6.1\" Super Retina", "Chip A18 Bionic", "Dual 48MP + 12MP", "Batería 3561 mAh"]
+  },
+  {
+    "cat": "celulares",
+    "brand": "Apple",
+    "name": "iPhone 17",
+    "img": "https://maximstore.com/_next/image?url=https%3A%2F%2Fback.maximstore.com%2Fstatic%2Fimages%2F4b022d33-af09-4bc7-a5db-2758edf94274.png&w=960&q=75",
+    "price": 1088,
+    "oldPrice": 1197,
+    "off": 10,
+    "storage": "256GB",
+    "specs": ["Pantalla 6.3\" 120Hz", "Chip A19", "Dual 48MP + 48MP", "Carga rápida MagSafe"]
+  },
+  {
+    "cat": "celulares",
+    "brand": "Apple",
+    "name": "iPhone Air",
+    "img": "https://maximstore.com/_next/image?url=https%3A%2F%2Fback.maximstore.com%2Fstatic%2Fimages%2F72af7f4f-0fb4-4059-a4cd-fa9d7dda6e03.png&w=960&q=75",
+    "price": 1144,
+    "oldPrice": null,
+    "off": null,
+    "storage": "512GB",
+    "specs": ["Diseño Ultra Fino", "Pantalla 6.6\" 120Hz", "Chip A19", "Cámara 48MP"]
+  },
+  {
+    "cat": "celulares",
+    "brand": "Apple",
+    "name": "iPhone 17 Pro",
+    "img": "https://maximstore.com/_next/image?url=https%3A%2F%2Fback.maximstore.com%2Fstatic%2Fimages%2Fcd6c9058-100d-4fec-850f-0a986120d8b2.png&w=960&q=75",
+    "price": 1420,
+    "oldPrice": null,
+    "off": null,
+    "storage": "256GB",
+    "specs": ["Pantalla 6.3\" ProMotion", "Chip A19 Pro", "Triple 48MP (Telefoto 5x)", "Titanio"]
+  },
+  {
+    "cat": "celulares",
+    "brand": "Apple",
+    "name": "iPhone 17 Pro Max",
+    "img": "https://maximstore.com/_next/image?url=https%3A%2F%2Fback.maximstore.com%2Fstatic%2Fimages%2F5ade608d-106e-4086-b129-c36a2a838811.png&w=960&q=75",
+    "price": 1660,
+    "oldPrice": null,
+    "off": null,
+    "storage": "512GB",
+    "specs": ["Pantalla 6.9\" ProMotion", "Chip A19 Pro", "Triple 48MP", "Batería +4600 mAh"]
+  },
+  {
+    "cat": "celulares",
+    "brand": "Samsung",
+    "name": "Samsung S25 FE",
+    "img": "https://bairesit.com.ar/Image/0/700_700-Celular-Samsung-Galaxy-S25FE-5G-256-8GB-Jetblack-11.webp",
+    "price": 689,
+    "oldPrice": null,
+    "off": null,
+    "storage": "512GB",
+    "specs": ["Pantalla 6.4\" AMOLED 120Hz", "Exynos 2400e", "Cámara Triple 50MP", "Batería 4500 mAh"]
+  },
+  {
+    "cat": "celulares",
+    "brand": "Samsung",
+    "name": "Samsung S26+",
+    "img": "https://multipoint.com.ar/Image/0/700_700-M2_Black_MIRACLE_-_STANDARD_Carrusel_1._PRODUCT_IMAGE_2400x2400.webp",
+    "price": 1400,
+    "oldPrice": null,
+    "off": null,
+    "storage": "512GB",
+    "specs": ["Pantalla 6.7\" Dynamic AMOLED", "Snapdragon 8 Elite", "Cámara Triple 50MP", "Batería 4900 mAh"]
+  },
+  {
+    "cat": "celulares",
+    "brand": "Samsung",
+    "name": "Samsung S26 Dual",
+    "img": "https://multipoint.com.ar/Image/0/700_700-0.webp",
+    "price": 1014,
+    "oldPrice": null,
+    "off": null,
+    "storage": "256GB",
+    "specs": ["Pantalla 6.2\" Dynamic AMOLED", "Dual SIM Física", "Cámara Triple 50MP", "Batería 4000 mAh"]
+  },
+  {
+    "cat": "celulares",
+    "brand": "Samsung",
+    "name": "Samsung S26 Ultra",
+    "img": "https://multipoint.com.ar/Image/0/700_700-M3%20Black%20MIRACLE%20-%20STANDARD%20Carrusel_1.%20PRODUCT%20IMAGE%202400x24001.webp",
+    "price": 1525,
+    "oldPrice": null,
+    "off": null,
+    "storage": "512GB",
+    "specs": ["Pantalla 6.8\" Antirreflejo", "S-Pen Integrado", "Cámara 200MP", "Batería 5000 mAh"]
+  },
+  {
+    "cat": "celulares",
+    "brand": "Samsung",
+    "name": "Samsung Z Fold 5",
+    "img": "https://samsungar.vtexassets.com/arquivos/ids/207779-1200-auto?width=1200&height=auto&aspect=true",
+    "price": 1525,
+    "oldPrice": null,
+    "off": null,
+    "storage": "512GB",
+    "specs": ["7.6\" Dynamic AMOLED 2X", "Octa-Core 3.36GHz", "Triple cámara 50MP", "Batería 4900 mAh"]
+  },
+  {
+    "cat": "celulares",
+    "brand": "Motorola",
+    "name": "Motorola Edge 60 Pro",
+    "img": "https://armoto.vtexassets.com/arquivos/ids/169212-1200-auto?v=638827408706400000&width=1200&height=auto&aspect=true",
+    "price": 650,
+    "oldPrice": null,
+    "off": null,
+    "storage": "512GB",
+    "specs": ["Pantalla 6.7\" pOLED 165Hz", "Snapdragon 8 Elite", "Cámara 50MP OIS", "Carga Turbo 125W"]
+  },
+  {
+    "cat": "celulares",
+    "brand": "Motorola",
+    "name": "Motorola Edge 50 Ultra",
+    "img": "https://armoto.vtexassets.com/arquivos/ids/166369-1200-auto?v=638949310430470000&width=1200&height=auto&aspect=true",
+    "price": 780,
+    "oldPrice": null,
+    "off": null,
+    "storage": "512GB",
+    "specs": ["Pantalla 6.7\" pOLED 144Hz", "Snapdragon 8s Gen 3", "Cámara 50MP + Teleobjetivo", "Acabado Madera/Cuero"]
+  },
+  {
+    "cat": "audio",
+    "brand": "Apple",
+    "name": "AirPods 4",
+    "img": "https://maximstore.com/_next/image?url=https%3A%2F%2Fback.maximstore.com%2Fstatic%2Fimages%2Ff647349c-bd21-48a1-af03-3414e0166518.png&w=960&q=75",
+    "price": 268,
+    "oldPrice": null,
+    "off": null,
+    "storage": null,
+    "specs": ["Chip H2 de Apple", "Audio Espacial Personalizado", "Cancelación de Ruido", "Hasta 30h"]
+  },
+  {
+    "cat": "audio",
+    "brand": "Apple",
+    "name": "AirPods Pro 3",
+    "img": "https://maximstore.com/_next/image?url=https%3A%2F%2Fback.maximstore.com%2Fstatic%2Fimages%2F6cffceaf-d318-41a4-9e55-2cfa5c305f4a.png&w=960&q=75",
+    "price": 330,
+    "oldPrice": null,
+    "off": null,
+    "storage": null,
+    "specs": ["Chip H3 Avanzado", "Cancelación Activa de Ruido", "Audio Espacial 3D", "MagSafe USB-C"]
+  },
+  {
+    "cat": "audio",
+    "brand": "Sony",
+    "name": "Sony WH-CH720N",
+    "img": "https://arsonyb2c.vtexassets.com/arquivos/ids/365181-1600-auto?v=638747953429300000&width=1600&height=auto&aspect=true",
+    "price": 169,
+    "oldPrice": null,
+    "off": null,
+    "storage": null,
+    "specs": ["Noise Cancelling V1", "Diseño ligero 192g", "Multipunto 2 dispositivos", "Hasta 35h"]
+  },
+  {
+    "cat": "notebooks",
+    "brand": "Apple",
+    "name": "MacBook Air M3",
+    "img": "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/mba13-midnight-select-202402?wid=904&hei=840&fmt=jpeg&qlt=90&.v=1708367688034",
+    "price": 1299,
+    "oldPrice": null,
+    "off": null,
+    "storage": "256GB",
+    "specs": ["Chip Apple M3", "Pantalla 13.6\" Liquid Retina", "16GB RAM", "Batería hasta 18h"]
+  },
+  {
+    "cat": "notebooks",
+    "brand": "Apple",
+    "name": "MacBook Pro M4",
+    "img": "https://store.storeimages.cdn-apple.com/4982/as-images.apple.com/is/mbp14-spaceblack-select-202410?wid=904&hei=840&fmt=jpeg&qlt=90&.v=1728916322754",
+    "price": 1999,
+    "oldPrice": null,
+    "off": null,
+    "storage": "512GB",
+    "specs": ["Chip Apple M4 Pro", "Pantalla 14\" ProMotion", "24GB RAM", "Batería hasta 24h"]
+  },
+  {
+    "cat": "notebooks",
+    "brand": "Samsung",
+    "name": "Galaxy Book4 Pro",
+    "img": "https://images.samsung.com/is/image/samsung/p6pim/ar/np940xgk-kg1ar/gallery/ar-galaxy-book4-pro-np940xgk-kg1ar-thumb-539437765?$650_519_PNG$",
+    "price": 1450,
+    "oldPrice": null,
+    "off": null,
+    "storage": "512GB",
+    "specs": ["Intel Core Ultra 7", "Pantalla 14\" AMOLED 120Hz", "16GB RAM", "Batería 63Wh"]
+  }
+]
