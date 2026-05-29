@@ -376,11 +376,17 @@
     @media (max-width: 768px) {
       .sidebar {
         position:fixed; top:60px; left:0; z-index:99;
-        transform:translateX(-100%); height:calc(100vh - 60px);
-        box-shadow:4px 0 24px rgba(0,0,0,.3);
+        width:260px; height:calc(100vh - 60px);
+        transform:translateX(-100%);
+        box-shadow:4px 0 24px rgba(0,0,0,.35);
+        /* Override sticky so it scrolls independently */
+        position:fixed !important;
+        /* Hide animation on mobile so it doesn't fight with transform */
+        animation:none;
       }
       .sidebar.open { transform:translateX(0); }
       .hamburger { display:flex; }
+      .layout { display:block; }
       .main { padding:16px; }
       .header-panel-btn .btn-label { display:none; }
       .payment-footer { padding:20px 16px 36px; }
