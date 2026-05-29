@@ -369,6 +369,54 @@
     }
     .sidebar-cmp-count.hidden { display:none; }
 
+
+    /* ── SKELETON LOADER ─────────────────────────────────────── */
+    @keyframes shimmer {
+      0%   { background-position: -600px 0; }
+      100% { background-position:  600px 0; }
+    }
+    .skeleton-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:14px; }
+    .skeleton-card {
+      background:var(--surface); border:0.5px solid var(--border);
+      border-radius:16px; overflow:hidden;
+    }
+    .skeleton-img {
+      height:178px; background:var(--surface2);
+    }
+    .skeleton-body { padding:13px 15px 15px; }
+    .sk {
+      border-radius:6px; margin-bottom:8px;
+      background:linear-gradient(90deg, var(--surface2) 25%, var(--surface) 50%, var(--surface2) 75%);
+      background-size:600px 100%;
+      animation: shimmer 1.4s infinite linear;
+    }
+    .sk-title  { height:14px; width:70%; }
+    .sk-line   { height:10px; width:90%; }
+    .sk-line-s { height:10px; width:60%; }
+    .sk-price  { height:20px; width:40%; margin-top:14px; }
+
+    /* ── BOTÓN COMPARTIR ─────────────────────────────────────── */
+    .btn-share {
+      width:32px; height:32px; border-radius:8px;
+      background:rgba(128,128,128,0.08); border:0.5px solid var(--border2);
+      display:flex; align-items:center; justify-content:center;
+      cursor:pointer; transition:all .18s ease; flex-shrink:0; position:relative;
+    }
+    .btn-share:hover { background:var(--surface2); border-color:var(--border2); }
+    .btn-share svg { width:14px; height:14px; stroke:var(--muted); fill:none; transition:stroke .18s; }
+    .btn-share:hover svg { stroke:var(--text); }
+
+    .share-toast {
+      position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(10px);
+      background:var(--surface2); border:0.5px solid var(--border2);
+      color:var(--text); font-size:12px; font-weight:500;
+      padding:9px 18px; border-radius:100px;
+      z-index:999; opacity:0; pointer-events:none;
+      transition:all .25s cubic-bezier(.22,1,.36,1);
+      display:flex; align-items:center; gap:7px; white-space:nowrap;
+    }
+    .share-toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+    .share-toast svg { width:13px; height:13px; stroke:var(--accent); fill:none; flex-shrink:0; }
     .loading { text-align:center; padding:80px 0; color:var(--muted); font-size:14px; }
     .empty-grid { grid-column:1/-1; text-align:center; padding:60px 0; color:var(--muted); font-size:13px; }
 
@@ -484,7 +532,7 @@
     <div class="main-topbar">
       <div class="count-bar" id="count-bar"></div>
     </div>
-    <div id="grid-wrap"><div class="loading">Cargando productos...</div></div>
+    <div id="grid-wrap"></div>
 
     <!-- PRE-FOOTER MEDIOS DE PAGO -->
     <div class="payment-footer">
@@ -624,9 +672,25 @@
   }
 
   // ── CARGA DE DATOS ────────────────────────────────────────────
+  function showSkeleton() {
+    const n = 8;
+    document.getElementById("grid-wrap").innerHTML = `<div class="skeleton-grid">${Array(n).fill(`
+      <div class="skeleton-card">
+        <div class="skeleton-img"></div>
+        <div class="skeleton-body">
+          <div class="sk sk-title"></div>
+          <div class="sk sk-line"></div>
+          <div class="sk sk-line-s"></div>
+          <div class="sk sk-line"></div>
+          <div class="sk sk-price"></div>
+        </div>
+      </div>`).join('')}</div>`;
+  }
+
   function loadProducts() {
+    showSkeleton();
     if (SHEET_URL) {
-      fetch(SHEET_URL).then(r => r.text()).then(csv => {
+      fetch(SHEET_URL + "&t=" + Date.now()).then(r => r.text()).then(csv => {
         const data = parseCSV(csv);
         if (data.length) { allProducts = data; renderBrands(); renderGrid(); }
         else loadFallback();
@@ -724,6 +788,9 @@
               </button>
               <button class="btn-cmp${inCmp?' in-cmp':''}" onclick="toggleCmp(${idx})" title="${inCmp?'Quitar del comparador':'Comparar'}">
                 <svg viewBox="0 0 24 24" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+              </button>
+              <button class="btn-share" onclick="shareProduct('${p.name}','${p.price}','${p.brand}')" title="Compartir producto">
+                <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
               </button>
               <a href="https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(`Hola! Me interesa el ${p.name} a US$ ${p.price}. ¿Está disponible?`)}" target="_blank" class="btn-wa">${WA_SVG}</a>
             </div>
@@ -899,6 +966,32 @@
     const msg = `Hola! Me interesan estos dos productos:\n\n1. ${a.name}${a.storage?` ${a.storage}`:''} — US$ ${a.price}\n2. ${b.name}${b.storage?` ${b.storage}`:''} — US$ ${b.price}\n\n¿Cuál me recomendás? ¿Están disponibles?`;
     window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
   }
+
+  // ── COMPARTIR PRODUCTO ────────────────────────────────────────
+  function shareProduct(name, price, brand) {
+    const url = window.location.href.split('#')[0];
+    const text = `${brand} ${name} — US$ ${price}\n${url}`;
+    if (navigator.share) {
+      navigator.share({ title: name, text: `${name} a US$ ${price}`, url })
+        .catch(() => copyToClipboard(text));
+    } else {
+      copyToClipboard(text);
+    }
+  }
+
+  function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+      const toast = document.getElementById("share-toast");
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 2500);
+    });
+  }
 </script>
+<!-- SHARE TOAST -->
+<div class="share-toast" id="share-toast">
+  <svg viewBox="0 0 24 24" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+  Link copiado al portapapeles
+</div>
+
 </body>
 </html>
