@@ -265,8 +265,10 @@
         <label class="form-label">Categoría</label>
         <select class="form-input" id="f-cat">
           <option value="celulares">Celulares</option>
-          <option value="notebooks">Notebooks</option>
+          <option value="notebooks_nuevas">Notebooks Nuevas</option>
+          <option value="notebooks_reac">Notebooks Reacondicionadas</option>
           <option value="audio">Audio</option>
+          <option value="consolas">Consolas</option>
         </select>
       </div>
     </div>
@@ -331,7 +333,7 @@
 <script>
   // ─── CONTRASEÑA ──────────────────────────────────────────────
   // Cambiá este valor por la contraseña que quieras
-  const ADMIN_PASSWORD = "15402078";
+  const ADMIN_PASSWORD = "krakatoa2025";
 
   function checkPassword() {
     const input = document.getElementById("pwd-input").value;
@@ -356,14 +358,28 @@
   let products = [];
   let editingId = null;
   let currentCat = "todos";
-  const CAT_LABELS = { celulares: "Celulares", notebooks: "Notebooks", audio: "Audio" };
+  const CAT_LABELS = {
+    celulares: "Celulares",
+    notebooks_nuevas: "Notebooks Nuevas",
+    notebooks_reac: "Notebooks Reacondicionadas",
+    audio: "Audio",
+    consolas: "Consolas"
+  };
 
   // ─── CARGA INICIAL ───────────────────────────────────────────
   function loadProducts() {
     fetch("productos.json")
       .then(r => r.json())
       .then(data => {
-        products = data.map((p, i) => ({ ...p, _id: i }));
+        products = data.map((p, i) => {
+          // normalize notebooks subcat
+          let cat = p.cat || '';
+          if (cat === 'notebooks') {
+            const sub = (p.subcat || '').toLowerCase();
+            cat = sub === 'reacondicionada' ? 'notebooks_reac' : 'notebooks_nuevas';
+          }
+          return { ...p, cat, _id: i };
+        });
         renderAll();
       })
       .catch(() => {
