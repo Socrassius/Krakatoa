@@ -530,6 +530,11 @@
           Consolas
           <div class="scat-dot"></div>
         </button>
+        <button class="sidebar-cat-btn" onclick="setCategory('tablets',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="2" width="16" height="20" rx="2"/><circle cx="12" cy="18" r="1"/></svg>
+          Tablets
+          <div class="scat-dot"></div>
+        </button>
       </div>
     </div>
 
@@ -755,19 +760,26 @@
       }
       fields.push(cur.trim());
       const obj = {}; headers.forEach((h,i) => { obj[h] = fields[i] || ''; });
-      // subcat support: if cat is 'notebooks' check subcat field
-      let cat = obj.cat || '';
+      // subcat support
+      let cat = (obj.cat || '').trim().toLowerCase();
       if (cat === 'notebooks') {
         const sub = (obj.subcat || '').toLowerCase();
         cat = sub === 'reacondicionada' ? 'notebooks_reac' : 'notebooks_nuevas';
       }
+      // handle both spec4 and specs4 column names, strip leading asterisks
+      const clean = v => (v || '').replace(/^[*]\s*/, '').trim();
       return {
         cat, brand: obj.brand, name: obj.name, img: obj.img,
         price: parseFloat(obj.price)||0,
         oldPrice: obj.oldPrice ? parseFloat(obj.oldPrice) : null,
         off: obj.off ? parseFloat(obj.off) : null,
         storage: obj.storage || null,
-        specs: [obj.spec1,obj.spec2,obj.spec3,obj.spec4].filter(Boolean)
+        specs: [
+          clean(obj.spec1),
+          clean(obj.spec2),
+          clean(obj.spec3),
+          clean(obj.spec4 || obj.specs4)
+        ].filter(Boolean)
       };
     }).filter(p => p.name && p.price);
   }
