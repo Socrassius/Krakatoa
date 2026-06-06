@@ -39,6 +39,11 @@
       letter-spacing:-0.5px; display:flex; align-items:center; gap:9px;
     }
     .logo-dot { width:8px; height:8px; background:var(--accent); border-radius:50%; animation:pulse 2s ease-in-out infinite; }
+    .logo { cursor:default; }
+    .logo:hover .logo-dot { animation:logoBounce .5s cubic-bezier(.22,1,.36,1); }
+    .logo:hover .logo-text { animation:logoShake .4s cubic-bezier(.22,1,.36,1); }
+    @keyframes logoBounce { 0%{transform:scale(1)} 40%{transform:scale(1.6)} 70%{transform:scale(.8)} 100%{transform:scale(1)} }
+    @keyframes logoShake { 0%{transform:translateX(0)} 20%{transform:translateX(-2px)} 40%{transform:translateX(2px)} 60%{transform:translateX(-1px)} 80%{transform:translateX(1px)} 100%{transform:translateX(0)} }
     @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.65)} }
     @keyframes slideDown { from{opacity:0;transform:translateY(-16px)} to{opacity:1;transform:translateY(0)} }
     @keyframes fadeSlideUp { from{opacity:0;transform:translateY(24px) scale(.97)} to{opacity:1;transform:translateY(0) scale(1)} }
@@ -173,6 +178,8 @@
     .count-bar strong { color:var(--text); }
 
     .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:14px; }
+    #grid-wrap { transition:opacity .18s ease; }
+    #grid-wrap.fading { opacity:0; }
 
     /* ── CARDS ───────────────────────────────────────────────── */
     .card {
@@ -181,7 +188,9 @@
       display:flex; flex-direction:column;
       opacity:0; animation:popIn .5s cubic-bezier(.22,1,.36,1) forwards;
     }
-    .card:hover { border-color:var(--border2); transform:translateY(-5px) scale(1.01); background:var(--surface2); transition:all .22s cubic-bezier(.22,1,.36,1); }
+    .card:hover { border-color:rgba(232,99,42,.35); transform:translateY(-6px) scale(1.015); background:var(--surface2); transition:all .25s cubic-bezier(.22,1,.36,1); box-shadow:0 12px 40px rgba(232,99,42,.08), 0 2px 8px rgba(0,0,0,.3); }
+    .card::after { content:''; position:absolute; inset:0; border-radius:16px; opacity:0; background:radial-gradient(600px circle at var(--mouse-x,50%) var(--mouse-y,50%), rgba(232,99,42,.06), transparent 40%); transition:opacity .3s; pointer-events:none; }
+    .card:hover::after { opacity:1; }
 
     .cimg {
       background:var(--img-bg); height:178px; display:flex;
@@ -207,11 +216,13 @@
     .price-new span { font-size:12px; font-weight:400; color:var(--muted); }
     .card-actions { display:flex; gap:5px; flex-shrink:0; }
 
-    .btn-cart { width:32px; height:32px; border-radius:8px; background:rgba(232,99,42,.1); border:0.5px solid rgba(232,99,42,.25); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all .18s ease; flex-shrink:0; }
+    .btn-cart { width:32px; height:32px; border-radius:8px; background:rgba(232,99,42,.1); border:0.5px solid rgba(232,99,42,.25); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all .18s ease; flex-shrink:0; position:relative; overflow:hidden; }
     .btn-cart:hover { background:rgba(232,99,42,.22); border-color:var(--accent); }
     .btn-cart.in-cart { background:var(--accent); border-color:var(--accent); }
-    .btn-cart svg { width:14px; height:14px; stroke:var(--accent); fill:none; transition:stroke .18s; }
     .btn-cart.in-cart svg { stroke:#fff; }
+    .btn-cart svg { width:14px; height:14px; stroke:var(--accent); fill:none; transition:stroke .18s; }
+    .btn-cart.ripple::after { content:''; position:absolute; inset:-2px; border-radius:50%; background:rgba(232,99,42,.4); animation:rippleOut .45s cubic-bezier(.22,1,.36,1) forwards; }
+    @keyframes rippleOut { 0%{transform:scale(0);opacity:1} 100%{transform:scale(2.5);opacity:0} }
 
     .btn-cmp { width:32px; height:32px; border-radius:8px; background:rgba(100,100,255,.08); border:0.5px solid rgba(100,100,255,.2); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all .18s ease; flex-shrink:0; }
     .btn-cmp:hover { background:rgba(100,100,255,.18); border-color:rgba(100,100,255,.4); }
@@ -479,7 +490,7 @@
     <button class="hamburger" id="hamburger" onclick="toggleSidebar()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
-    <div class="logo"><div class="logo-dot"></div>KRAKATOA</div>
+    <div class="logo"><div class="logo-dot"></div><span class="logo-text">KRAKATOA</span></div>
   </div>
   <div class="header-actions">
     <a href="#sobre-nosotros" class="icon-btn" title="Sobre nosotros">
@@ -491,8 +502,8 @@
     </button>
 
     <button class="header-panel-btn" onclick="openCart()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-      <span class="btn-label">Consultar lista</span>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 001.98 1.61h9.72a2 2 0 001.98-1.61L23 6H6"/></svg>
+      <span class="btn-label">Carrito</span>
       <span class="hpb-count orange hidden" id="cart-count">0</span>
     </button>
   </div>
@@ -641,7 +652,7 @@
   <div class="panel-header">
     <div class="panel-title">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-      Lista de consulta
+      Carrito
     </div>
     <button class="panel-close" onclick="closeCart()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
@@ -685,8 +696,8 @@
 </div>
 
 <script>
-  const WA_NUMBER = "5492942658677";
-  const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS8BRrz4g4i7CuHYflGMpzIDgjc9tn20OItwCKjOS2237qCPfNN04NRHuUiDa-oKBpqqrs4fH4T8w8-/pub?output=csv";
+  const WA_NUMBER = "549XXXXXXXXXX"; // ← REEMPLAZÁ con tu número (ej: 5491155554444)
+  const SHEET_URL = ""; // ← PEGÁ acá tu URL de Google Sheets publicada como CSV
 
   let allProducts = [], currentCat = "celulares", currentBrand = "Todos";
   let cart = [], comparator = [];
@@ -863,14 +874,15 @@
     document.querySelectorAll('.sidebar-cat-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
     document.getElementById("sort-select").value = "default";
-    renderBrands(); renderGrid();
+    renderBrands();
+    fadeGrid(() => renderGrid());
     closeSidebar();
   }
   function setBrand(brand, btn) {
     currentBrand = brand;
     document.querySelectorAll('.sidebar-brand-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    renderGrid();
+    fadeGrid(() => renderGrid());
     closeSidebar();
   }
 
@@ -878,8 +890,12 @@
   function toggleCart(idx) {
     const p = allProducts[idx];
     const ex = cart.findIndex(c => c._idx === idx);
-    if (ex >= 0) cart.splice(ex, 1);
-    else cart.push({ _idx:idx, name:p.name, price:p.price, img:p.img, storage:p.storage });
+    if (ex >= 0) {
+      cart.splice(ex, 1);
+    } else {
+      cart.push({ _idx:idx, name:p.name, price:p.price, img:p.img, storage:p.storage });
+      triggerRipple(idx);
+    }
     updateCartCount(); renderGrid();
   }
   function updateCartCount() {
@@ -1023,6 +1039,40 @@
     const msg = `Hola! Me interesan estos dos productos:\n\n1. ${a.name}${a.storage?` ${a.storage}`:''} — US$ ${a.price}\n2. ${b.name}${b.storage?` ${b.storage}`:''} — US$ ${b.price}\n\n¿Cuál me recomendás? ¿Están disponibles?`;
     window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
   }
+
+  // ── FADE GRID ─────────────────────────────────────────────────
+  function fadeGrid(cb) {
+    const wrap = document.getElementById("grid-wrap");
+    wrap.classList.add("fading");
+    setTimeout(() => {
+      cb();
+      wrap.classList.remove("fading");
+    }, 180);
+  }
+
+  // ── RIPPLE EN CARRITO ─────────────────────────────────────────
+  function triggerRipple(idx) {
+    const btns = document.querySelectorAll(`.btn-cart`);
+    // find the one matching this idx via onclick attr
+    btns.forEach(btn => {
+      if (btn.getAttribute('onclick') && btn.getAttribute('onclick').includes(`(${idx})`)) {
+        btn.classList.add('ripple');
+        setTimeout(() => btn.classList.remove('ripple'), 450);
+      }
+    });
+  }
+
+  // ── MOUSE TRACKING PARA BRILLO EN CARDS ──────────────────────
+  document.addEventListener('mousemove', e => {
+    const card = e.target.closest('.card');
+    if (card) {
+      const rect = card.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width * 100).toFixed(1);
+      const y = ((e.clientY - rect.top) / rect.height * 100).toFixed(1);
+      card.style.setProperty('--mouse-x', x + '%');
+      card.style.setProperty('--mouse-y', y + '%');
+    }
+  });
 
   // ── COMPARTIR PRODUCTO ────────────────────────────────────────
   function shareProduct(name, price, brand) {
