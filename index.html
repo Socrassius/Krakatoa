@@ -382,32 +382,6 @@
 
 
 
-    /* ── CATEGORÍAS CON SUBCATEGORÍAS ───────────────────────── */
-    .sidebar-cat-group { display:flex; flex-direction:column; }
-
-    .sidebar-cat-parent {
-      justify-content:flex-start;
-    }
-    .sidebar-cat-parent .group-arrow {
-      width:13px; height:13px; margin-left:auto; flex-shrink:0;
-      transition:transform .22s cubic-bezier(.22,1,.36,1); opacity:.5;
-    }
-    .sidebar-cat-group.open .group-arrow { transform:rotate(180deg); }
-
-    .sidebar-cat-children {
-      display:none; flex-direction:column; gap:1px;
-      padding-left:12px; margin-top:2px;
-      border-left:1.5px solid var(--border2);
-      margin-left:20px;
-    }
-    .sidebar-cat-group.open .sidebar-cat-children { display:flex; }
-
-    .sidebar-cat-child {
-      font-size:12px; padding:7px 10px;
-      color:var(--muted);
-    }
-    .sidebar-cat-child svg { width:13px; height:13px; }
-    .sidebar-cat-child.active { color:var(--text); background:var(--surface2); border:0.5px solid var(--border2); }
     /* ── SKELETON LOADER ─────────────────────────────────────── */
     @keyframes shimmer {
       0%   { background-position: -600px 0; }
@@ -544,6 +518,11 @@
         <button class="sidebar-cat-btn" onclick="setCategory('tablets',this)">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="2" width="16" height="20" rx="2"/><circle cx="12" cy="18" r="1"/></svg>
           Tablets
+          <div class="scat-dot"></div>
+        </button>
+        <button class="sidebar-cat-btn" onclick="setCategory('relojes',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="7" y="4" width="10" height="16" rx="3"/><path d="M7 9H4M7 15H4M17 9h3M17 15h3"/><path d="M12 8v4l2 2"/></svg>
+          Reloj Inteligente
           <div class="scat-dot"></div>
         </button>
       </div>
@@ -771,12 +750,7 @@
       }
       fields.push(cur.trim());
       const obj = {}; headers.forEach((h,i) => { obj[h] = fields[i] || ''; });
-      // subcat support
       let cat = (obj.cat || '').trim().toLowerCase();
-      if (cat === 'notebooks') {
-        const sub = (obj.subcat || '').toLowerCase();
-        cat = sub === 'reacondicionada' ? 'notebooks_reac' : 'notebooks_nuevas';
-      }
       // handle both spec4 and specs4 column names, strip leading asterisks
       const clean = v => (v || '').replace(/^[*]\s*/, '').trim();
       return {
@@ -864,11 +838,6 @@
   }
 
   // ── NAVEGACIÓN ────────────────────────────────────────────────
-  function toggleCatGroup(group, btn) {
-    const groupEl = document.getElementById(`group-${group}`);
-    groupEl.classList.toggle("open");
-  }
-
   function setCategory(cat, btn) {
     currentCat = cat; currentBrand = "Todos";
     document.querySelectorAll('.sidebar-cat-btn').forEach(b => b.classList.remove('active'));
