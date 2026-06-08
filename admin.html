@@ -1,539 +1,1270 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Krakatoa — Admin</title>
+  <title>Krakatoa — Celulares, Notebooks & Audio</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
-    :root {
-      --bg: #0a0a0a; --surface: #141414; --surface2: #1c1c1c; --surface3: #222;
-      --border: rgba(255,255,255,0.07); --border2: rgba(255,255,255,0.14);
-      --text: #f0ede8; --muted: #777; --accent: #e8632a;
-      --green: #3ecf8e; --green2: rgba(62,207,142,0.12);
-      --red: #e05c5c; --red2: rgba(224,92,92,0.12);
+    [data-theme="dark"] {
+      --bg:#0a0a0a; --surface:#141414; --surface2:#1c1c1c;
+      --border:rgba(255,255,255,0.07); --border2:rgba(255,255,255,0.14);
+      --text:#f0ede8; --muted:#777; --accent:#e8632a;
+      --img-bg:#181818; --shadow:rgba(0,0,0,0.5);
+      --panel-bg:#111; --spec-sep:rgba(255,255,255,0.04);
+    }
+    [data-theme="light"] {
+      --bg:#f5f4f2; --surface:#ffffff; --surface2:#f0eeeb;
+      --border:rgba(0,0,0,0.08); --border2:rgba(0,0,0,0.16);
+      --text:#1a1a1a; --muted:#999; --accent:#e8632a;
+      --img-bg:#f8f7f5; --shadow:rgba(0,0,0,0.12);
+      --panel-bg:#fafaf9; --spec-sep:rgba(0,0,0,0.06);
     }
 
-    body { background: var(--bg); font-family: 'DM Sans', sans-serif; color: var(--text); font-size: 14px; }
-    .wrap { max-width: 1050px; margin: 0 auto; padding: 0 20px 60px; }
+    body { background:var(--bg); font-family:'DM Sans',sans-serif; color:var(--text); min-height:100vh; transition:background .25s,color .25s; }
 
+    /* ── HEADER ───────────────────────────────────────────────── */
     header {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 24px 0 28px; border-bottom: 0.5px solid var(--border); margin-bottom: 28px;
+      position:sticky; top:0; z-index:50;
+      background:var(--bg); border-bottom:0.5px solid var(--border);
+      display:flex; align-items:center; justify-content:space-between;
+      padding:0 28px; height:60px;
+      animation:slideDown .45s cubic-bezier(.22,1,.36,1) both;
     }
-
     .logo {
-      font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800;
-      letter-spacing: -0.5px; display: flex; align-items: center; gap: 8px;
+      font-family:'Syne',sans-serif; font-size:22px; font-weight:800;
+      letter-spacing:-0.5px; display:flex; align-items:center; gap:9px;
     }
-
-    .logo-dot { width: 7px; height: 7px; background: var(--accent); border-radius: 50%; animation: pulse 2s ease-in-out infinite; }
-
+    .logo-dot { width:8px; height:8px; background:var(--accent); border-radius:50%; animation:pulse 2s ease-in-out infinite; }
+    .logo { cursor:default; }
+    .logo:hover .logo-dot { animation:logoBounce .5s cubic-bezier(.22,1,.36,1); }
+    .logo:hover .logo-text { animation:logoShake .4s cubic-bezier(.22,1,.36,1); }
+    @keyframes logoBounce { 0%{transform:scale(1)} 40%{transform:scale(1.6)} 70%{transform:scale(.8)} 100%{transform:scale(1)} }
+    @keyframes logoShake { 0%{transform:translateX(0)} 20%{transform:translateX(-2px)} 40%{transform:translateX(2px)} 60%{transform:translateX(-1px)} 80%{transform:translateX(1px)} 100%{transform:translateX(0)} }
     @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(.65)} }
+    @keyframes slideDown { from{opacity:0;transform:translateY(-16px)} to{opacity:1;transform:translateY(0)} }
+    @keyframes fadeSlideUp { from{opacity:0;transform:translateY(24px) scale(.97)} to{opacity:1;transform:translateY(0) scale(1)} }
+    @keyframes popIn { 0%{opacity:0;transform:scale(.88) translateY(10px)} 65%{transform:scale(1.03) translateY(-2px)} 100%{opacity:1;transform:scale(1) translateY(0)} }
 
-    .badge-admin {
-      font-family: 'DM Sans', sans-serif; font-size: 10px; font-weight: 500;
-      background: rgba(232,99,42,0.12); border: 0.5px solid var(--accent);
-      color: var(--accent); padding: 3px 10px; border-radius: 100px; letter-spacing: .5px;
-    }
-
-    .header-link {
-      font-size: 12px; color: var(--muted); text-decoration: none;
-      display: flex; align-items: center; gap: 6px; transition: color .15s;
-    }
-    .header-link:hover { color: var(--text); }
-    .header-link svg { width: 14px; height: 14px; }
-
-    .header-actions { display: flex; gap: 8px; align-items: center; }
-
-    .btn {
-      font-family: 'DM Sans', sans-serif; font-size: 12px; font-weight: 500;
-      padding: 7px 16px; border-radius: 8px; border: 0.5px solid var(--border2);
-      background: transparent; color: var(--text); cursor: pointer;
-      transition: all .15s; display: flex; align-items: center; gap: 6px;
-    }
-    .btn:hover { background: var(--surface2); }
-    .btn svg { width: 14px; height: 14px; flex-shrink: 0; }
-    .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-    .btn.primary:hover { opacity: .88; }
-    .btn.success { background: var(--green2); border-color: var(--green); color: var(--green); }
-    .btn.success:hover { opacity: .8; }
-
-    .stats { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 24px; }
-    .stat { background: var(--surface); border: 0.5px solid var(--border); border-radius: 10px; padding: 14px 16px; }
-    .stat-label { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
-    .stat-val { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 700; }
-    .stat-val small { font-size: 13px; font-weight: 400; color: var(--muted); }
-
-    .toolbar { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
-    .cf-btn {
-      font-size: 12px; padding: 6px 14px; border-radius: 8px; border: 0.5px solid var(--border);
-      background: transparent; color: var(--muted); cursor: pointer; transition: all .15s;
-      font-family: 'DM Sans', sans-serif;
-    }
-    .cf-btn:hover { border-color: var(--border2); color: var(--text); }
-    .cf-btn.active { background: var(--surface2); border-color: var(--border2); color: var(--text); }
-
-    table { width: 100%; border-collapse: collapse; }
-    thead tr { border-bottom: 0.5px solid var(--border2); }
-    thead th { font-size: 11px; font-weight: 500; color: var(--muted); text-align: left; padding: 0 10px 10px; letter-spacing: .5px; text-transform: uppercase; }
-    thead th:last-child { text-align: right; }
-    tbody tr { border-bottom: 0.5px solid var(--border); transition: background .15s; }
-    tbody tr:hover { background: var(--surface); }
-    tbody tr.editing { background: var(--surface2); border-color: var(--border2); }
-    tbody td { padding: 10px; vertical-align: middle; }
-
-    .prod-name { font-weight: 500; font-size: 13px; }
-    .prod-brand { font-size: 11px; color: var(--muted); margin-top: 1px; }
-    .cat-badge { font-size: 10px; padding: 2px 8px; border-radius: 100px; background: var(--surface2); border: 0.5px solid var(--border2); color: var(--muted); }
-    .price-cell { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 700; }
-    .old-price-cell { font-size: 11px; color: var(--muted); text-decoration: line-through; }
-    .off-badge { font-size: 10px; padding: 2px 7px; border-radius: 100px; background: rgba(232,99,42,0.12); border: 0.5px solid rgba(232,99,42,0.3); color: var(--accent); font-weight: 600; }
-
-    .edit-field {
-      background: var(--surface3); border: 0.5px solid var(--border2); color: var(--text);
-      font-family: 'DM Sans', sans-serif; font-size: 13px; padding: 5px 9px;
-      border-radius: 7px; width: 90px; transition: border-color .15s;
-    }
-    .edit-field:focus { outline: none; border-color: var(--accent); }
-
-    .action-btns { display: flex; gap: 6px; justify-content: flex-end; }
+    .header-actions { display:flex; align-items:center; gap:8px; }
     .icon-btn {
-      width: 30px; height: 30px; border-radius: 7px; border: 0.5px solid var(--border);
-      background: transparent; color: var(--muted); cursor: pointer;
-      display: flex; align-items: center; justify-content: center; transition: all .15s;
+      width:36px; height:36px; border-radius:10px;
+      border:0.5px solid var(--border2); background:transparent;
+      color:var(--muted); cursor:pointer; display:flex; align-items:center;
+      justify-content:center; transition:all .18s ease; text-decoration:none;
     }
-    .icon-btn:hover { border-color: var(--border2); color: var(--text); background: var(--surface2); }
-    .icon-btn.save { border-color: var(--green); color: var(--green); background: var(--green2); }
-    .icon-btn.save:hover { opacity: .8; }
-    .icon-btn.cancel { border-color: var(--red); color: var(--red); background: var(--red2); }
-    .icon-btn.cancel:hover { opacity: .8; }
-    .icon-btn svg { width: 14px; height: 14px; }
+    .icon-btn:hover { background:var(--surface2); color:var(--text); }
+    .icon-btn svg { width:16px; height:16px; }
+    .icon-sun { display:none; } .icon-moon { display:block; }
+    [data-theme="light"] .icon-sun { display:block; }
+    [data-theme="light"] .icon-moon { display:none; }
 
-    /* MODAL AGREGAR */
-    .modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); z-index: 100; align-items: center; justify-content: center; }
-    .modal-bg.open { display: flex; }
-    .modal { background: var(--surface); border: 0.5px solid var(--border2); border-radius: 16px; padding: 28px; width: 440px; max-width: 95vw; max-height: 90vh; overflow-y: auto; }
-    .modal h3 { font-family: 'Syne', sans-serif; font-size: 16px; font-weight: 700; margin-bottom: 20px; }
-    .form-row { margin-bottom: 14px; }
-    .form-label { font-size: 11px; color: var(--muted); margin-bottom: 5px; display: block; letter-spacing: .3px; }
-    .form-input { width: 100%; background: var(--surface2); border: 0.5px solid var(--border2); color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 13px; padding: 8px 12px; border-radius: 8px; }
-    .form-input:focus { outline: none; border-color: var(--accent); }
-    .form-row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 14px; }
-    .modal-footer { display: flex; gap: 8px; justify-content: flex-end; margin-top: 20px; padding-top: 16px; border-top: 0.5px solid var(--border); }
+    .header-panel-btn {
+      display:flex; align-items:center; gap:7px;
+      padding:7px 14px; border-radius:10px;
+      border:0.5px solid var(--border2); background:transparent;
+      color:var(--text); cursor:pointer; font-family:'DM Sans',sans-serif;
+      font-size:12px; font-weight:500; transition:all .18s ease;
+    }
+    .header-panel-btn:hover { background:var(--surface2); }
+    .header-panel-btn svg { width:15px; height:15px; }
+    .hpb-count {
+      color:#fff; font-size:10px; font-weight:700;
+      width:17px; height:17px; border-radius:50%; display:flex;
+      align-items:center; justify-content:center; font-family:'Syne',sans-serif;
+    }
+    .hpb-count.hidden { display:none; }
+    .hpb-count.orange { background:var(--accent); }
+    .hpb-count.purple { background:#6464ff; }
 
-    /* MODAL JSON */
-    .json-modal-bg { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 200; align-items: center; justify-content: center; }
-    .json-modal-bg.open { display: flex; }
-    .json-modal { background: var(--surface); border: 0.5px solid var(--border2); border-radius: 16px; padding: 24px; width: 700px; max-width: 96vw; }
-    .json-modal h3 { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; margin-bottom: 6px; }
-    .json-modal p { font-size: 12px; color: var(--muted); margin-bottom: 14px; line-height: 1.6; }
-    .json-modal code { color: var(--accent); }
-    .json-box { background: #0d0d0d; border: 0.5px solid var(--border2); border-radius: 10px; padding: 14px; font-family: monospace; font-size: 11px; color: #a8d8a8; max-height: 360px; overflow-y: auto; white-space: pre; line-height: 1.6; }
-    .json-footer { display: flex; gap: 8px; justify-content: flex-end; margin-top: 14px; }
+    /* hamburger mobile */
+    .hamburger {
+      display:none; width:36px; height:36px; border-radius:10px;
+      border:0.5px solid var(--border2); background:transparent;
+      color:var(--muted); cursor:pointer; align-items:center;
+      justify-content:center; transition:all .18s;
+    }
+    .hamburger:hover { background:var(--surface2); color:var(--text); }
+    .hamburger svg { width:16px; height:16px; }
 
-    .steps { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
-    .step { display: flex; align-items: flex-start; gap: 10px; font-size: 12px; color: var(--muted); line-height: 1.5; }
-    .step-num { width: 20px; height: 20px; border-radius: 50%; background: var(--surface2); border: 0.5px solid var(--border2); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: var(--accent); flex-shrink: 0; margin-top: 1px; }
-
-    .toast { position: fixed; bottom: 24px; right: 24px; font-size: 13px; padding: 10px 18px; border-radius: 10px; z-index: 999; opacity: 0; transform: translateY(8px); transition: all .25s; pointer-events: none; }
-    .toast.show { opacity: 1; transform: translateY(0); }
-    .toast.ok { background: var(--green2); border: 0.5px solid var(--green); color: var(--green); }
-    .toast.err { background: var(--red2); border: 0.5px solid var(--red); color: var(--red); }
-
-    .empty-row td { text-align: center; padding: 40px; color: var(--muted); font-size: 13px; }
-
-    .loading-row td { text-align: center; padding: 40px; color: var(--muted); font-size: 13px; }
-
-    #login-screen {
-      position: fixed; inset: 0; background: var(--bg);
-      display: flex; align-items: center; justify-content: center; z-index: 9999;
+    /* ── LAYOUT PRINCIPAL ────────────────────────────────────── */
+    .layout {
+      display:flex; max-width:1380px; margin:0 auto;
+      padding:0 0 0 0; min-height:calc(100vh - 60px);
     }
 
-    .login-box {
-      background: var(--surface); border: 0.5px solid var(--border2);
-      border-radius: 20px; padding: 40px 36px; width: 360px; text-align: center;
+    /* ── SIDEBAR ─────────────────────────────────────────────── */
+    .sidebar {
+      width:230px; flex-shrink:0;
+      border-right:0.5px solid var(--border);
+      padding:24px 0; display:flex; flex-direction:column;
+      position:sticky; top:60px; height:calc(100vh - 60px);
+      overflow-y:auto; background:var(--bg);
+      animation:fadeSlideUp .4s .05s cubic-bezier(.22,1,.36,1) both;
+      transition:transform .3s cubic-bezier(.22,1,.36,1);
     }
 
-    .login-logo {
-      font-family: 'Syne', sans-serif; font-size: 24px; font-weight: 800;
-      display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 6px;
+    .sidebar-section { padding:0 16px; margin-bottom:28px; }
+    .sidebar-label {
+      font-size:11.5px; letter-spacing:1.4px; text-transform:uppercase;
+      color:var(--text); opacity:.55; margin-bottom:10px; padding:0 4px;
+      font-weight:600;
     }
 
-    .login-logo-dot { width: 8px; height: 8px; background: var(--accent); border-radius: 50%; animation: pulse 2s ease-in-out infinite; }
+    /* categorías en sidebar */
+    .sidebar-cat {
+      display:flex; flex-direction:column; gap:2px;
+    }
+    .sidebar-cat-btn {
+      display:flex; align-items:center; gap:10px;
+      padding:9px 12px; border-radius:10px; border:none;
+      background:transparent; color:var(--muted); cursor:pointer;
+      font-family:'DM Sans',sans-serif; font-size:13px; font-weight:500;
+      transition:all .18s cubic-bezier(.22,1,.36,1); text-align:left; width:100%;
+    }
+    .sidebar-cat-btn svg { width:15px; height:15px; opacity:.6; flex-shrink:0; transition:opacity .18s; }
+    .sidebar-cat-btn:hover { background:var(--surface2); color:var(--text); }
+    .sidebar-cat-btn:hover svg { opacity:1; }
+    .sidebar-cat-btn.active { background:var(--surface2); color:var(--text); border:0.5px solid var(--border2); }
+    .sidebar-cat-btn.active svg { opacity:1; }
+    .sidebar-cat-btn.active .scat-dot { background:var(--accent); }
+    .scat-dot { width:5px; height:5px; border-radius:50%; background:var(--muted); margin-left:auto; flex-shrink:0; transition:background .18s; }
 
-    .login-sub { font-size: 12px; color: var(--muted); margin-bottom: 32px; }
+    /* marcas en sidebar */
+    .sidebar-brands { display:flex; flex-direction:column; gap:2px; }
+    .sidebar-brand-btn {
+      display:flex; align-items:center; gap:8px;
+      padding:7px 12px; border-radius:8px; border:none;
+      background:transparent; color:var(--muted); cursor:pointer;
+      font-family:'DM Sans',sans-serif; font-size:12px;
+      transition:all .15s cubic-bezier(.22,1,.36,1); text-align:left; width:100%;
+    }
+    .sidebar-brand-btn:hover { background:var(--surface); color:var(--text); }
+    .sidebar-brand-btn.active { color:var(--accent); }
+    .sidebar-brand-btn.active .brand-check { opacity:1; }
+    .brand-check { width:14px; height:14px; margin-left:auto; opacity:0; color:var(--accent); flex-shrink:0; transition:opacity .15s; }
+    .brand-check svg { width:14px; height:14px; }
 
-    .login-label { display: block; font-size: 11px; color: var(--muted); text-align: left; margin-bottom: 6px; letter-spacing: .3px; }
+    /* ordenar en sidebar */
+    .sidebar-sort {
+      width:100%; font-family:'DM Sans',sans-serif; font-size:12px;
+      padding:8px 12px; border-radius:8px; border:0.5px solid var(--border2);
+      background:var(--surface); color:var(--muted); cursor:pointer; outline:none;
+      transition:all .15s;
+    }
+    .sidebar-sort:focus { border-color:var(--accent); color:var(--text); }
 
-    .login-input {
-      width: 100%; background: var(--surface2); border: 0.5px solid var(--border2);
-      color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px;
-      padding: 10px 14px; border-radius: 10px; margin-bottom: 12px; transition: border-color .15s;
+    /* overlay sidebar mobile */
+    .sidebar-overlay {
+      display:none; position:fixed; inset:0;
+      background:rgba(0,0,0,.6); z-index:98;
+    }
+    .sidebar-overlay.open { display:block; }
+
+    /* ── MAIN CONTENT ────────────────────────────────────────── */
+    .main {
+      flex:1; min-width:0; padding:24px 28px;
+      animation:fadeSlideUp .4s .1s cubic-bezier(.22,1,.36,1) both;
     }
 
-    .login-input:focus { outline: none; border-color: var(--accent); }
+    .main-topbar {
+      display:flex; align-items:center; justify-content:space-between;
+      margin-bottom:20px; gap:12px;
+    }
+    .count-bar { font-size:12px; color:var(--muted); }
+    .count-bar strong { color:var(--text); }
 
-    .login-btn {
-      width: 100%; background: var(--accent); border: none; color: #fff;
-      font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500;
-      padding: 11px; border-radius: 10px; cursor: pointer; transition: opacity .15s;
+    .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:14px; }
+    #grid-wrap { transition:opacity .18s ease; }
+    #grid-wrap.fading { opacity:0; }
+
+    /* ── CARDS ───────────────────────────────────────────────── */
+    .card {
+      background:var(--surface); border:0.5px solid var(--border);
+      border-radius:16px; overflow:hidden;
+      display:flex; flex-direction:column;
+      opacity:0; animation:popIn .5s cubic-bezier(.22,1,.36,1) forwards;
+    }
+    .card:hover { border-color:rgba(232,99,42,.35); transform:translateY(-6px) scale(1.015); background:var(--surface2); transition:all .25s cubic-bezier(.22,1,.36,1); box-shadow:0 12px 40px rgba(232,99,42,.08), 0 2px 8px rgba(0,0,0,.3); }
+    .card::after { content:''; position:absolute; inset:0; border-radius:16px; opacity:0; background:radial-gradient(600px circle at var(--mouse-x,50%) var(--mouse-y,50%), rgba(232,99,42,.06), transparent 40%); transition:opacity .3s; pointer-events:none; }
+    .card:hover::after { opacity:1; }
+
+    .cimg {
+      background:var(--img-bg); height:178px; display:flex;
+      align-items:center; justify-content:center; padding:22px; position:relative;
+    }
+    .cimg img { width:100%; height:100%; object-fit:contain; filter:drop-shadow(0 6px 20px var(--shadow)); transition:transform .3s ease; }
+    .card:hover .cimg img { transform:scale(1.06); }
+
+    .badge-off { position:absolute; top:10px; right:10px; background:var(--accent); color:#fff; font-size:10px; font-weight:700; padding:3px 9px; border-radius:100px; font-family:'Syne',sans-serif; }
+    .badge-brand { position:absolute; top:10px; left:10px; background:rgba(128,128,128,.12); border:0.5px solid rgba(128,128,128,.2); color:var(--muted); font-size:9px; font-weight:500; padding:3px 8px; border-radius:100px; text-transform:uppercase; letter-spacing:1px; }
+    .badge-storage { position:absolute; bottom:10px; left:10px; background:rgba(128,128,128,.1); border:0.5px solid var(--border); color:var(--muted); font-size:9px; padding:3px 7px; border-radius:6px; }
+
+    .cbody { padding:13px 15px 15px; flex:1; display:flex; flex-direction:column; }
+    .cname { font-family:'Syne',sans-serif; font-size:13px; font-weight:700; color:var(--text); margin-bottom:8px; line-height:1.3; }
+    .cspecs { list-style:none; margin-bottom:12px; flex:1; }
+    .cspecs li { font-size:11px; color:var(--muted); padding:3px 0; display:flex; align-items:center; gap:6px; border-bottom:0.5px solid var(--spec-sep); }
+    .cspecs li:last-child { border-bottom:none; }
+    .cspecs li::before { content:''; width:3px; height:3px; border-radius:50%; background:var(--accent); flex-shrink:0; }
+
+    .cfooter { display:flex; align-items:flex-end; justify-content:space-between; padding-top:11px; border-top:0.5px solid var(--border); gap:6px; }
+    .price-old { font-size:11px; color:var(--muted); text-decoration:line-through; margin-bottom:2px; }
+    .price-new { font-family:'Syne',sans-serif; font-size:19px; font-weight:700; color:var(--text); }
+    .price-new > span:first-child { font-size:12px; font-weight:400; color:var(--muted); }
+    .price-new > span.price-val { font-size:19px; font-weight:700; color:var(--text); font-family:'Syne',sans-serif; }
+    .card-actions { display:flex; gap:5px; flex-shrink:0; }
+
+    .btn-cart { width:32px; height:32px; border-radius:8px; background:rgba(232,99,42,.1); border:0.5px solid rgba(232,99,42,.25); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all .18s ease; flex-shrink:0; position:relative; overflow:hidden; }
+    .btn-cart:hover { background:rgba(232,99,42,.22); border-color:var(--accent); }
+    .btn-cart.in-cart { background:var(--accent); border-color:var(--accent); }
+    .btn-cart.in-cart svg { stroke:#fff; }
+    .btn-cart svg { width:14px; height:14px; stroke:var(--accent); fill:none; transition:stroke .18s; }
+    .btn-cart.ripple::after { content:''; position:absolute; inset:-2px; border-radius:50%; background:rgba(232,99,42,.4); animation:rippleOut .45s cubic-bezier(.22,1,.36,1) forwards; }
+    @keyframes rippleOut { 0%{transform:scale(0);opacity:1} 100%{transform:scale(2.5);opacity:0} }
+
+    .btn-cmp { width:32px; height:32px; border-radius:8px; background:rgba(100,100,255,.08); border:0.5px solid rgba(100,100,255,.2); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all .18s ease; flex-shrink:0; }
+    .btn-cmp:hover { background:rgba(100,100,255,.18); border-color:rgba(100,100,255,.4); }
+    .btn-cmp.in-cmp { background:rgba(100,100,255,.22); border-color:#6464ff; }
+    .btn-cmp svg { width:14px; height:14px; stroke:#8888ff; fill:none; }
+    .btn-cmp.in-cmp svg { stroke:#aaaaff; }
+
+    .btn-wa { width:32px; height:32px; border-radius:8px; background:rgba(37,211,102,.1); border:0.5px solid rgba(37,211,102,.2); display:flex; align-items:center; justify-content:center; text-decoration:none; transition:all .18s ease; flex-shrink:0; }
+    .btn-wa:hover { background:rgba(37,211,102,.22); border-color:rgba(37,211,102,.45); }
+    .btn-wa svg { width:14px; height:14px; fill:#25D366; }
+
+    /* ── PRE-FOOTER MEDIOS DE PAGO ───────────────────────────── */
+    .payment-footer {
+      border-top:0.5px solid var(--border); margin-top:60px;
+      padding:28px 28px 48px; display:flex; align-items:center;
+      gap:20px; flex-wrap:wrap;
+    }
+    .pf-label { font-size:11px; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); flex-shrink:0; margin-right:4px; }
+    .pf-methods { display:flex; gap:8px; flex-wrap:wrap; }
+    .pf-method {
+      display:flex; align-items:center; gap:7px; font-size:12px; color:var(--muted);
+      padding:6px 12px; border-radius:100px;
+      border:0.5px solid var(--border); background:var(--surface);
+      transition:all .18s cubic-bezier(.22,1,.36,1);
+    }
+    .pf-method:hover { border-color:var(--border2); color:var(--text); transform:translateY(-1px); }
+    .pf-icon { width:16px; height:16px; flex-shrink:0; display:flex; align-items:center; justify-content:center; }
+    .pf-icon svg { width:15px; height:15px; }
+    .pf-icon.mp svg  { color:#00AEF2; }
+    .pf-icon.transfer svg { color:#3ecf8e; }
+    .pf-icon.debit svg { color:var(--accent); }
+    .pf-icon.crypto svg { color:#F7931A; }
+
+    /* ── SECCIÓN SOBRE NOSOTROS ──────────────────────────────── */
+    .about-section {
+      padding:48px 28px 60px; border-top:0.5px solid var(--border);
+    }
+    .about-inner { max-width:800px; }
+    .about-eyebrow { font-size:10px; letter-spacing:2px; text-transform:uppercase; color:var(--accent); margin-bottom:12px; }
+    .about-heading { font-family:'Syne',sans-serif; font-size:30px; font-weight:800; line-height:1.2; letter-spacing:-0.5px; margin-bottom:14px; }
+    .about-heading em { font-style:normal; color:var(--accent); }
+    .about-desc { font-size:14px; color:var(--muted); line-height:1.75; max-width:480px; margin-bottom:28px; }
+    .about-links { display:flex; gap:12px; flex-wrap:wrap; }
+    .about-link {
+      display:flex; align-items:center; gap:10px;
+      padding:12px 16px; border-radius:12px;
+      border:0.5px solid var(--border2); background:var(--surface);
+      text-decoration:none; color:var(--text);
+      font-size:13px; font-weight:500;
+      transition:all .22s cubic-bezier(.22,1,.36,1);
+    }
+    .about-link:hover { border-color:var(--border2); transform:translateY(-2px); background:var(--surface2); }
+    .about-link-icon { width:32px; height:32px; border-radius:9px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+    .about-link-icon.wa { background:rgba(37,211,102,.12); }
+    .about-link-icon.wa svg { fill:#25D366; width:16px; height:16px; }
+    .about-link-icon.ig { background:rgba(225,48,108,.12); }
+    .about-link-icon.ig svg { fill:#E1306C; width:16px; height:16px; }
+    .about-link span { line-height:1.3; }
+    .about-link small { display:block; font-size:11px; color:var(--muted); font-weight:400; }
+
+    .site-footer { padding:20px 28px; border-top:0.5px solid var(--border); display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px; }
+    .footer-logo { font-family:'Syne',sans-serif; font-size:14px; font-weight:800; display:flex; align-items:center; gap:7px; }
+    .footer-logo-dot { width:5px; height:5px; background:var(--accent); border-radius:50%; }
+    .footer-copy { font-size:11px; color:var(--muted); }
+
+    /* ── PANELES LATERALES (carrito y comparador) ────────────── */
+    .panel-overlay { position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:200; opacity:0; pointer-events:none; transition:opacity .25s; }
+    .panel-overlay.open { opacity:1; pointer-events:all; }
+
+    .side-panel {
+      position:fixed; top:0; height:100vh;
+      background:var(--panel-bg); z-index:201;
+      display:flex; flex-direction:column;
+      transition:transform .32s cubic-bezier(.22,1,.36,1);
+    }
+    .side-panel.right { right:0; width:390px; max-width:95vw; border-left:0.5px solid var(--border2); transform:translateX(100%); }
+    .side-panel.left  { left:0;  width:480px; max-width:95vw; border-right:0.5px solid var(--border2); transform:translateX(-100%); }
+    .side-panel.open  { transform:translateX(0); }
+
+    .panel-header { display:flex; align-items:center; justify-content:space-between; padding:20px; border-bottom:0.5px solid var(--border); flex-shrink:0; }
+    .panel-title { font-family:'Syne',sans-serif; font-size:15px; font-weight:700; display:flex; align-items:center; gap:8px; }
+    .panel-title svg { width:15px; height:15px; }
+    .panel-close { width:30px; height:30px; border-radius:8px; border:0.5px solid var(--border2); background:transparent; color:var(--muted); cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .15s; }
+    .panel-close:hover { background:var(--surface2); color:var(--text); }
+    .panel-close svg { width:14px; height:14px; }
+
+    /* carrito */
+    .cart-items { flex:1; overflow-y:auto; padding:14px 18px; display:flex; flex-direction:column; gap:10px; }
+    .cart-empty { flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; color:var(--muted); font-size:13px; gap:10px; }
+    .cart-empty svg { width:36px; height:36px; opacity:.25; }
+    .cart-item { display:flex; gap:10px; align-items:center; background:var(--surface); border:0.5px solid var(--border); border-radius:11px; padding:11px; }
+    .cart-item-img { width:48px; height:48px; object-fit:contain; flex-shrink:0; filter:drop-shadow(0 2px 6px var(--shadow)); }
+    .cart-item-name { font-family:'Syne',sans-serif; font-size:12px; font-weight:700; }
+    .cart-item-price { font-size:11px; color:var(--muted); margin-top:2px; }
+    .cart-item-remove { width:24px; height:24px; border-radius:6px; border:0.5px solid var(--border2); background:transparent; color:var(--muted); cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .15s; flex-shrink:0; margin-left:auto; }
+    .cart-item-remove:hover { border-color:#e05c5c; color:#e05c5c; background:rgba(224,92,92,.1); }
+    .cart-item-remove svg { width:12px; height:12px; }
+    .cart-footer { padding:14px 18px; border-top:0.5px solid var(--border); }
+    .cart-total { display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; }
+    .cart-total-label { font-size:12px; color:var(--muted); }
+    .cart-total-val { font-family:'Syne',sans-serif; font-size:19px; font-weight:700; }
+    .cart-total-val span { font-size:12px; font-weight:400; color:var(--muted); }
+    .btn-wa-cart { width:100%; padding:12px; border-radius:11px; background:#25D366; border:none; color:#fff; font-family:'DM Sans',sans-serif; font-size:13px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:7px; transition:opacity .18s; }
+    .btn-wa-cart:hover { opacity:.88; }
+    .btn-wa-cart:disabled { opacity:.35; cursor:default; }
+    .btn-wa-cart svg { width:16px; height:16px; fill:#fff; }
+
+    /* comparador */
+    .cmp-slots { display:grid; grid-template-columns:1fr 1fr; gap:10px; padding:14px 18px; border-bottom:0.5px solid var(--border); flex-shrink:0; }
+    .cmp-slot { background:var(--surface); border:0.5px solid var(--border); border-radius:13px; overflow:hidden; position:relative; min-height:120px; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+    .cmp-slot.filled { border-color:var(--border2); justify-content:flex-start; }
+    .cmp-slot.empty { border:0.5px dashed var(--border2); }
+    .cmp-slot-img { width:100%; height:90px; object-fit:contain; padding:10px; filter:drop-shadow(0 3px 10px var(--shadow)); }
+    .cmp-slot-name { font-family:'Syne',sans-serif; font-size:10px; font-weight:700; text-align:center; padding:0 8px 3px; line-height:1.3; }
+    .cmp-slot-price { font-size:10px; color:var(--accent); font-weight:600; padding-bottom:8px; }
+    .cmp-slot-remove { position:absolute; top:6px; right:6px; width:20px; height:20px; border-radius:5px; border:0.5px solid var(--border2); background:var(--surface2); color:var(--muted); cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .15s; }
+    .cmp-slot-remove:hover { border-color:#e05c5c; color:#e05c5c; }
+    .cmp-slot-remove svg { width:10px; height:10px; }
+    .cmp-slot-empty-label { font-size:11px; color:var(--muted); text-align:center; padding:0 10px; line-height:1.5; }
+    .cmp-slot-empty-icon { width:24px; height:24px; margin-bottom:6px; opacity:.25; }
+    .cmp-body { flex:1; overflow-y:auto; padding:0 18px 16px; }
+    .cmp-empty-state { display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:var(--muted); font-size:12px; gap:8px; text-align:center; padding:30px 16px; }
+    .cmp-empty-state svg { width:32px; height:32px; opacity:.2; }
+    .cmp-section { margin-top:14px; }
+    .cmp-section-title { font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); margin-bottom:6px; padding-top:2px; }
+    .cmp-row { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-bottom:5px; }
+    .cmp-cell { background:var(--surface); border:0.5px solid var(--border); border-radius:9px; padding:9px 11px; font-size:11px; line-height:1.4; }
+    .cmp-cell-label { font-size:9px; color:var(--muted); margin-bottom:2px; letter-spacing:.3px; }
+    .cmp-cell-val { font-weight:500; color:var(--text); }
+    .cmp-cell.winner { border-color:rgba(62,207,142,.35); background:rgba(62,207,142,.06); }
+    .cmp-cell.winner .cmp-cell-val { color:#3ecf8e; }
+    .cmp-cell.empty-cell { opacity:.3; }
+    .cmp-footer { padding:12px 18px; border-top:0.5px solid var(--border); flex-shrink:0; }
+    .btn-cmp-wa { width:100%; padding:11px; border-radius:11px; background:#25D366; border:none; color:#fff; font-family:'DM Sans',sans-serif; font-size:13px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:7px; transition:opacity .18s; }
+    .btn-cmp-wa:hover { opacity:.88; }
+    .btn-cmp-wa:disabled { opacity:.35; cursor:default; }
+    .btn-cmp-wa svg { width:15px; height:15px; fill:#fff; }
+
+    .sidebar-cmp-btn {
+      display:flex; align-items:center; gap:10px; width:100%;
+      padding:9px 12px; border-radius:10px;
+      border:0.5px solid rgba(100,100,255,0.25);
+      background:rgba(100,100,255,0.06); color:#8888ff;
+      cursor:pointer; font-family:'DM Sans',sans-serif;
+      font-size:13px; font-weight:500;
+      transition:all .2s cubic-bezier(.22,1,.36,1);
+    }
+    .sidebar-cmp-btn:hover { background:rgba(100,100,255,0.14); border-color:rgba(100,100,255,0.45); transform:translateY(-1px); }
+    .sidebar-cmp-btn svg { width:15px; height:15px; flex-shrink:0; }
+    .sidebar-cmp-count {
+      margin-left:auto; background:#6464ff; color:#fff;
+      font-size:10px; font-weight:700; width:18px; height:18px;
+      border-radius:50%; display:flex; align-items:center;
+      justify-content:center; font-family:'Syne',sans-serif; flex-shrink:0;
+    }
+    .sidebar-cmp-count.hidden { display:none; }
+
+
+
+
+    /* ── VARIANTES DE STORAGE ────────────────────────────────── */
+    .variants { display:flex; gap:5px; flex-wrap:wrap; margin-bottom:10px; }
+    .variant-btn {
+      font-family:'DM Sans',sans-serif; font-size:10px; font-weight:500;
+      padding:4px 9px; border-radius:6px;
+      border:0.5px solid var(--border2); background:transparent;
+      color:var(--muted); cursor:pointer;
+      transition:all .15s cubic-bezier(.22,1,.36,1);
+    }
+    .variant-btn:hover { border-color:var(--accent); color:var(--text); }
+    .variant-btn.active {
+      background:rgba(232,99,42,.12); border-color:var(--accent);
+      color:var(--accent); font-weight:600;
     }
 
-    .login-btn:hover { opacity: .88; }
+    /* ── CONVERSOR DE MONEDA ─────────────────────────────────── */
+    .currency-btn { font-size:11px; }
+    .currency-btn.ars { border-color:var(--accent); color:var(--accent); background:rgba(232,99,42,.08); }
 
-    .login-error { font-size: 12px; color: var(--red); margin-top: 10px; min-height: 18px; }
+    .price-ars {
+      font-size:15px; color:var(--accent); margin-top:4px;
+      display:none; font-family:'Syne',sans-serif; font-weight:700;
+      line-height:1.2;
+    }
+    .price-ars-label {
+      font-size:11px; font-weight:400; color:rgba(232,99,42,.7);
+      font-family:'DM Sans',sans-serif; margin-right:2px;
+    }
+    .currency-ars .price-ars { display:block; }
+    .currency-ars .price-new { font-size:14px; color:var(--muted); }
+    .currency-ars .price-val { font-size:14px; color:var(--muted); }
+
+    .dolar-tag {
+      font-size:10px; color:var(--muted); margin-left:4px;
+      font-family:'DM Sans',sans-serif; font-weight:400;
+    }
+
+    .rate-indicator {
+      position:fixed; bottom:16px; left:50%; transform:translateX(-50%);
+      background:var(--surface2); border:0.5px solid var(--border2);
+      color:var(--muted); font-size:11px; padding:6px 14px;
+      border-radius:100px; z-index:99; opacity:0; pointer-events:none;
+      transition:opacity .3s; white-space:nowrap;
+    }
+    .rate-indicator.show { opacity:1; }
+    /* ── SKELETON LOADER ─────────────────────────────────────── */
+    @keyframes shimmer {
+      0%   { background-position: -600px 0; }
+      100% { background-position:  600px 0; }
+    }
+    .skeleton-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(210px,1fr)); gap:14px; }
+    .skeleton-card {
+      background:var(--surface); border:0.5px solid var(--border);
+      border-radius:16px; overflow:hidden;
+    }
+    .skeleton-img {
+      height:178px; background:var(--surface2);
+    }
+    .skeleton-body { padding:13px 15px 15px; }
+    .sk {
+      border-radius:6px; margin-bottom:8px;
+      background:linear-gradient(90deg, var(--surface2) 25%, var(--surface) 50%, var(--surface2) 75%);
+      background-size:600px 100%;
+      animation: shimmer 1.4s infinite linear;
+    }
+    .sk-title  { height:14px; width:70%; }
+    .sk-line   { height:10px; width:90%; }
+    .sk-line-s { height:10px; width:60%; }
+    .sk-price  { height:20px; width:40%; margin-top:14px; }
+
+    /* ── BOTÓN COMPARTIR ─────────────────────────────────────── */
+    .btn-share {
+      width:32px; height:32px; border-radius:8px;
+      background:rgba(20,184,166,0.08); border:0.5px solid rgba(20,184,166,0.2);
+      display:flex; align-items:center; justify-content:center;
+      cursor:pointer; transition:all .18s ease; flex-shrink:0; position:relative;
+    }
+    .btn-share:hover { background:rgba(20,184,166,0.18); border-color:rgba(20,184,166,0.45); }
+    .btn-share svg { width:14px; height:14px; stroke:#14b8a6; fill:none; transition:stroke .18s; }
+    .btn-share:hover svg { stroke:#14b8a6; }
+
+    .share-toast {
+      position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(10px);
+      background:var(--surface2); border:0.5px solid var(--border2);
+      color:var(--text); font-size:12px; font-weight:500;
+      padding:9px 18px; border-radius:100px;
+      z-index:999; opacity:0; pointer-events:none;
+      transition:all .25s cubic-bezier(.22,1,.36,1);
+      display:flex; align-items:center; gap:7px; white-space:nowrap;
+    }
+    .share-toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+    .share-toast svg { width:13px; height:13px; stroke:var(--accent); fill:none; flex-shrink:0; }
+    .loading { text-align:center; padding:80px 0; color:var(--muted); font-size:14px; }
+    .empty-grid { grid-column:1/-1; text-align:center; padding:60px 0; color:var(--muted); font-size:13px; }
+
+    /* ── RESPONSIVE ──────────────────────────────────────────── */
+    @media (max-width: 768px) {
+      .sidebar {
+        position:fixed; top:60px; left:0; z-index:99;
+        width:260px; height:calc(100vh - 60px);
+        transform:translateX(-100%);
+        box-shadow:4px 0 24px rgba(0,0,0,.35);
+        /* Override sticky so it scrolls independently */
+        position:fixed !important;
+        /* Hide animation on mobile so it doesn't fight with transform */
+        animation:none;
+      }
+      .sidebar.open { transform:translateX(0); }
+      .hamburger { display:flex; }
+      .layout { display:block; }
+      .main { padding:16px; }
+      .header-panel-btn .btn-label { display:none; }
+      .payment-footer { padding:20px 16px 36px; }
+      .about-section { padding:32px 16px 48px; }
+      .about-heading { font-size:24px; }
+      .site-footer { padding:16px; }
+    }
   </style>
 </head>
 <body>
 
-<div id="login-screen">
-  <div class="login-box">
-    <div class="login-logo"><div class="login-logo-dot"></div>KRAKATOA</div>
-    <div class="login-sub">Panel de administración</div>
-    <label class="login-label">Contraseña</label>
-    <input class="login-input" id="pwd-input" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')checkPassword()">
-    <button class="login-btn" onclick="checkPassword()">Ingresar</button>
-    <div class="login-error" id="login-error"></div>
+<!-- HEADER -->
+<header>
+  <div style="display:flex;align-items:center;gap:12px">
+    <button class="hamburger" id="hamburger" onclick="toggleSidebar()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+    </button>
+    <div class="logo"><div class="logo-dot"></div><span class="logo-text">KRAKATOA</span></div>
   </div>
-</div>
+  <div class="header-actions">
+    <button class="icon-btn currency-btn" id="currency-btn" onclick="toggleCurrency()" title="Cambiar moneda">
+      <span id="currency-label" style="font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:.5px">USD</span>
+    </button>
+    <button class="icon-btn" onclick="toggleTheme()" title="Cambiar tema">
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+    </button>
 
-<div class="wrap">
-  <header>
-    <div style="display:flex;align-items:center;gap:12px">
-      <div class="logo"><div class="logo-dot"></div>KRAKATOA <span class="badge-admin">ADMIN</span></div>
-      <a href="index.html" class="header-link">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-        Ver catálogo
-      </a>
-    </div>
-    <div class="header-actions">
-      <button class="btn" onclick="openAddModal()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        Agregar producto
-      </button>
-      <button class="btn success" onclick="openJsonModal()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-        Exportar JSON
-      </button>
-    </div>
-  </header>
-
-  <div class="stats" id="stats">
-    <div class="stat"><div class="stat-label">Total productos</div><div class="stat-val">—</div></div>
-    <div class="stat"><div class="stat-label">Categorías</div><div class="stat-val">—</div></div>
-    <div class="stat"><div class="stat-label">Con descuento</div><div class="stat-val">—</div></div>
-    <div class="stat"><div class="stat-label">Precio promedio</div><div class="stat-val">—</div></div>
+    <button class="header-panel-btn" onclick="openCart()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 001.98 1.61h9.72a2 2 0 001.98-1.61L23 6H6"/></svg>
+      <span class="btn-label">Carrito</span>
+      <span class="hpb-count orange hidden" id="cart-count">0</span>
+    </button>
   </div>
+</header>
 
-  <div class="toolbar" id="cat-filter"></div>
+<!-- LAYOUT -->
+<div class="layout">
 
-  <table>
-    <thead>
-      <tr>
-        <th>Producto</th>
-        <th>Categoría</th>
-        <th>Precio</th>
-        <th>Precio anterior</th>
-        <th>Descuento</th>
-        <th style="text-align:right">Acciones</th>
-      </tr>
-    </thead>
-    <tbody id="tbody">
-      <tr class="loading-row"><td colspan="6">Cargando productos...</td></tr>
-    </tbody>
-  </table>
-</div>
+  <!-- SIDEBAR OVERLAY mobile -->
+  <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
 
-<!-- MODAL AGREGAR -->
-<div class="modal-bg" id="add-modal">
-  <div class="modal">
-    <h3>Agregar producto</h3>
-    <div class="form-row">
-      <label class="form-label">Nombre</label>
-      <input class="form-input" id="f-name" placeholder="ej. iPhone 17 Pro">
-    </div>
-    <div class="form-row-2">
-      <div>
-        <label class="form-label">Marca</label>
-        <input class="form-input" id="f-brand" placeholder="Apple">
-      </div>
-      <div>
-        <label class="form-label">Categoría</label>
-        <select class="form-input" id="f-cat">
-          <option value="celulares">Celulares</option>
-          <option value="notebooks_nuevas">Notebooks Nuevas</option>
-          <option value="notebooks_reac">Notebooks Reacondicionadas</option>
-          <option value="audio">Audio</option>
-          <option value="consolas">Consolas</option>
-          <option value="tablets">Tablets</option>
-        </select>
-      </div>
-    </div>
-    <div class="form-row-2">
-      <div>
-        <label class="form-label">Precio (US$)</label>
-        <input class="form-input" id="f-price" type="number" placeholder="999">
-      </div>
-      <div>
-        <label class="form-label">Precio anterior (opcional)</label>
-        <input class="form-input" id="f-oldprice" type="number" placeholder="1199">
-      </div>
-    </div>
-    <div class="form-row-2">
-      <div>
-        <label class="form-label">Storage (opcional)</label>
-        <input class="form-input" id="f-storage" placeholder="256GB">
-      </div>
-      <div>
-        <label class="form-label">% Descuento (opcional)</label>
-        <input class="form-input" id="f-off" type="number" placeholder="10">
-      </div>
-    </div>
-    <div class="form-row">
-      <label class="form-label">URL de imagen</label>
-      <input class="form-input" id="f-img" placeholder="https://...">
-    </div>
-    <div class="form-row">
-      <label class="form-label">Especificaciones (una por línea, máx 4)</label>
-      <textarea class="form-input" id="f-specs" rows="4" placeholder="Pantalla 6.3&#10;Chip A19&#10;Cámara 48MP&#10;Batería 4000mAh" style="resize:vertical"></textarea>
-    </div>
-    <div class="modal-footer">
-      <button class="btn" onclick="closeAddModal()">Cancelar</button>
-      <button class="btn primary" onclick="saveNewProduct()">Guardar producto</button>
-    </div>
-  </div>
-</div>
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="sidebar">
 
-<!-- MODAL JSON -->
-<div class="json-modal-bg" id="json-modal">
-  <div class="json-modal">
-    <h3>Exportar productos.json</h3>
-    <div class="steps">
-      <div class="step"><div class="step-num">1</div><span>Presioná <strong style="color:var(--text)">"Copiar JSON"</strong> abajo</span></div>
-      <div class="step"><div class="step-num">2</div><span>Abrí el archivo <code>productos.json</code> en tu repo de GitHub</span></div>
-      <div class="step"><div class="step-num">3</div><span>Seleccioná todo el contenido, pegá el JSON copiado y guardá</span></div>
-      <div class="step"><div class="step-num">4</div><span>Hacé commit y push — la web se actualiza automáticamente</span></div>
+    <div class="sidebar-section">
+      <div class="sidebar-label">Productos</div>
+      <div class="sidebar-cat" id="sidebar-cats">
+        <button class="sidebar-cat-btn active" onclick="setCategory('celulares',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="5" y="2" width="14" height="20" rx="2"/><circle cx="12" cy="17" r="1"/></svg>
+          Celulares
+          <div class="scat-dot"></div>
+        </button>
+        <button class="sidebar-cat-btn" onclick="setCategory('notebooks',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="4" width="20" height="14" rx="2"/><path d="M1 20h22"/></svg>
+          Notebooks
+          <div class="scat-dot"></div>
+        </button>
+        <button class="sidebar-cat-btn" onclick="setCategory('audio',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+          Audio
+          <div class="scat-dot"></div>
+        </button>
+        <button class="sidebar-cat-btn" onclick="setCategory('consolas',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="6" width="20" height="12" rx="4"/><path d="M6 12h4M8 10v4"/><circle cx="15" cy="11" r="1" fill="currentColor" stroke="none"/><circle cx="18" cy="13" r="1" fill="currentColor" stroke="none"/></svg>
+          Consolas
+          <div class="scat-dot"></div>
+        </button>
+        <button class="sidebar-cat-btn" onclick="setCategory('tablets',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="4" y="2" width="16" height="20" rx="2"/><circle cx="12" cy="18" r="1"/></svg>
+          Tablets
+          <div class="scat-dot"></div>
+        </button>
+        <button class="sidebar-cat-btn" onclick="setCategory('relojes',this)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="7" y="4" width="10" height="16" rx="3"/><path d="M7 9H4M7 15H4M17 9h3M17 15h3"/><path d="M12 8v4l2 2"/></svg>
+          Reloj Inteligente
+          <div class="scat-dot"></div>
+        </button>
+      </div>
     </div>
-    <div class="json-box" id="json-box"></div>
-    <div class="json-footer">
-      <button class="btn" onclick="closeJsonModal()">Cerrar</button>
-      <button class="btn success" onclick="copyJson()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-        Copiar JSON
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Marca</div>
+      <div class="sidebar-brands" id="sidebar-brands"></div>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Ordenar</div>
+      <select class="sidebar-sort" id="sort-select" onchange="renderGrid()">
+        <option value="default">Predeterminado</option>
+        <option value="price-asc">Precio: menor a mayor</option>
+        <option value="price-desc">Precio: mayor a menor</option>
+        <option value="off">Con descuento primero</option>
+      </select>
+    </div>
+
+    <div class="sidebar-section">
+      <div class="sidebar-label">Comparar</div>
+      <button class="sidebar-cmp-btn" id="sidebar-cmp-btn" onclick="openComparator()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+        Compará tus productos
+        <span class="sidebar-cmp-count hidden" id="cmp-count">0</span>
       </button>
     </div>
+
+  </aside>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="main-topbar">
+      <div class="count-bar" id="count-bar"></div>
+    </div>
+    <div id="grid-wrap"></div>
+
+    <!-- PRE-FOOTER MEDIOS DE PAGO -->
+    <div class="payment-footer">
+      <span class="pf-label">Medios de Pago</span>
+      <div class="pf-methods">
+        <span class="pf-method">
+          <span class="pf-icon mp">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="1" y="4" width="22" height="16" rx="2"/><path d="M1 10h22"/><circle cx="7" cy="15" r="1.5" fill="currentColor" stroke="none"/><circle cx="11" cy="15" r="1.5" fill="currentColor" stroke="none" opacity=".5"/></svg>
+          </span>
+          Mercado Pago
+        </span>
+        <span class="pf-method">
+          <span class="pf-icon transfer">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M5 12h14M15 7l5 5-5 5"/><path d="M19 7H9a4 4 0 000 8h1"/></svg>
+          </span>
+          Transferencia
+        </span>
+        <span class="pf-method">
+          <span class="pf-icon debit">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="1" y="4" width="22" height="16" rx="2"/><line x1="1" y1="10" x2="23" y2="10"/><line x1="5" y1="15" x2="9" y2="15" stroke-width="2" stroke-linecap="round"/></svg>
+          </span>
+          Débito
+        </span>
+        <span class="pf-method">
+          <span class="pf-icon crypto">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M9 8.5h4a2 2 0 010 4H9m0 0h4.5a2 2 0 010 4H9m0-8v8m3-8v8"/></svg>
+          </span>
+          Cripto
+        </span>
+      </div>
+    </div>
+
+    <!-- SOBRE NOSOTROS -->
+    <section class="about-section" id="sobre-nosotros">
+      <div class="about-inner">
+        <div class="about-eyebrow">Sobre nosotros</div>
+        <h2 class="about-heading">Tu tienda de<br><em>tecnología</em> de confianza.</h2>
+        <p class="about-desc">En Krakatoa encontrás los últimos modelos de celulares, notebooks y audio con garantía, precios honestos y atención personalizada.</p>
+        <div class="about-links">
+          <a href="https://wa.me/549XXXXXXXXXX" target="_blank" class="about-link">
+            <div class="about-link-icon wa">
+              <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+            </div>
+            <span>WhatsApp<small>Consultá disponibilidad</small></span>
+          </a>
+          <a href="https://instagram.com/krakatoa" target="_blank" class="about-link">
+            <div class="about-link-icon ig">
+              <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+            </div>
+            <span>Instagram<small>@krakatoa</small></span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <footer class="site-footer">
+      <div class="footer-logo"><div class="footer-logo-dot"></div>KRAKATOA</div>
+      <div class="footer-copy">© 2025 Krakatoa · Todos los derechos reservados</div>
+    </footer>
+
+  </div><!-- /main -->
+</div><!-- /layout -->
+
+<!-- PANEL OVERLAY -->
+<div class="panel-overlay" id="panel-overlay" onclick="closePanels()"></div>
+
+<!-- PANEL CARRITO -->
+<div class="side-panel right" id="cart-panel">
+  <div class="panel-header">
+    <div class="panel-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+      Carrito
+    </div>
+    <button class="panel-close" onclick="closeCart()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="cart-items" id="cart-items"></div>
+  <div class="cart-footer">
+    <div class="cart-total">
+      <span class="cart-total-label">Total estimado</span>
+      <span class="cart-total-val"><span>US$ </span><span id="cart-total-num">0</span></span>
+    </div>
+    <div style="font-size:11px;color:var(--muted);text-align:center;margin-bottom:10px;line-height:1.5;">
+      Al consultar te contactamos por WhatsApp<br>para coordinar el pago y entrega.
+    </div>
+    <button class="btn-wa-cart" id="btn-wa-cart" onclick="sendCartWA()" disabled>
+      <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Consultar por WhatsApp
+    </button>
   </div>
 </div>
 
-<div class="toast" id="toast"></div>
+<!-- PANEL COMPARADOR -->
+<div class="side-panel left" id="cmp-panel">
+  <div class="panel-header">
+    <div class="panel-title">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+      Comparar productos
+    </div>
+    <button class="panel-close" onclick="closeComparator()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="cmp-slots" id="cmp-slots"></div>
+  <div class="cmp-body" id="cmp-body"></div>
+  <div class="cmp-footer">
+    <button class="btn-cmp-wa" id="btn-cmp-wa" onclick="sendCmpWA()" disabled>
+      <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Consultar ambos por WhatsApp
+    </button>
+  </div>
+</div>
 
 <script>
-  // ─── CONTRASEÑA ──────────────────────────────────────────────
-  // Cambiá este valor por la contraseña que quieras
-  const ADMIN_PASSWORD = "krakatoa2025";
+  const WA_NUMBER = "5492942658677"; // ← REEMPLAZÁ con tu número (ej: 5491155554444)
+  const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS8BRrz4g4i7CuHYflGMpzIDgjc9tn20OItwCKjOS2237qCPfNN04NRHuUiDa-oKBpqqrs4fH4T8w8-/pub?output=csv"; // ← PEGÁ acá tu URL de Google Sheets publicada como CSV
 
-  function checkPassword() {
-    const input = document.getElementById("pwd-input").value;
-    if (input === ADMIN_PASSWORD) {
-      document.getElementById("login-screen").style.display = "none";
-      sessionStorage.setItem("kk-auth", "1");
-      loadProducts();
-    } else {
-      const err = document.getElementById("login-error");
-      err.textContent = "Contraseña incorrecta";
-      document.getElementById("pwd-input").value = "";
-      document.getElementById("pwd-input").focus();
-      setTimeout(() => err.textContent = "", 2500);
-    }
+  let allProducts = [], currentCat = "celulares", currentBrand = "Todos";
+  let cart = [], comparator = [];
+  const MAX_CMP = 2;
+
+  // ── TEMA ──────────────────────────────────────────────────────
+  const savedTheme = localStorage.getItem("kk-theme") || "dark";
+  document.documentElement.setAttribute("data-theme", savedTheme);
+  function toggleTheme() {
+    const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    document.documentElement.setAttribute("data-theme", next);
+    localStorage.setItem("kk-theme", next);
   }
 
-  if (sessionStorage.getItem("kk-auth") === "1") {
-    document.getElementById("login-screen").style.display = "none";
-    window.addEventListener("load", loadProducts);
+  // ── SIDEBAR MOBILE ────────────────────────────────────────────
+  function toggleSidebar() {
+    document.getElementById("sidebar").classList.toggle("open");
+    document.getElementById("sidebar-overlay").classList.toggle("open");
+  }
+  function closeSidebar() {
+    document.getElementById("sidebar").classList.remove("open");
+    document.getElementById("sidebar-overlay").classList.remove("open");
   }
 
-  let products = [];
-  let editingId = null;
-  let currentCat = "todos";
-  const CAT_LABELS = {
-    celulares: "Celulares",
-    notebooks_nuevas: "Notebooks Nuevas",
-    notebooks_reac: "Notebooks Reacondicionadas",
-    audio: "Audio",
-    consolas: "Consolas",
-    tablets: "Tablets"
-  };
+  // ── CARGA DE DATOS ────────────────────────────────────────────
+  function showSkeleton() {
+    const n = 8;
+    document.getElementById("grid-wrap").innerHTML = `<div class="skeleton-grid">${Array(n).fill(`
+      <div class="skeleton-card">
+        <div class="skeleton-img"></div>
+        <div class="skeleton-body">
+          <div class="sk sk-title"></div>
+          <div class="sk sk-line"></div>
+          <div class="sk sk-line-s"></div>
+          <div class="sk sk-line"></div>
+          <div class="sk sk-price"></div>
+        </div>
+      </div>`).join('')}</div>`;
+  }
 
-  // ─── CARGA INICIAL ───────────────────────────────────────────
   function loadProducts() {
-    fetch("productos.json")
-      .then(r => r.json())
-      .then(data => {
-        products = data.map((p, i) => {
-          // normalize notebooks subcat
-          let cat = p.cat || '';
-          if (cat === 'notebooks') {
-            const sub = (p.subcat || '').toLowerCase();
-            cat = sub === 'reacondicionada' ? 'notebooks_reac' : 'notebooks_nuevas';
-          }
-          return { ...p, cat, _id: i };
-        });
-        renderAll();
-      })
-      .catch(() => {
-        document.getElementById("tbody").innerHTML =
-          '<tr class="loading-row"><td colspan="6">No se pudo cargar productos.json. Verificá que esté en la misma carpeta.</td></tr>';
-      });
+    showSkeleton();
+    if (SHEET_URL) {
+      fetch(SHEET_URL + "&t=" + Date.now()).then(r => r.text()).then(csv => {
+        const data = parseCSV(csv);
+        if (data.length) { allProducts = data; renderBrands(); renderGrid(); }
+        else loadFallback();
+      }).catch(loadFallback);
+    } else { loadFallback(); }
   }
 
-  let nextId = 10000;
-
-  function renderAll() { renderStats(); renderCatFilter(); renderTable(); }
-
-  function renderStats() {
-    const t = products.length;
-    const cats = new Set(products.map(p => p.cat)).size;
-    const withOff = products.filter(p => p.off).length;
-    const avg = t ? Math.round(products.reduce((a, p) => a + p.price, 0) / t) : 0;
-    document.getElementById("stats").innerHTML = `
-      <div class="stat"><div class="stat-label">Total productos</div><div class="stat-val">${t}</div></div>
-      <div class="stat"><div class="stat-label">Categorías</div><div class="stat-val">${cats}</div></div>
-      <div class="stat"><div class="stat-label">Con descuento</div><div class="stat-val">${withOff}</div></div>
-      <div class="stat"><div class="stat-label">Precio promedio</div><div class="stat-val"><small>US$</small> ${avg}</div></div>
-    `;
+  function loadFallback() {
+    fetch("productos.json").then(r => r.json()).then(data => {
+      allProducts = data; renderBrands(); renderGrid();
+    }).catch(() => {
+      document.getElementById("grid-wrap").innerHTML =
+        '<p style="color:var(--muted);padding:40px;text-align:center">No se pudo cargar el catálogo.</p>';
+    });
   }
 
-  function renderCatFilter() {
-    const cats = ["todos", ...new Set(products.map(p => p.cat))];
-    const labels = { todos: "Todos", ...CAT_LABELS };
-    document.getElementById("cat-filter").innerHTML = cats.map(c =>
-      `<button class="cf-btn${c === currentCat ? ' active' : ''}" onclick="setCat('${c}',this)">${labels[c] || c}</button>`
-    ).join('');
+  function parseCSV(csv) {
+    const lines = csv.trim().split("\n");
+    const headers = lines[0].split(",").map(h => h.trim().replace(/^"|"$/g,''));
+    return lines.slice(1).map(line => {
+      const fields = []; let cur = '', inQ = false;
+      for (let i = 0; i < line.length; i++) {
+        const ch = line[i];
+        if (ch === '"') { inQ = !inQ; }
+        else if (ch === ',' && !inQ) { fields.push(cur.trim()); cur = ''; }
+        else { cur += ch; }
+      }
+      fields.push(cur.trim());
+      const obj = {}; headers.forEach((h,i) => { obj[h] = fields[i] || ''; });
+      let cat = (obj.cat || '').trim().toLowerCase();
+      // handle both spec4 and specs4 column names, strip leading asterisks
+      const clean = v => (v || '').replace(/^[*]\s*/, '').trim();
+      return {
+        cat, brand: obj.brand, name: obj.name, img: obj.img,
+        price: parseFloat(obj.price)||0,
+        oldPrice: obj.oldPrice ? parseFloat(obj.oldPrice) : null,
+        off: obj.off ? parseFloat(obj.off) : null,
+        storage: obj.storage || null,
+        specs: [
+          clean(obj.spec1),
+          clean(obj.spec2),
+          clean(obj.spec3),
+          clean(obj.spec4 || obj.specs4)
+        ].filter(Boolean)
+      };
+    }).filter(p => p.name && p.price);
   }
 
-  function setCat(cat, btn) {
-    currentCat = cat;
-    document.querySelectorAll('.cf-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
-    renderTable();
+  loadProducts();
+
+  // ── MARCAS ────────────────────────────────────────────────────
+  function renderBrands() {
+    const brands = ["Todos", ...new Set(allProducts.filter(p => p.cat === currentCat).map(p => p.brand))];
+    document.getElementById("sidebar-brands").innerHTML = brands.map(b => `
+      <button class="sidebar-brand-btn${b === currentBrand ? ' active' : ''}" onclick="setBrand('${b}',this)">
+        ${b}
+        <span class="brand-check">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+        </span>
+      </button>`).join('');
   }
 
-  function renderTable() {
-    const list = currentCat === "todos" ? products : products.filter(p => p.cat === currentCat);
-    if (!list.length) {
-      document.getElementById("tbody").innerHTML = '<tr class="empty-row"><td colspan="6">No hay productos en esta categoría.</td></tr>';
+  // ── GRID ──────────────────────────────────────────────────────
+  function renderGrid() {
+    let list = allProducts.filter(p => p.cat === currentCat && (currentBrand === "Todos" || p.brand === currentBrand));
+    const sort = document.getElementById("sort-select").value;
+    if (sort === "price-asc")  list = [...list].sort((a,b) => a.price - b.price);
+    if (sort === "price-desc") list = [...list].sort((a,b) => b.price - a.price);
+    if (sort === "off")        list = [...list].sort((a,b) => (b.off||0) - (a.off||0));
+
+    // ── AGRUPAR VARIANTES por nombre+cat ──────────────────────
+    const groups = [];
+    const seen = {};
+    list.forEach(p => {
+      const key = `${p.cat}||${p.name}`;
+      if (seen[key] !== undefined) {
+        groups[seen[key]].variants.push(p);
+      } else {
+        seen[key] = groups.length;
+        groups.push({ ...p, variants: [p] });
+      }
+    });
+
+    document.getElementById("count-bar").innerHTML =
+      `<strong>${groups.length}</strong> producto${groups.length !== 1 ? 's' : ''}`;
+
+    if (!groups.length) {
+      document.getElementById("grid-wrap").innerHTML = '<div class="grid"><div class="empty-grid">No hay productos en esta categoría.</div></div>';
       return;
     }
-    document.getElementById("tbody").innerHTML = list.map(p => {
-      if (editingId === p._id) {
-        return `<tr class="editing">
-          <td><div class="prod-name">${p.name}</div><div class="prod-brand">${p.brand}</div></td>
-          <td><span class="cat-badge">${CAT_LABELS[p.cat] || p.cat}</span></td>
-          <td><input class="edit-field" id="ep-${p._id}" type="number" value="${p.price}"></td>
-          <td><input class="edit-field" id="eop-${p._id}" type="number" value="${p.oldPrice || ''}"></td>
-          <td><input class="edit-field" id="eof-${p._id}" type="number" value="${p.off || ''}"></td>
-          <td>
-            <div class="action-btns">
-              <button class="icon-btn save" onclick="saveEdit(${p._id})" title="Guardar">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+
+    const WA_SVG = `<svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>`;
+
+    document.getElementById("grid-wrap").innerHTML = `<div class="grid">${groups.map((g, i) => {
+      const hasVariants = g.variants.length > 1;
+      // active variant tracked by DOM, default = first
+      const firstIdx = allProducts.indexOf(g.variants[0]);
+      const inCart = cart.some(c => c._idx === firstIdx);
+      const inCmp  = comparator.some(c => c._idx === firstIdx);
+      const p = g.variants[0];
+      const cardId = 'card-' + firstIdx;
+
+      return `<div class="card" id="${cardId}" style="animation-delay:${i*55}ms" data-active-idx="${firstIdx}">
+        <div class="cimg">
+          <img src="${p.img}" alt="${p.name}" loading="lazy" onerror="this.style.opacity='.12'" id="img-${firstIdx}">
+          ${p.off ? `<div class="badge-off" id="badge-off-${firstIdx}">-${p.off}%</div>` : `<div class="badge-off" id="badge-off-${firstIdx}" style="display:none"></div>`}
+          <div class="badge-brand">${p.brand}</div>
+        </div>
+        <div class="cbody">
+          <div class="cname">${p.name}</div>
+          ${hasVariants ? `<div class="variants" id="variants-${firstIdx}">
+            ${g.variants.map((v, vi) => {
+              const vidx = allProducts.indexOf(v);
+              return `<button class="variant-btn${vi===0?' active':''}" onclick="selectVariant(${firstIdx},${vidx},this)">${v.storage || v.name}</button>`;
+            }).join('')}
+          </div>` : ''}
+          <ul class="cspecs" id="specs-${firstIdx}">${p.specs.map(s=>`<li>${s}</li>`).join('')}</ul>
+          <div class="cfooter">
+            <div>
+              <div class="price-old" id="price-old-${firstIdx}" style="${p.oldPrice?'':'display:none'}">US$ ${p.oldPrice||''}</div>
+              <div class="price-new"><span>US$ </span><span class="price-val" id="price-${firstIdx}">${p.price}</span></div>
+            </div>
+            <div class="card-actions">
+              <button class="btn-cart${inCart?' in-cart':''}" id="btn-cart-${firstIdx}" onclick="toggleCartByCard('${cardId}')" title="Agregar al carrito">
+                <svg viewBox="0 0 24 24" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
               </button>
-              <button class="icon-btn cancel" onclick="cancelEdit()" title="Cancelar">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+              <button class="btn-cmp${inCmp?' in-cmp':''}" id="btn-cmp-${firstIdx}" onclick="toggleCmpByCard('${cardId}')" title="Comparar">
+                <svg viewBox="0 0 24 24" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
+              </button>
+              <button class="btn-share" onclick="shareProduct('${p.name}','${p.price}','${p.brand}')" title="Compartir">
+                <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
               </button>
             </div>
-          </td>
-        </tr>`;
-      }
-      return `<tr>
-        <td><div class="prod-name">${p.name}</div><div class="prod-brand">${p.brand}</div></td>
-        <td><span class="cat-badge">${CAT_LABELS[p.cat] || p.cat}</span></td>
-        <td><span class="price-cell">US$ ${p.price}</span></td>
-        <td>${p.oldPrice ? `<span class="old-price-cell">US$ ${p.oldPrice}</span>` : '<span style="color:var(--muted)">—</span>'}</td>
-        <td>${p.off ? `<span class="off-badge">-${p.off}%</span>` : '<span style="color:var(--muted)">—</span>'}</td>
-        <td>
-          <div class="action-btns">
-            <button class="icon-btn" onclick="startEdit(${p._id})" title="Editar precios">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-            </button>
-            <button class="icon-btn" onclick="deleteProduct(${p._id})" title="Eliminar">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
-            </button>
           </div>
-        </td>
-      </tr>`;
-    }).join('');
+        </div>
+      </div>`;
+    }).join('')}</div>`;
   }
 
-  function startEdit(id) { editingId = id; renderTable(); }
-  function cancelEdit() { editingId = null; renderTable(); }
-
-  function saveEdit(id) {
-    const p = products.find(x => x._id === id);
-    const price = parseFloat(document.getElementById(`ep-${id}`).value);
-    const oldPrice = parseFloat(document.getElementById(`eop-${id}`).value) || null;
-    const off = parseFloat(document.getElementById(`eof-${id}`).value) || null;
-    if (!price || price <= 0) { showToast("Ingresá un precio válido", "err"); return; }
-    p.price = price; p.oldPrice = oldPrice; p.off = off;
-    editingId = null;
-    renderAll();
-    showToast("Precio actualizado — recordá exportar el JSON");
+  // ── NAVEGACIÓN ────────────────────────────────────────────────
+  function setCategory(cat, btn) {
+    currentCat = cat; currentBrand = "Todos";
+    document.querySelectorAll('.sidebar-cat-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById("sort-select").value = "default";
+    renderBrands();
+    fadeGrid(() => renderGrid());
+    closeSidebar();
+  }
+  function setBrand(brand, btn) {
+    currentBrand = brand;
+    document.querySelectorAll('.sidebar-brand-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    fadeGrid(() => renderGrid());
+    closeSidebar();
   }
 
-  function deleteProduct(id) {
-    if (!confirm("¿Eliminar este producto?")) return;
-    products = products.filter(p => p._id !== id);
-    if (editingId === id) editingId = null;
-    renderAll();
-    showToast("Producto eliminado — recordá exportar el JSON");
+  // ── VARIANTES ─────────────────────────────────────────────────
+  function selectVariant(cardFirstIdx, newIdx, btn) {
+    const p = allProducts[newIdx];
+    const card = document.getElementById('card-' + cardFirstIdx);
+    card.setAttribute('data-active-idx', newIdx);
+
+    // update image
+    document.getElementById('img-' + cardFirstIdx).src = p.img;
+
+    // update specs
+    document.getElementById('specs-' + cardFirstIdx).innerHTML =
+      p.specs.map(s => `<li>${s}</li>`).join('');
+
+    // update price
+    document.getElementById('price-' + cardFirstIdx).textContent = p.price;
+    const oldEl = document.getElementById('price-old-' + cardFirstIdx);
+    if (p.oldPrice) { oldEl.style.display=''; oldEl.textContent = 'US$ ' + p.oldPrice; }
+    else { oldEl.style.display='none'; }
+
+    // update off badge
+    const offEl = document.getElementById('badge-off-' + cardFirstIdx);
+    if (p.off) { offEl.style.display=''; offEl.textContent = '-' + p.off + '%'; }
+    else { offEl.style.display='none'; }
+
+    // update variant buttons
+    card.querySelectorAll('.variant-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    // update cart/cmp button state
+    const inCart = cart.some(c => c._idx === newIdx);
+    const inCmp  = comparator.some(c => c._idx === newIdx);
+    const cartBtn = document.getElementById('btn-cart-' + cardFirstIdx);
+    const cmpBtn  = document.getElementById('btn-cmp-'  + cardFirstIdx);
+    cartBtn.className = 'btn-cart' + (inCart ? ' in-cart' : '');
+    cmpBtn.className  = 'btn-cmp'  + (inCmp  ? ' in-cmp'  : '');
   }
 
-  function openAddModal() { document.getElementById("add-modal").classList.add("open"); }
-  function closeAddModal() { document.getElementById("add-modal").classList.remove("open"); }
-
-  function saveNewProduct() {
-    const name = document.getElementById("f-name").value.trim();
-    const brand = document.getElementById("f-brand").value.trim();
-    const cat = document.getElementById("f-cat").value;
-    const price = parseFloat(document.getElementById("f-price").value);
-    const oldPrice = parseFloat(document.getElementById("f-oldprice").value) || null;
-    const storage = document.getElementById("f-storage").value.trim() || null;
-    const off = parseFloat(document.getElementById("f-off").value) || null;
-    const img = document.getElementById("f-img").value.trim();
-    const specs = document.getElementById("f-specs").value.trim().split("\n").map(s => s.trim()).filter(Boolean).slice(0, 4);
-    if (!name || !brand || !price) { showToast("Completá nombre, marca y precio", "err"); return; }
-    products.push({ _id: nextId++, cat, brand, name, img, price, oldPrice, off, storage, specs });
-    closeAddModal();
-    ["f-name","f-brand","f-price","f-oldprice","f-storage","f-off","f-img","f-specs"].forEach(id => document.getElementById(id).value = "");
-    renderAll();
-    showToast("Producto agregado — recordá exportar el JSON");
+  function getActiveIdx(cardId) {
+    return parseInt(document.getElementById(cardId).getAttribute('data-active-idx'));
   }
 
-  function openJsonModal() {
-    const clean = products.map(({ _id, ...rest }) => rest);
-    document.getElementById("json-box").textContent = JSON.stringify(clean, null, 2);
-    document.getElementById("json-modal").classList.add("open");
-  }
-  function closeJsonModal() { document.getElementById("json-modal").classList.remove("open"); }
-
-  function copyJson() {
-    navigator.clipboard.writeText(document.getElementById("json-box").textContent)
-      .then(() => showToast("JSON copiado al portapapeles"));
+  function toggleCartByCard(cardId) {
+    toggleCart(getActiveIdx(cardId));
   }
 
-  function showToast(msg, type = "ok") {
-    const t = document.getElementById("toast");
-    t.textContent = msg;
-    t.className = `toast ${type} show`;
-    setTimeout(() => t.classList.remove("show"), 3000);
+  function toggleCmpByCard(cardId) {
+    toggleCmp(getActiveIdx(cardId));
   }
 
-  document.getElementById("add-modal").addEventListener("click", e => { if (e.target === document.getElementById("add-modal")) closeAddModal(); });
-  document.getElementById("json-modal").addEventListener("click", e => { if (e.target === document.getElementById("json-modal")) closeJsonModal(); });
+  // ── CARRITO ───────────────────────────────────────────────────
+  function toggleCart(idx) {
+    const p = allProducts[idx];
+    const ex = cart.findIndex(c => c._idx === idx);
+    if (ex >= 0) {
+      cart.splice(ex, 1);
+    } else {
+      cart.push({ _idx:idx, name:p.name, price:p.price, img:p.img, storage:p.storage });
+      triggerRipple(idx);
+    }
+    updateCartCount(); renderGrid();
+  }
+  function updateCartCount() {
+    const el = document.getElementById("cart-count");
+    el.textContent = cart.length;
+    el.classList.toggle("hidden", cart.length === 0);
+  }
+  function openCart() {
+    closePanels();
+    document.getElementById("cart-panel").classList.add("open");
+    document.getElementById("panel-overlay").classList.add("open");
+    renderCartPanel();
+  }
+  function closeCart() {
+    document.getElementById("cart-panel").classList.remove("open");
+    document.getElementById("panel-overlay").classList.remove("open");
+  }
+  function renderCartPanel() {
+    const container = document.getElementById("cart-items");
+    const waBtn = document.getElementById("btn-wa-cart");
+    if (!cart.length) {
+      container.innerHTML = `<div class="cart-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>Tu lista está vacía</div>`;
+      document.getElementById("cart-total-num").textContent = "0";
+      waBtn.disabled = true; return;
+    }
+    waBtn.disabled = false;
+    container.innerHTML = cart.map((item,i) => `
+      <div class="cart-item">
+        <img class="cart-item-img" src="${item.img}" onerror="this.style.opacity='.2'">
+        <div style="flex:1;min-width:0">
+          <div class="cart-item-name">${item.name}${item.storage?` · ${item.storage}`:''}</div>
+          <div class="cart-item-price">US$ ${item.price}</div>
+        </div>
+        <button class="cart-item-remove" onclick="removeFromCart(${i})">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>`).join('');
+    document.getElementById("cart-total-num").textContent = cart.reduce((a,c)=>a+c.price,0).toLocaleString();
+  }
+  function removeFromCart(i) {
+    cart.splice(i,1); updateCartCount(); renderCartPanel(); renderGrid();
+  }
+  function sendCartWA() {
+    if (!cart.length) return;
+    const lines = cart.map(c=>`• ${c.name}${c.storage?` ${c.storage}`:''} — US$ ${c.price}`).join("\n");
+    const total = cart.reduce((a,c)=>a+c.price,0);
+    const msg = `Hola! Me interesan los siguientes productos:\n\n${lines}\n\nTotal estimado: US$ ${total.toLocaleString()}\n\n¿Están disponibles?`;
+    window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
+  }
+
+  // ── COMPARADOR ────────────────────────────────────────────────
+  function toggleCmp(idx) {
+    const ex = comparator.findIndex(c => c._idx === idx);
+    if (ex >= 0) comparator.splice(ex,1);
+    else { if (comparator.length >= MAX_CMP) comparator.shift(); comparator.push({_idx:idx,...allProducts[idx]}); }
+    updateCmpCount(); renderGrid();
+    if (document.getElementById("cmp-panel").classList.contains("open")) renderCmpPanel();
+  }
+  function updateCmpCount() {
+    const el = document.getElementById("cmp-count");
+    el.textContent = comparator.length;
+    el.classList.toggle("hidden", comparator.length === 0);
+    // Update sidebar button label
+    const btn = document.getElementById("sidebar-cmp-btn");
+    if (btn) {
+      const label = comparator.length > 0 ? `Comparar (${comparator.length}/${2})` : 'Compará tus productos';
+      btn.childNodes[2].textContent = ' ' + label;
+    }
+  }
+  function openComparator() {
+    closePanels();
+    document.getElementById("cmp-panel").classList.add("open");
+    document.getElementById("panel-overlay").classList.add("open");
+    renderCmpPanel();
+  }
+  function closeComparator() {
+    document.getElementById("cmp-panel").classList.remove("open");
+    document.getElementById("panel-overlay").classList.remove("open");
+  }
+  function closePanels() {
+    document.getElementById("cart-panel").classList.remove("open");
+    document.getElementById("cmp-panel").classList.remove("open");
+    document.getElementById("panel-overlay").classList.remove("open");
+  }
+  function renderCmpPanel() {
+    renderCmpSlots(); renderCmpBody();
+    document.getElementById("btn-cmp-wa").disabled = comparator.length < 2;
+  }
+  function renderCmpSlots() {
+    let html = "";
+    for (let i = 0; i < MAX_CMP; i++) {
+      const p = comparator[i];
+      if (p) {
+        html += `<div class="cmp-slot filled">
+          <img class="cmp-slot-img" src="${p.img}" onerror="this.style.opacity='.15'">
+          <div class="cmp-slot-name">${p.name}${p.storage?` · ${p.storage}`:''}</div>
+          <div class="cmp-slot-price">US$ ${p.price}</div>
+          <button class="cmp-slot-remove" onclick="toggleCmp(${p._idx})">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button></div>`;
+      } else {
+        html += `<div class="cmp-slot empty">
+          <svg class="cmp-slot-empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+          <span class="cmp-slot-empty-label">Agregá un producto</span></div>`;
+      }
+    }
+    document.getElementById("cmp-slots").innerHTML = html;
+  }
+  function renderCmpBody() {
+    const body = document.getElementById("cmp-body");
+    if (!comparator.length) { body.innerHTML = `<div class="cmp-empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>Seleccioná productos con el botón comparar en cada card</div>`; return; }
+    if (comparator.length === 1) { body.innerHTML = `<div class="cmp-empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:26px;height:26px;opacity:.2"><rect x="3" y="3" width="18" height="18" rx="3"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>Agregá un segundo producto para comparar</div>`; return; }
+    const [a,b] = comparator;
+    const priceWinA = a.price < b.price;
+    let html = `<div class="cmp-section"><div class="cmp-section-title">Precio</div><div class="cmp-row">
+      <div class="cmp-cell${priceWinA?' winner':''}"><div class="cmp-cell-label">${a.name.split(" ").slice(0,2).join(" ")}</div><div class="cmp-cell-val">US$ ${a.price}${priceWinA?' ✓':''}</div></div>
+      <div class="cmp-cell${!priceWinA?' winner':''}"><div class="cmp-cell-label">${b.name.split(" ").slice(0,2).join(" ")}</div><div class="cmp-cell-val">US$ ${b.price}${!priceWinA?' ✓':''}</div></div>
+    </div></div>`;
+    if (a.off||b.off) html += `<div class="cmp-section"><div class="cmp-section-title">Descuento</div><div class="cmp-row">
+      <div class="cmp-cell${(a.off||0)>=(b.off||0)&&a.off?' winner':''}"><div class="cmp-cell-val">${a.off?`-${a.off}%`:'—'}</div></div>
+      <div class="cmp-cell${(b.off||0)>(a.off||0)&&b.off?' winner':''}"><div class="cmp-cell-val">${b.off?`-${b.off}%`:'—'}</div></div>
+    </div></div>`;
+    if (a.storage||b.storage) html += `<div class="cmp-section"><div class="cmp-section-title">Storage</div><div class="cmp-row">
+      <div class="cmp-cell"><div class="cmp-cell-val">${a.storage||'—'}</div></div>
+      <div class="cmp-cell"><div class="cmp-cell-val">${b.storage||'—'}</div></div>
+    </div></div>`;
+    const maxS = Math.max(a.specs.length,b.specs.length);
+    if (maxS) {
+      html += `<div class="cmp-section"><div class="cmp-section-title">Especificaciones</div>`;
+      for (let i=0;i<maxS;i++) html += `<div class="cmp-row">
+        <div class="cmp-cell${!a.specs[i]?' empty-cell':''}"><div class="cmp-cell-val">${a.specs[i]||'—'}</div></div>
+        <div class="cmp-cell${!b.specs[i]?' empty-cell':''}"><div class="cmp-cell-val">${b.specs[i]||'—'}</div></div>
+      </div>`;
+      html += `</div>`;
+    }
+    body.innerHTML = html;
+  }
+  function sendCmpWA() {
+    if (comparator.length < 2) return;
+    const [a,b] = comparator;
+    const msg = `Hola! Me interesan estos dos productos:\n\n1. ${a.name}${a.storage?` ${a.storage}`:''} — US$ ${a.price}\n2. ${b.name}${b.storage?` ${b.storage}`:''} — US$ ${b.price}\n\n¿Cuál me recomendás? ¿Están disponibles?`;
+    window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
+  }
+
+  // ── FADE GRID ─────────────────────────────────────────────────
+  function fadeGrid(cb) {
+    const wrap = document.getElementById("grid-wrap");
+    wrap.classList.add("fading");
+    setTimeout(() => {
+      cb();
+      wrap.classList.remove("fading");
+    }, 180);
+  }
+
+  // ── RIPPLE EN CARRITO ─────────────────────────────────────────
+  function triggerRipple(idx) {
+    const btns = document.querySelectorAll(`.btn-cart`);
+    // find the one matching this idx via onclick attr
+    btns.forEach(btn => {
+      if (btn.getAttribute('onclick') && btn.getAttribute('onclick').includes(`(${idx})`)) {
+        btn.classList.add('ripple');
+        setTimeout(() => btn.classList.remove('ripple'), 450);
+      }
+    });
+  }
+
+  // ── MOUSE TRACKING PARA BRILLO EN CARDS ──────────────────────
+  document.addEventListener('mousemove', e => {
+    const card = e.target.closest('.card');
+    if (card) {
+      const rect = card.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width * 100).toFixed(1);
+      const y = ((e.clientY - rect.top) / rect.height * 100).toFixed(1);
+      card.style.setProperty('--mouse-x', x + '%');
+      card.style.setProperty('--mouse-y', y + '%');
+    }
+  });
+
+  // ── COMPARTIR PRODUCTO ────────────────────────────────────────
+  function shareProduct(name, price, brand) {
+    const url = window.location.href.split('#')[0];
+    const text = `${brand} ${name} — US$ ${price}\n${url}`;
+    if (navigator.share) {
+      navigator.share({ title: name, text: `${name} a US$ ${price}`, url })
+        .catch(() => copyToClipboard(text));
+    } else {
+      copyToClipboard(text);
+    }
+  }
+
+  function copyToClipboard(text) {
+    navigator.clipboard.writeText(text).then(() => {
+      const toast = document.getElementById("share-toast");
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 2500);
+    });
+  }
+
+  // ── CONVERSOR USD / ARS ───────────────────────────────────────
+  let currentCurrency = "USD";
+  let dolarRate = null;
+
+  // Fetch cotización oficial BNA desde dolarapi.com
+  async function fetchDolarRate() {
+    try {
+      const res = await fetch("https://dolarapi.com/v1/dolares/oficial");
+      const data = await res.json();
+      dolarRate = data.venta; // precio de venta BNA
+      showRateIndicator(`Dólar oficial BNA: $${dolarRate.toLocaleString('es-AR', {minimumFractionDigits:2, maximumFractionDigits:2})}`);
+    } catch(e) {
+      console.warn("No se pudo obtener cotización del dólar:", e);
+      dolarRate = null;
+    }
+  }
+
+  function showRateIndicator(msg) {
+    const el = document.getElementById("rate-indicator");
+    el.textContent = msg;
+    el.classList.add("show");
+    setTimeout(() => el.classList.remove("show"), 3500);
+  }
+
+  function toggleCurrency() {
+    if (currentCurrency === "USD") {
+      if (!dolarRate) {
+        showRateIndicator("No se pudo obtener la cotización. Intentá de nuevo.");
+        fetchDolarRate();
+        return;
+      }
+      currentCurrency = "ARS";
+      document.getElementById("currency-label").textContent = "ARS";
+      document.getElementById("currency-btn").classList.add("ars");
+      document.getElementById("grid-wrap").classList.add("currency-ars");
+      updatePricesARS();
+      showRateIndicator(`Dólar oficial BNA: $${dolarRate.toLocaleString('es-AR', {minimumFractionDigits:2, maximumFractionDigits:2})}`);
+    } else {
+      currentCurrency = "USD";
+      document.getElementById("currency-label").textContent = "USD";
+      document.getElementById("currency-btn").classList.remove("ars");
+      document.getElementById("grid-wrap").classList.remove("currency-ars");
+      updatePricesUSD();
+    }
+  }
+
+  function formatARS(usdAmount) {
+    if (!dolarRate) return '';
+    const ars = usdAmount * dolarRate;
+    return ars.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function updatePricesARS() {
+    document.querySelectorAll('[id^="price-"]').forEach(el => {
+      if (el.id.startsWith('price-ars-')) return;
+      const idx = el.id.replace('price-', '');
+      const usd = parseFloat(el.textContent);
+      if (!isNaN(usd)) {
+        let arsEl = document.getElementById('price-ars-' + idx);
+        if (!arsEl) {
+          arsEl = document.createElement('div');
+          arsEl.className = 'price-ars';
+          arsEl.id = 'price-ars-' + idx;
+          el.closest('.price-new').insertAdjacentElement('afterend', arsEl);
+        }
+        arsEl.innerHTML = `<span class="price-ars-label">ARS$</span>${formatARS(usd)}`;
+      }
+    });
+  }
+
+  function updatePricesUSD() {
+    document.querySelectorAll('[id^="price-ars-"]').forEach(el => el.remove());
+  }
+
+  // Fetch al cargar la página en segundo plano
+  fetchDolarRate();
 </script>
+<div class="rate-indicator" id="rate-indicator"></div>
+<!-- SHARE TOAST -->
+<div class="share-toast" id="share-toast">
+  <svg viewBox="0 0 24 24" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+  Link copiado al portapapeles
+</div>
 
 </body>
 </html>
