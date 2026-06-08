@@ -213,7 +213,8 @@
     .cfooter { display:flex; align-items:flex-end; justify-content:space-between; padding-top:11px; border-top:0.5px solid var(--border); gap:6px; }
     .price-old { font-size:11px; color:var(--muted); text-decoration:line-through; margin-bottom:2px; }
     .price-new { font-family:'Syne',sans-serif; font-size:19px; font-weight:700; color:var(--text); }
-    .price-new span { font-size:12px; font-weight:400; color:var(--muted); }
+    .price-new > span:first-child { font-size:12px; font-weight:400; color:var(--muted); }
+    .price-new > span.price-val { font-size:19px; font-weight:700; color:var(--text); font-family:'Syne',sans-serif; }
     .card-actions { display:flex; gap:5px; flex-shrink:0; }
 
     .btn-cart { width:32px; height:32px; border-radius:8px; background:rgba(232,99,42,.1); border:0.5px solid rgba(232,99,42,.25); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all .18s ease; flex-shrink:0; position:relative; overflow:hidden; }
@@ -856,7 +857,7 @@
           <div class="cfooter">
             <div>
               <div class="price-old" id="price-old-${firstIdx}" style="${p.oldPrice?'':'display:none'}">US$ ${p.oldPrice||''}</div>
-              <div class="price-new"><span>US$ </span><span id="price-${firstIdx}">${p.price}</span></div>
+              <div class="price-new"><span>US$ </span><span class="price-val" id="price-${firstIdx}">${p.price}</span></div>
             </div>
             <div class="card-actions">
               <button class="btn-cart${inCart?' in-cart':''}" id="btn-cart-${firstIdx}" onclick="toggleCartByCard('${cardId}')" title="Agregar al carrito">
