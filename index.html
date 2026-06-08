@@ -398,6 +398,31 @@
       background:rgba(232,99,42,.12); border-color:var(--accent);
       color:var(--accent); font-weight:600;
     }
+
+    /* ── CONVERSOR DE MONEDA ─────────────────────────────────── */
+    .currency-btn { font-size:11px; }
+    .currency-btn.ars { border-color:var(--accent); color:var(--accent); background:rgba(232,99,42,.08); }
+
+    .price-ars {
+      font-size:11px; color:var(--muted); margin-top:2px;
+      display:none; font-family:'DM Sans',sans-serif;
+    }
+    .currency-ars .price-ars { display:block; }
+    .currency-ars .price-new { font-size:15px; }
+
+    .dolar-tag {
+      font-size:10px; color:var(--muted); margin-left:4px;
+      font-family:'DM Sans',sans-serif; font-weight:400;
+    }
+
+    .rate-indicator {
+      position:fixed; bottom:16px; left:50%; transform:translateX(-50%);
+      background:var(--surface2); border:0.5px solid var(--border2);
+      color:var(--muted); font-size:11px; padding:6px 14px;
+      border-radius:100px; z-index:99; opacity:0; pointer-events:none;
+      transition:opacity .3s; white-space:nowrap;
+    }
+    .rate-indicator.show { opacity:1; }
     /* ── SKELETON LOADER ─────────────────────────────────────── */
     @keyframes shimmer {
       0%   { background-position: -600px 0; }
@@ -483,9 +508,9 @@
     <div class="logo"><div class="logo-dot"></div><span class="logo-text">KRAKATOA</span></div>
   </div>
   <div class="header-actions">
-    <a href="#sobre-nosotros" class="icon-btn" title="Sobre nosotros">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
-    </a>
+    <button class="icon-btn currency-btn" id="currency-btn" onclick="toggleCurrency()" title="Cambiar moneda">
+      <span id="currency-label" style="font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:.5px">USD</span>
+    </button>
     <button class="icon-btn" onclick="toggleTheme()" title="Cambiar tema">
       <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
       <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
@@ -1150,7 +1175,84 @@
       setTimeout(() => toast.classList.remove("show"), 2500);
     });
   }
+
+  // ── CONVERSOR USD / ARS ───────────────────────────────────────
+  let currentCurrency = "USD";
+  let dolarRate = null;
+
+  // Fetch cotización oficial BNA desde dolarapi.com
+  async function fetchDolarRate() {
+    try {
+      const res = await fetch("https://dolarapi.com/v1/dolares/oficial");
+      const data = await res.json();
+      dolarRate = data.venta; // precio de venta BNA
+      showRateIndicator(`Dólar oficial BNA: $${dolarRate.toLocaleString('es-AR', {minimumFractionDigits:2, maximumFractionDigits:2})}`);
+    } catch(e) {
+      console.warn("No se pudo obtener cotización del dólar:", e);
+      dolarRate = null;
+    }
+  }
+
+  function showRateIndicator(msg) {
+    const el = document.getElementById("rate-indicator");
+    el.textContent = msg;
+    el.classList.add("show");
+    setTimeout(() => el.classList.remove("show"), 3500);
+  }
+
+  function toggleCurrency() {
+    if (currentCurrency === "USD") {
+      if (!dolarRate) {
+        showRateIndicator("No se pudo obtener la cotización. Intentá de nuevo.");
+        fetchDolarRate();
+        return;
+      }
+      currentCurrency = "ARS";
+      document.getElementById("currency-label").textContent = "ARS";
+      document.getElementById("currency-btn").classList.add("ars");
+      document.getElementById("grid-wrap").classList.add("currency-ars");
+      updatePricesARS();
+      showRateIndicator(`Dólar oficial BNA: $${dolarRate.toLocaleString('es-AR', {minimumFractionDigits:2, maximumFractionDigits:2})}`);
+    } else {
+      currentCurrency = "USD";
+      document.getElementById("currency-label").textContent = "USD";
+      document.getElementById("currency-btn").classList.remove("ars");
+      document.getElementById("grid-wrap").classList.remove("currency-ars");
+      updatePricesUSD();
+    }
+  }
+
+  function formatARS(usdAmount) {
+    if (!dolarRate) return '';
+    const ars = usdAmount * dolarRate;
+    return '$' + ars.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  function updatePricesARS() {
+    document.querySelectorAll('[id^="price-"]').forEach(el => {
+      const idx = el.id.replace('price-', '');
+      const usd = parseFloat(el.textContent);
+      if (!isNaN(usd)) {
+        let arsEl = document.getElementById('price-ars-' + idx);
+        if (!arsEl) {
+          arsEl = document.createElement('div');
+          arsEl.className = 'price-ars';
+          arsEl.id = 'price-ars-' + idx;
+          el.closest('.price-new').insertAdjacentElement('afterend', arsEl);
+        }
+        arsEl.textContent = formatARS(usd);
+      }
+    });
+  }
+
+  function updatePricesUSD() {
+    document.querySelectorAll('[id^="price-ars-"]').forEach(el => el.remove());
+  }
+
+  // Fetch al cargar la página en segundo plano
+  fetchDolarRate();
 </script>
+<div class="rate-indicator" id="rate-indicator"></div>
 <!-- SHARE TOAST -->
 <div class="share-toast" id="share-toast">
   <svg viewBox="0 0 24 24" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
