@@ -382,6 +382,21 @@
 
 
 
+
+    /* ── VARIANTES DE STORAGE ────────────────────────────────── */
+    .variants { display:flex; gap:5px; flex-wrap:wrap; margin-bottom:10px; }
+    .variant-btn {
+      font-family:'DM Sans',sans-serif; font-size:10px; font-weight:500;
+      padding:4px 9px; border-radius:6px;
+      border:0.5px solid var(--border2); background:transparent;
+      color:var(--muted); cursor:pointer;
+      transition:all .15s cubic-bezier(.22,1,.36,1);
+    }
+    .variant-btn:hover { border-color:var(--accent); color:var(--text); }
+    .variant-btn.active {
+      background:rgba(232,99,42,.12); border-color:var(--accent);
+      color:var(--accent); font-weight:600;
+    }
     /* ── SKELETON LOADER ─────────────────────────────────────── */
     @keyframes shimmer {
       0%   { background-position: -600px 0; }
@@ -791,43 +806,66 @@
     if (sort === "price-desc") list = [...list].sort((a,b) => b.price - a.price);
     if (sort === "off")        list = [...list].sort((a,b) => (b.off||0) - (a.off||0));
 
-    document.getElementById("count-bar").innerHTML =
-      `<strong>${list.length}</strong> producto${list.length !== 1 ? 's' : ''}`;
+    // ── AGRUPAR VARIANTES por nombre+cat ──────────────────────
+    const groups = [];
+    const seen = {};
+    list.forEach(p => {
+      const key = `${p.cat}||${p.name}`;
+      if (seen[key] !== undefined) {
+        groups[seen[key]].variants.push(p);
+      } else {
+        seen[key] = groups.length;
+        groups.push({ ...p, variants: [p] });
+      }
+    });
 
-    if (!list.length) {
+    document.getElementById("count-bar").innerHTML =
+      `<strong>${groups.length}</strong> producto${groups.length !== 1 ? 's' : ''}`;
+
+    if (!groups.length) {
       document.getElementById("grid-wrap").innerHTML = '<div class="grid"><div class="empty-grid">No hay productos en esta categoría.</div></div>';
       return;
     }
 
     const WA_SVG = `<svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>`;
 
-    document.getElementById("grid-wrap").innerHTML = `<div class="grid">${list.map((p, i) => {
-      const idx = allProducts.indexOf(p);
-      const inCart = cart.some(c => c._idx === idx);
-      const inCmp  = comparator.some(c => c._idx === idx);
-      return `<div class="card" style="animation-delay:${i*55}ms">
+    document.getElementById("grid-wrap").innerHTML = `<div class="grid">${groups.map((g, i) => {
+      const hasVariants = g.variants.length > 1;
+      // active variant tracked by DOM, default = first
+      const firstIdx = allProducts.indexOf(g.variants[0]);
+      const inCart = cart.some(c => c._idx === firstIdx);
+      const inCmp  = comparator.some(c => c._idx === firstIdx);
+      const p = g.variants[0];
+      const cardId = 'card-' + firstIdx;
+
+      return `<div class="card" id="${cardId}" style="animation-delay:${i*55}ms" data-active-idx="${firstIdx}">
         <div class="cimg">
-          <img src="${p.img}" alt="${p.name}" loading="lazy" onerror="this.style.opacity='.12'">
-          ${p.off ? `<div class="badge-off">-${p.off}%</div>` : ''}
+          <img src="${p.img}" alt="${p.name}" loading="lazy" onerror="this.style.opacity='.12'" id="img-${firstIdx}">
+          ${p.off ? `<div class="badge-off" id="badge-off-${firstIdx}">-${p.off}%</div>` : `<div class="badge-off" id="badge-off-${firstIdx}" style="display:none"></div>`}
           <div class="badge-brand">${p.brand}</div>
-          ${p.storage ? `<div class="badge-storage">${p.storage}</div>` : ''}
         </div>
         <div class="cbody">
           <div class="cname">${p.name}</div>
-          <ul class="cspecs">${p.specs.map(s=>`<li>${s}</li>`).join('')}</ul>
+          ${hasVariants ? `<div class="variants" id="variants-${firstIdx}">
+            ${g.variants.map((v, vi) => {
+              const vidx = allProducts.indexOf(v);
+              return `<button class="variant-btn${vi===0?' active':''}" onclick="selectVariant(${firstIdx},${vidx},this)">${v.storage || v.name}</button>`;
+            }).join('')}
+          </div>` : ''}
+          <ul class="cspecs" id="specs-${firstIdx}">${p.specs.map(s=>`<li>${s}</li>`).join('')}</ul>
           <div class="cfooter">
             <div>
-              ${p.oldPrice ? `<div class="price-old">US$ ${p.oldPrice}</div>` : ''}
-              <div class="price-new"><span>US$ </span>${p.price}</div>
+              <div class="price-old" id="price-old-${firstIdx}" style="${p.oldPrice?'':'display:none'}">US$ ${p.oldPrice||''}</div>
+              <div class="price-new"><span>US$ </span><span id="price-${firstIdx}">${p.price}</span></div>
             </div>
             <div class="card-actions">
-              <button class="btn-cart${inCart?' in-cart':''}" onclick="toggleCart(${idx})" title="${inCart?'Quitar de la lista':'Agregar a la lista'}">
-                <svg viewBox="0 0 24 24" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
+              <button class="btn-cart${inCart?' in-cart':''}" id="btn-cart-${firstIdx}" onclick="toggleCartByCard('${cardId}')" title="Agregar al carrito">
+                <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 001.98 1.61h9.72a2 2 0 001.98-1.61L23 6H6"/></svg>
               </button>
-              <button class="btn-cmp${inCmp?' in-cmp':''}" onclick="toggleCmp(${idx})" title="${inCmp?'Quitar del comparador':'Comparar'}">
+              <button class="btn-cmp${inCmp?' in-cmp':''}" id="btn-cmp-${firstIdx}" onclick="toggleCmpByCard('${cardId}')" title="Comparar">
                 <svg viewBox="0 0 24 24" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
               </button>
-              <button class="btn-share" onclick="shareProduct('${p.name}','${p.price}','${p.brand}')" title="Compartir producto">
+              <button class="btn-share" onclick="shareProduct('${p.name}','${p.price}','${p.brand}')" title="Compartir">
                 <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
               </button>
             </div>
@@ -853,6 +891,55 @@
     btn.classList.add('active');
     fadeGrid(() => renderGrid());
     closeSidebar();
+  }
+
+  // ── VARIANTES ─────────────────────────────────────────────────
+  function selectVariant(cardFirstIdx, newIdx, btn) {
+    const p = allProducts[newIdx];
+    const card = document.getElementById('card-' + cardFirstIdx);
+    card.setAttribute('data-active-idx', newIdx);
+
+    // update image
+    document.getElementById('img-' + cardFirstIdx).src = p.img;
+
+    // update specs
+    document.getElementById('specs-' + cardFirstIdx).innerHTML =
+      p.specs.map(s => `<li>${s}</li>`).join('');
+
+    // update price
+    document.getElementById('price-' + cardFirstIdx).textContent = p.price;
+    const oldEl = document.getElementById('price-old-' + cardFirstIdx);
+    if (p.oldPrice) { oldEl.style.display=''; oldEl.textContent = 'US$ ' + p.oldPrice; }
+    else { oldEl.style.display='none'; }
+
+    // update off badge
+    const offEl = document.getElementById('badge-off-' + cardFirstIdx);
+    if (p.off) { offEl.style.display=''; offEl.textContent = '-' + p.off + '%'; }
+    else { offEl.style.display='none'; }
+
+    // update variant buttons
+    card.querySelectorAll('.variant-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+
+    // update cart/cmp button state
+    const inCart = cart.some(c => c._idx === newIdx);
+    const inCmp  = comparator.some(c => c._idx === newIdx);
+    const cartBtn = document.getElementById('btn-cart-' + cardFirstIdx);
+    const cmpBtn  = document.getElementById('btn-cmp-'  + cardFirstIdx);
+    cartBtn.className = 'btn-cart' + (inCart ? ' in-cart' : '');
+    cmpBtn.className  = 'btn-cmp'  + (inCmp  ? ' in-cmp'  : '');
+  }
+
+  function getActiveIdx(cardId) {
+    return parseInt(document.getElementById(cardId).getAttribute('data-active-idx'));
+  }
+
+  function toggleCartByCard(cardId) {
+    toggleCart(getActiveIdx(cardId));
+  }
+
+  function toggleCmpByCard(cardId) {
+    toggleCmp(getActiveIdx(cardId));
   }
 
   // ── CARRITO ───────────────────────────────────────────────────
