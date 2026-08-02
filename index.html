@@ -865,13 +865,13 @@
       const cardId = 'card-' + firstIdx;
 
       return `<div class="card" id="${cardId}" style="animation-delay:${i*55}ms" data-active-idx="${firstIdx}">
-        <div class="cimg">
+        <div class="cimg" onclick="verDetalle('${p.name}')" style="cursor:pointer;" title="Ver detalles">
           <img src="${p.img}" alt="${p.name}" loading="lazy" onerror="this.style.opacity='.12'" id="img-${firstIdx}">
           ${p.off ? `<div class="badge-off" id="badge-off-${firstIdx}">-${p.off}%</div>` : `<div class="badge-off" id="badge-off-${firstIdx}" style="display:none"></div>`}
           <div class="badge-brand">${p.brand}</div>
         </div>
         <div class="cbody">
-          <div class="cname">${p.name}</div>
+          <div class="cname" onclick="verDetalle('${p.name}')" style="cursor:pointer;" title="Ver detalles">${p.name}</div>
           ${hasVariants ? `<div class="variants" id="variants-${firstIdx}">
             ${g.variants.map((v, vi) => {
               const vidx = allProducts.indexOf(v);
@@ -1251,6 +1251,9 @@
 
   // Fetch al cargar la página en segundo plano
   fetchDolarRate();
+  function verDetalle(nombre) {
+  window.location.href = 'producto.html?prod=' + encodeURIComponent(nombre);
+}
 </script>
 <div class="rate-indicator" id="rate-indicator"></div>
 <!-- SHARE TOAST -->

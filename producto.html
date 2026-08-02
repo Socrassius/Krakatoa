@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detalle de Producto — Krakatoa</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <!-- Usamos los mismos estilos base que en tu index -->
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    [data-theme="dark"] {
+      --bg:#0a0a0a; --surface:#141414; --surface2:#1c1c1c;
+      --border:rgba(255,255,255,0.07); --border2:rgba(255,255,255,0.14);
+      --text:#f0ede8; --muted:#777; --accent:#e8632a;
+      --img-bg:#181818;
+    }
+    body { background:var(--bg); font-family:'DM Sans',sans-serif; color:var(--text); min-height:100vh; }
+    
+    header { background:var(--bg); border-bottom:0.5px solid var(--border); padding:0 28px; height:60px; display:flex; align-items:center; }
+    .logo { font-family:'Syne',sans-serif; font-size:22px; font-weight:800; color:var(--text); text-decoration:none; display:flex; align-items:center; gap:9px; }
+    .logo-dot { width:8px; height:8px; background:var(--accent); border-radius:50%; }
+
+    .product-container { max-width: 1000px; margin: 40px auto; padding: 0 20px; display: grid; grid-template-columns: 1fr 1fr; gap: 40px; }
+    .product-image { background:var(--img-bg); border-radius: 16px; padding: 40px; display:flex; justify-content:center; align-items:center; border:0.5px solid var(--border); }
+    .product-image img { width: 100%; max-width: 400px; object-fit: contain; filter:drop-shadow(0 6px 20px rgba(0,0,0,0.5)); }
+    
+    .product-info h1 { font-family:'Syne',sans-serif; font-size: 32px; margin-bottom: 10px; }
+    .product-brand { color: var(--accent); font-weight: 700; text-transform: uppercase; font-size: 12px; letter-spacing: 1px; margin-bottom: 20px; display: block; }
+    .product-price { font-family:'Syne',sans-serif; font-size: 36px; font-weight: 700; margin-bottom: 30px; }
+    
+    .specs-list { list-style: none; margin-bottom: 30px; }
+    .specs-list li { padding: 12px 0; border-bottom: 0.5px solid var(--border); color: var(--text); display:flex; align-items:center; gap:10px; }
+    .specs-list li::before { content:''; width:6px; height:6px; border-radius:50%; background:var(--accent); }
+
+    .btn-buy { background: #25D366; color: white; padding: 16px 24px; border-radius: 12px; text-decoration: none; font-weight: 700; display: inline-flex; align-items: center; gap: 10px; transition: opacity 0.2s; border:none; cursor:pointer; font-size:16px; }
+    .btn-buy:hover { opacity: 0.85; }
+    .btn-back { display:inline-block; margin: 20px 28px; color: var(--muted); text-decoration: none; font-size:14px; }
+    .btn-back:hover { color: var(--text); }
+
+    @media (max-width: 768px) {
+      .product-container { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="logo"><div class="logo-dot"></div><span class="logo-text">KRAKATOA</span></a>
+</header>
+
+<a href="index.html" class="btn-back">← Volver al catálogo</a>
+
+<div id="product-view">
+  <p style="text-align:center; padding: 40px; color:var(--muted)">Cargando detalle del producto...</p>
+</div>
+
+<script>
+  // 1. Obtener el nombre del producto de la URL
+  const params = new URLSearchParams(window.location.search);
+  const prodName = params.get('prod');
+  const WA_NUMBER = "5492942658677"; // Tu número
+
+  // 2. Traer la base de datos de Google Sheets (usamos la misma lógica que tu index)
+  const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS8BRrz4g4i7CuHYflGMpzIDgjc9tn20OItwCKjOS2237qCPfNN04NRHuUiDa-oKBpqqrs4fH4T8w8-/pub?output=csv";
+
+  if (prodName) {
+    fetch(SHEET_URL + "&t=" + Date.now()).then(r => r.text()).then(csv => {
+      const data = parseCSV(csv);
+      
+      // 3. Buscar el producto específico
+      const producto = data.find(p => p.name === prodName);
+      
+      if (producto) {
+        renderProducto(producto);
+      } else {
+        document.getElementById('product-view').innerHTML = '<p style="text-align:center; padding:40px;">Producto no encontrado.</p>';
+      }
+    });
+  } else {
+    window.location.href = 'index.html'; // Si entran sin producto, vuelven al inicio
+  }
+
+  // Lógica para parsear CSV (idéntica a index.html)
+  function parseCSV(csv) {
+    const lines = csv.trim().split("\n");
+    const headers = lines[0].split(",").map(h => h.trim().replace(/^"|"$/g,''));
+    return lines.slice(1).map(line => {
+      const fields = []; let cur = '', inQ = false;
+      for (let i = 0; i < line.length; i++) {
+        const ch = line[i];
+        if (ch === '"') inQ = !inQ;
+        else if (ch === ',' && !inQ) { fields.push(cur.trim()); cur = ''; }
+        else cur += ch;
+      }
+      fields.push(cur.trim());
+      const obj = {}; headers.forEach((h,i) => { obj[h] = fields[i] || ''; });
+      const clean = v => (v || '').replace(/^[*]\s*/, '').trim();
+      return {
+        brand: obj.brand, name: obj.name, img: obj.img, price: parseFloat(obj.price)||0, storage: obj.storage,
+        specs: [clean(obj.spec1), clean(obj.spec2), clean(obj.spec3), clean(obj.spec4 || obj.specs4)].filter(Boolean)
+      };
+    }).filter(p => p.name && p.price);
+  }
+
+  // 4. Inyectar el HTML en la pantalla
+  function renderProducto(p) {
+    const msg = `Hola! Me interesa este producto que vi en la web:\n\n*${p.brand} ${p.name}*\nPrecio: US$ ${p.price}\n\n¿Tienen stock?`;
+    const waLink = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`;
+
+    const html = `
+      <div class="product-container">
+        <div class="product-image">
+          <img src="${p.img}" alt="${p.name}">
+        </div>
+        <div class="product-info">
+          <span class="product-brand">${p.brand}</span>
+          <h1>${p.name}</h1>
+          ${p.storage ? `<p style="color:var(--muted); margin-bottom:10px;">Capacidad: ${p.storage}</p>` : ''}
+          <div class="product-price">US$ ${p.price}</div>
+          
+          <ul class="specs-list">
+            ${p.specs.map(s => `<li>${s}</li>`).join('')}
+          </ul>
+
+          <a href="${waLink}" target="_blank" class="btn-buy">
+            Consultar por WhatsApp
+          </a>
+        </div>
+      </div>
+    `;
+    document.getElementById('product-view').innerHTML = html;
+    document.title = `${p.name} — Krakatoa`;
+  }
+</script>
+</body>
+</html>
