@@ -874,9 +874,9 @@
           <div class="cname" onclick="verDetalle('${p.name}')" style="cursor:pointer;" title="Ver detalles">${p.name}</div>
           ${hasVariants ? `<div class="variants" id="variants-${firstIdx}">
             ${g.variants.map((v, vi) => {
-              const vidx = allProducts.indexOf(v);
-              return `<button class="variant-btn${vi===0?' active':''}" onclick="selectVariant(${firstIdx},${vidx},this)">${v.storage || v.name}</button>`;
-            }).join('')}
+                const vidx = allProducts.indexOf(v);
+                return `<button class="variant-btn${vi===0?' active':''}" onclick="selectVariant(${firstIdx},${vidx},this)">${v.storage || v.name}</button>`;
+              }).join('')}
           </div>` : ''}
           <ul class="cspecs" id="specs-${firstIdx}">${p.specs.map(s=>`<li>${s}</li>`).join('')}</ul>
           <div class="cfooter">

@@ -54,34 +54,32 @@
 <div id="product-view">
   <p style="text-align:center; padding: 40px; color:var(--muted)">Cargando detalle del producto...</p>
 </div>
-
 <script>
-  // 1. Obtener el nombre del producto de la URL
   const params = new URLSearchParams(window.location.search);
   const prodName = params.get('prod');
   const WA_NUMBER = "5492942658677"; // Tu número
-
-  // 2. Traer la base de datos de Google Sheets (usamos la misma lógica que tu index)
   const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS8BRrz4g4i7CuHYflGMpzIDgjc9tn20OItwCKjOS2237qCPfNN04NRHuUiDa-oKBpqqrs4fH4T8w8-/pub?output=csv";
+
+  let currentVariants = [];
 
   if (prodName) {
     fetch(SHEET_URL + "&t=" + Date.now()).then(r => r.text()).then(csv => {
       const data = parseCSV(csv);
       
-      // 3. Buscar el producto específico
-      const producto = data.find(p => p.name === prodName);
+      // Agrupamos todas las filas que tengan el mismo nombre y categoría (las variantes)
+      const variants = data.filter(p => p.name === prodName);
       
-      if (producto) {
-        renderProducto(producto);
+      if (variants.length > 0) {
+        currentVariants = variants;
+        renderProducto(variants[0], variants);
       } else {
         document.getElementById('product-view').innerHTML = '<p style="text-align:center; padding:40px;">Producto no encontrado.</p>';
       }
     });
   } else {
-    window.location.href = 'index.html'; // Si entran sin producto, vuelven al inicio
+    window.location.href = 'index.html';
   }
 
-  // Lógica para parsear CSV (idéntica a index.html)
   function parseCSV(csv) {
     const lines = csv.trim().split("\n");
     const headers = lines[0].split(",").map(h => h.trim().replace(/^"|"$/g,''));
@@ -97,33 +95,66 @@
       const obj = {}; headers.forEach((h,i) => { obj[h] = fields[i] || ''; });
       const clean = v => (v || '').replace(/^[*]\s*/, '').trim();
       return {
-        brand: obj.brand, name: obj.name, img: obj.img, price: parseFloat(obj.price)||0, storage: obj.storage,
+        cat: (obj.cat || '').trim().toLowerCase(),
+        brand: obj.brand, name: obj.name, img: obj.img, 
+        price: parseFloat(obj.price)||0,
+        oldPrice: obj.oldPrice ? parseFloat(obj.oldPrice) : null,
+        off: obj.off ? parseFloat(obj.off) : null,
+        storage: obj.storage || null,
         specs: [clean(obj.spec1), clean(obj.spec2), clean(obj.spec3), clean(obj.spec4 || obj.specs4)].filter(Boolean)
       };
     }).filter(p => p.name && p.price);
   }
 
-  // 4. Inyectar el HTML en la pantalla
-  function renderProducto(p) {
-    const msg = `Hola! Me interesa este producto que vi en la web:\n\n*${p.brand} ${p.name}*\nPrecio: US$ ${p.price}\n\n¿Tienen stock?`;
-    const waLink = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`;
+  function renderProducto(p, variants) {
+    const hasVariants = variants.length > 1;
+    
+    // Generamos el link inicial de WhatsApp con la primera variante activa
+    updateWhatsAppLink(p);
 
     const html = `
+      <style>
+        .variants { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:20px; }
+        .variant-btn {
+          font-family:'DM Sans',sans-serif; font-size:12px; font-weight:500;
+          padding:6px 14px; border-radius:8px;
+          border:0.5px solid var(--border2); background:transparent;
+          color:var(--muted); cursor:pointer;
+          transition:all .18s ease;
+        }
+        .variant-btn:hover { border-color:var(--accent); color:var(--text); }
+        .variant-btn.active {
+          background:rgba(232,99,42,.12); border-color:var(--accent);
+          color:var(--accent); font-weight:600;
+        }
+      </style>
+
       <div class="product-container">
         <div class="product-image">
-          <img src="${p.img}" alt="${p.name}">
+          <img src="${p.img}" alt="${p.name}" id="detail-img">
         </div>
         <div class="product-info">
           <span class="product-brand">${p.brand}</span>
           <h1>${p.name}</h1>
-          ${p.storage ? `<p style="color:var(--muted); margin-bottom:10px;">Capacidad: ${p.storage}</p>` : ''}
-          <div class="product-price">US$ ${p.price}</div>
           
-          <ul class="specs-list">
+          ${hasVariants ? `
+            <div style="font-size:12px; color:var(--muted); margin-bottom:8px;">Capacidad:</div>
+            <div class="variants" id="detail-variants">
+              ${variants.map((v, vi) => `
+                <button class="variant-btn ${vi === 0 ? 'active' : ''}" onclick="selectDetailVariant(${vi})">
+                  ${v.storage || v.name}
+                </button>
+              `).join('')}
+            </div>
+          ` : ''}
+
+          <div class="product-price" id="detail-price">US$ ${p.price}</div>
+          
+          <ul class="specs-list" id="detail-specs">
             ${p.specs.map(s => `<li>${s}</li>`).join('')}
           </ul>
 
-          <a href="${waLink}" target="_blank" class="btn-buy">
+          <a href="#" target="_blank" class="btn-buy" id="detail-wa-btn">
             Consultar por WhatsApp
           </a>
         </div>
@@ -131,6 +162,35 @@
     `;
     document.getElementById('product-view').innerHTML = html;
     document.title = `${p.name} — Krakatoa`;
+  }
+
+  // Función que maneja el cambio al hacer clic en otra capacidad
+  function selectDetailVariant(idx) {
+    const p = currentVariants[idx];
+    
+    // Actualizamos clases active de los botones
+    const buttons = document.querySelectorAll('#detail-variants .variant-btn');
+    buttons.forEach((btn, i) => {
+      btn.classList.toggle('active', i === idx);
+    });
+
+    // Actualizamos imagen, precio y especificaciones en pantalla
+    document.getElementById('detail-img').src = p.img;
+    document.getElementById('detail-price').textContent = `US$ ${p.price}`;
+    document.getElementById('detail-specs').innerHTML = p.specs.map(s => `<li>${s}</li>`).join('');
+
+    updateWhatsAppLink(p);
+  }
+
+  function updateWhatsAppLink(p) {
+    const msg = `Hola! Me interesa este producto que vi en la web:\n\n*${p.brand} ${p.name}* ${p.storage ? `(${p.storage})` : ''}\nPrecio: US$ ${p.price}\n\n¿Tienen stock?`;
+    const waLink = `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`;
+    
+    // Esperamos a que el botón exista en el DOM por si se recarga dinámicamente
+    setTimeout(() => {
+      const btn = document.getElementById('detail-wa-btn');
+      if (btn) btn.href = waLink;
+    }, 50);
   }
 </script>
 </body>
