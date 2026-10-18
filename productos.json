@@ -83,9 +83,9 @@
     "brand": "Apple",
     "name": "iPhone 17 Pro",
     "img": "https://maximstore.com/_next/image?url=https%3A%2F%2Fback.maximstore.com%2Fstatic%2Fimages%2Fcd6c9058-100d-4fec-850f-0a986120d8b2.png&w=960&q=75",
-    "price": 1300,
-    "oldPrice": 1560,
-    "off": 20,
+    "price": 1200,
+    "oldPrice": 1300,
+    "off": 8,
     "storage": "256GB",
     "specs": [
       "Pantalla 6.3 ProMotion",
