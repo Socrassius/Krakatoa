@@ -210,14 +210,15 @@
     "cat": "celulares",
     "brand": "Motorola",
     "name": "Motorola Edge 70 Fusion",
-    "img": "https://armoto.vtexassets.com/arquivos/ids/171460-800-auto?v=639082259924400000&width=800&height=auto&aspect=true",
+    "img": "img/productos/motorola-edge-70-fusion-256gb-mve6dugh.webp",
     "price": 460,
     "oldPrice": null,
     "off": null,
     "storage": "256GB",
     "specs": [
-      "Pantalla 6.67 pOLED 120Hz",
-      "MediaTek Dimensity 7300 · 8GB RAM"
+      "Pantalla 6.67 OLED 120Hz",
+      "MediaTek Dimensity 7300",
+      "8GB RAM"
     ]
   },
   {
