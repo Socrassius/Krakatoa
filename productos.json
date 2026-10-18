@@ -144,6 +144,22 @@
   },
   {
     "cat": "celulares",
+    "brand": "Apple",
+    "name": "iPhone 18 Pro",
+    "img": "img/productos/iphone-18-pro-mve5ir4j.webp",
+    "price": 1480,
+    "oldPrice": 1650,
+    "off": 10,
+    "storage": null,
+    "specs": [
+      "Chip A20 Pro",
+      "Cámara Pro Fusion de 48 MP",
+      "Panel Super Retina XDR súper fluido a 120 Hz",
+      "Apple Intelligence total"
+    ]
+  },
+  {
+    "cat": "celulares",
     "brand": "Motorola",
     "name": "Motorola Edge 50 Ultra",
     "img": "https://armoto.vtexassets.com/arquivos/ids/166369-1200-auto?v=638949310430470000&width=1200&height=auto&aspect=true",
