@@ -2,17 +2,16 @@
   {
     "cat": "celulares",
     "brand": "Apple",
-    "name": "iPhone 16e",
-    "img": "https://maximstore.com/_next/image?url=https%3A%2F%2Fback.maximstore.com%2Fstatic%2Fimages%2F5f9473a8-0d72-4a25-9b85-b9765f9acc1b.png&w=960&q=75",
-    "price": 690,
-    "oldPrice": 759,
-    "off": 10,
-    "storage": "256GB",
+    "name": "Iphone 15",
+    "img": "https://back.maximstore.com/static/images/0bb0c6a5-603e-4338-8527-1fda8f2df096.png",
+    "price": 780,
+    "oldPrice": null,
+    "off": null,
+    "storage": "128GB",
     "specs": [
-      "Pantalla 6.1\" OLED",
-      "Chip A18 Bionic",
-      "Cámara 48MP",
-      "Batería 3561 mAh"
+      "Pantalla 6.1 Super Retina XDR",
+      "Chip A15 Bionic · GPU 5 núcleos",
+      "IP68 · MagSafe · Face ID"
     ]
   },
   {
@@ -20,12 +19,12 @@
     "brand": "Apple",
     "name": "iPhone 16",
     "img": "https://back.maximstore.com/static/images/7f3185fb-23ed-4c53-9017-739fa050e5a8.png",
-    "price": 840,
-    "oldPrice": 989,
-    "off": 15,
+    "price": 870,
+    "oldPrice": null,
+    "off": null,
     "storage": "128GB",
     "specs": [
-      "Pantalla 6.1\" Super Retina",
+      "Pantalla 6.1 Super Retina",
       "Chip A18 Bionic",
       "Dual 48MP + 12MP",
       "Batería 3561 mAh"
@@ -41,7 +40,7 @@
     "off": null,
     "storage": "256GB",
     "specs": [
-      "Pantalla 6.1\" Super Retina",
+      "Pantalla 6.1 Super Retina",
       "Chip A18 Bionic",
       "Dual 48MP + 12MP",
       "Batería 3561 mAh"
@@ -50,14 +49,30 @@
   {
     "cat": "celulares",
     "brand": "Apple",
-    "name": "iPhone 17",
-    "img": "https://maximstore.com/_next/image?url=https%3A%2F%2Fback.maximstore.com%2Fstatic%2Fimages%2F4b022d33-af09-4bc7-a5db-2758edf94274.png&w=960&q=75",
-    "price": 977,
-    "oldPrice": 1123,
+    "name": "iPhone 16e",
+    "img": "https://maximstore.com/_next/image?url=https%3A%2F%2Fback.maximstore.com%2Fstatic%2Fimages%2F5f9473a8-0d72-4a25-9b85-b9765f9acc1b.png&w=960&q=75",
+    "price": 645,
+    "oldPrice": 759,
     "off": 15,
     "storage": "256GB",
     "specs": [
-      "Pantalla 6.3\" 120Hz",
+      "Pantalla 6.1 OLED",
+      "Chip A18 Bionic",
+      "Cámara 48MP",
+      "Batería 3561 mAh"
+    ]
+  },
+  {
+    "cat": "celulares",
+    "brand": "Apple",
+    "name": "iPhone 17",
+    "img": "https://maximstore.com/_next/image?url=https%3A%2F%2Fback.maximstore.com%2Fstatic%2Fimages%2F4b022d33-af09-4bc7-a5db-2758edf94274.png&w=960&q=75",
+    "price": 1020,
+    "oldPrice": 1173,
+    "off": 15,
+    "storage": "256GB",
+    "specs": [
+      "Pantalla 6.3 120Hz",
       "Chip A19",
       "Dual 48MP + 48MP",
       "Carga rápida MagSafe"
@@ -68,12 +83,12 @@
     "brand": "Apple",
     "name": "iPhone 17 Pro",
     "img": "https://maximstore.com/_next/image?url=https%3A%2F%2Fback.maximstore.com%2Fstatic%2Fimages%2Fcd6c9058-100d-4fec-850f-0a986120d8b2.png&w=960&q=75",
-    "price": 1390,
-    "oldPrice": null,
-    "off": null,
+    "price": 1300,
+    "oldPrice": 1560,
+    "off": 20,
     "storage": "256GB",
     "specs": [
-      "Pantalla 6.3\" ProMotion",
+      "Pantalla 6.3 ProMotion",
       "Chip A19 Pro",
       "Triple 48MP (Telefoto 5x)",
       "Titanio"
@@ -84,12 +99,12 @@
     "brand": "Apple",
     "name": "iPhone 17 Pro Max",
     "img": "https://maximstore.com/_next/image?url=https%3A%2F%2Fback.maximstore.com%2Fstatic%2Fimages%2F5ade608d-106e-4086-b129-c36a2a838811.png&w=960&q=75",
-    "price": 1560,
+    "price": 1400,
     "oldPrice": null,
     "off": null,
-    "storage": "512GB",
+    "storage": "256GB",
     "specs": [
-      "Pantalla 6.9\" ProMotion",
+      "Pantalla 6.9 ProMotion",
       "Chip A19 Pro",
       "Triple 48MP",
       "Batería +4600 mAh"
@@ -97,82 +112,34 @@
   },
   {
     "cat": "celulares",
-    "brand": "Samsung",
-    "name": "Samsung S25 FE",
-    "img": "https://bairesit.com.ar/Image/0/700_700-Celular-Samsung-Galaxy-S25FE-5G-256-8GB-Jetblack-11.webp",
-    "price": 590,
+    "brand": "Apple",
+    "name": "iPhone 17 Pro Max",
+    "img": "https://maximstore.com/_next/image?url=https%3A%2F%2Fback.maximstore.com%2Fstatic%2Fimages%2F5ade608d-106e-4086-b129-c36a2a838811.png&w=960&q=75",
+    "price": 1620,
     "oldPrice": null,
     "off": null,
     "storage": "512GB",
     "specs": [
-      "Pantalla 6.4\" AMOLED 120Hz",
-      "Exynos 2400e",
-      "Cámara Triple 50MP",
-      "Batería 4500 mAh"
+      "Pantalla 6.9 ProMotion",
+      "Chip A19 Pro",
+      "Triple 48MP",
+      "Batería +4600 mAh"
     ]
   },
   {
     "cat": "celulares",
-    "brand": "Samsung",
-    "name": "Samsung S26+",
-    "img": "https://multipoint.com.ar/Image/0/700_700-M2_Black_MIRACLE_-_STANDARD_Carrusel_1._PRODUCT_IMAGE_2400x2400.webp",
-    "price": 1400,
+    "brand": "Apple",
+    "name": "iPhone 17e",
+    "img": "https://maximstore.com/_next/image?url=https%3A%2F%2Fback.maximstore.com%2Fstatic%2Fimages%2Fad019238-5194-4e55-b56c-8c2dd27fe06f.png&w=960&q=75",
+    "price": 835,
     "oldPrice": null,
     "off": null,
-    "storage": "512GB",
+    "storage": "256GB",
     "specs": [
-      "Pantalla 6.7\" Dynamic AMOLED",
-      "Snapdragon 8 Elite",
-      "Cámara Triple 50MP",
-      "Batería 4900 mAh"
-    ]
-  },
-  {
-    "cat": "celulares",
-    "brand": "Samsung",
-    "name": "Samsung S26 Ultra",
-    "img": "https://multipoint.com.ar/Image/0/700_700-M3%20Black%20MIRACLE%20-%20STANDARD%20Carrusel_1.%20PRODUCT%20IMAGE%202400x24001.webp",
-    "price": 1350,
-    "oldPrice": null,
-    "off": null,
-    "storage": "512GB",
-    "specs": [
-      "Pantalla 6.8\" Antirreflejo",
-      "S-Pen Integrado",
-      "Cámara 200MP",
-      "Batería 5000 mAh"
-    ]
-  },
-  {
-    "cat": "celulares",
-    "brand": "Samsung",
-    "name": "Samsung Z Fold 5",
-    "img": "https://samsungar.vtexassets.com/arquivos/ids/207779-1200-auto?width=1200&height=auto&aspect=true",
-    "price": 1525,
-    "oldPrice": null,
-    "off": null,
-    "storage": "512GB",
-    "specs": [
-      "7.6\" Dynamic AMOLED 2X",
-      "Octa-Core 3.36GHz",
-      "Triple cámara 50MP",
-      "Batería 4900 mAh"
-    ]
-  },
-  {
-    "cat": "celulares",
-    "brand": "Motorola",
-    "name": "Motorola Edge 60 Pro",
-    "img": "https://armoto.vtexassets.com/arquivos/ids/169212-1200-auto?v=638827408706400000&width=1200&height=auto&aspect=true",
-    "price": 650,
-    "oldPrice": null,
-    "off": null,
-    "storage": "512GB",
-    "specs": [
-      "Pantalla 6.7\" pOLED 165Hz",
-      "Snapdragon 8 Elite",
-      "Cámara 50MP OIS",
-      "Carga Turbo 125W"
+      "Chip A19 · 4-core GPU",
+      "Pantalla 6.1 Super Retina XDR",
+      "MagSafe · IP68 · iOS 26",
+      "Cámara 48MP + 2x Teleobjetivo"
     ]
   },
   {
@@ -185,11 +152,264 @@
     "off": null,
     "storage": "512GB",
     "specs": [
-      "Pantalla 6.7\" pOLED 144Hz",
+      "Pantalla 6.7 pOLED 144Hz",
       "Snapdragon 8s Gen 3",
       "Cámara 50MP + Teleobjetivo",
       "Acabado Madera/Cuero"
     ]
+  },
+  {
+    "cat": "celulares",
+    "brand": "Motorola",
+    "name": "Motorola Edge 60 Fusion",
+    "img": "https://armoto.vtexassets.com/arquivos/ids/171460-800-auto?v=639082259924400000&width=800&height=auto&aspect=true",
+    "price": 397,
+    "oldPrice": null,
+    "off": null,
+    "storage": "256GB",
+    "specs": [
+      "Pantalla 6.67 pOLED 120Hz",
+      "MediaTek Dimensity 7300 · 8GB RAM",
+      "Cámara 50MP OIS + 13MP UGA",
+      "Batería 5200mAh · Carga 68W · IP68/69"
+    ]
+  },
+  {
+    "cat": "celulares",
+    "brand": "Motorola",
+    "name": "Motorola Edge 60 Pro",
+    "img": "https://tiendanewsan.com.ar/media/catalog/product/cache/e16223670af7ae8877a6c2db5c335df1/2/0/2025_MOTOROLA_EXPLORER_COMAKERTING_SHADOW_FRONTBACK_1.png",
+    "price": 600,
+    "oldPrice": 660,
+    "off": 10,
+    "storage": "512GB",
+    "specs": [
+      "Pantalla 6.7 pOLED 165Hz",
+      "Snapdragon 8 Elite",
+      "Cámara 50MP OIS",
+      "12GB RAM"
+    ]
+  },
+  {
+    "cat": "celulares",
+    "brand": "Motorola",
+    "name": "Motorola Edge 70 Fusion",
+    "img": "https://armoto.vtexassets.com/arquivos/ids/171460-800-auto?v=639082259924400000&width=800&height=auto&aspect=true",
+    "price": 460,
+    "oldPrice": null,
+    "off": null,
+    "storage": "256GB",
+    "specs": [
+      "Pantalla 6.67 pOLED 120Hz",
+      "MediaTek Dimensity 7300 · 8GB RAM"
+    ]
+  },
+  {
+    "cat": "celulares",
+    "brand": "Motorola",
+    "name": "Motorola Moto G56 5G",
+    "img": "https://armoto.vtexassets.com/arquivos/ids/171371/Copia%20de%202025_BOGOTA_gris.png?v=639080147598100000",
+    "price": 350,
+    "oldPrice": null,
+    "off": null,
+    "storage": "256GB",
+    "specs": [
+      "MediaTek Dimensity 7060",
+      "Pantalla 6.72 pOLED",
+      "Batería 5200 mAh",
+      "Dual 50MP + 8MP"
+    ]
+  },
+  {
+    "cat": "celulares",
+    "brand": "Motorola",
+    "name": "Motorola Moto G77",
+    "img": "https://armoto.vtexassets.com/arquivos/motorola-g-77-pdp-cmf-color1-m-99ew9321.png",
+    "price": 415,
+    "oldPrice": null,
+    "off": null,
+    "storage": "256GB",
+    "specs": [
+      "MediaTek Dimensity 6400",
+      "Pantalla 6.8 AMOLED 120Hz",
+      "Batería 5200 mAh",
+      "Dual 108MP + 8MP"
+    ]
+  },
+  {
+    "cat": "celulares",
+    "brand": "Samsung",
+    "name": "Samsung Galaxy A37 5G",
+    "img": "https://shop.samsung.com/latin/pub/media/catalog/product/cache/a69170b4a4f0666a52473c2224ba9220/s/m/sm-a376_galaxya37_5g_set-cut-all_2.png",
+    "price": 389,
+    "oldPrice": null,
+    "off": null,
+    "storage": "128GB",
+    "specs": [
+      "Exynos 1480",
+      "Pantalla 6.7 Super AMOLED",
+      "Batería 5000 mAh",
+      "Cámara 50MP OIS"
+    ]
+  },
+  {
+    "cat": "celulares",
+    "brand": "Samsung",
+    "name": "Samsung Galaxy A57 5G",
+    "img": "https://tiendaonline.movistar.com.ar/media/catalog/product/cache/d24a34bded6d2df740ef66d66d2112c9/s/a/samsung-s57-lilac-hero.png",
+    "price": 465,
+    "oldPrice": null,
+    "off": null,
+    "storage": "128GB",
+    "specs": [
+      "Exynos 1680",
+      "Pantalla 6.7 Super AMOLED Plus",
+      "Batería 5000 mAh",
+      "Triple 50MP + 12MP + 5MP"
+    ]
+  },
+  {
+    "cat": "celulares",
+    "brand": "Samsung",
+    "name": "Samsung Galaxy A57 5G",
+    "img": "https://tiendaonline.movistar.com.ar/media/catalog/product/cache/d24a34bded6d2df740ef66d66d2112c9/s/a/samsung-s57-lilac-hero.png",
+    "price": 540,
+    "oldPrice": null,
+    "off": null,
+    "storage": "256GB",
+    "specs": [
+      "Exynos 1680",
+      "Pantalla 6.7 Super AMOLED Plus",
+      "Batería 5000 mAh",
+      "Triple 50MP + 12MP + 5MP"
+    ]
+  },
+  {
+    "cat": "celulares",
+    "brand": "Samsung",
+    "name": "Samsung S25 FE",
+    "img": "https://bairesit.com.ar/Image/0/700_700-Celular-Samsung-Galaxy-S25FE-5G-256-8GB-Jetblack-11.webp",
+    "price": 590,
+    "oldPrice": null,
+    "off": null,
+    "storage": "512GB",
+    "specs": [
+      "Pantalla 6.4 AMOLED 120Hz",
+      "Exynos 2400e",
+      "Cámara Triple 50MP",
+      "Batería 4500 mAh"
+    ]
+  },
+  {
+    "cat": "celulares",
+    "brand": "Samsung",
+    "name": "Samsung S26 Ultra",
+    "img": "https://tiendaonline.movistar.com.ar/media/catalog/product/cache/d24a34bded6d2df740ef66d66d2112c9/s/a/samsung-s26-ultra-white-hero_1.png",
+    "price": 1350,
+    "oldPrice": null,
+    "off": null,
+    "storage": "512GB",
+    "specs": [
+      "Pantalla 6.8 Antirreflejo",
+      "S-Pen Integrado",
+      "Cámara 200MP",
+      "Batería 5000 mAh"
+    ]
+  },
+  {
+    "cat": "celulares",
+    "brand": "Samsung",
+    "name": "Samsung S26+",
+    "img": "https://cdn.billowshop.com/9ef84dda-32dd-4016-7da3-1c0a824fffb4/img/Producto/2569/Diseno-sin-titulo-2026-03-13T131710-272-69b447470a170-O.png",
+    "price": 1250,
+    "oldPrice": null,
+    "off": null,
+    "storage": "256",
+    "specs": [
+      "Pantalla 6.7 Dynamic AMOLED",
+      "Snapdragon 8 Elite",
+      "Cámara Triple 50MP",
+      "Batería 4900 mAh"
+    ]
+  },
+  {
+    "cat": "celulares",
+    "brand": "Samsung",
+    "name": "Samsung Z Fold 5",
+    "img": "https://multipoint.com.ar/Image/0/700_700-e32.jpg",
+    "price": 1525,
+    "oldPrice": null,
+    "off": null,
+    "storage": "512GB",
+    "specs": [
+      "7.6 Dynamic AMOLED 2X",
+      "Octa-Core 3.36GHz",
+      "Triple cámara 50MP",
+      "Batería 4900 mAh"
+    ]
+  },
+  {
+    "cat": "notebooks",
+    "brand": "Apple",
+    "name": "MacBook AIR M5 13'",
+    "img": "https://cdsassets.apple.com/live/7WUAS350/images/tech-specs/macbook-air-13-inch-m5.png",
+    "price": 1550,
+    "oldPrice": null,
+    "off": null,
+    "storage": "512 GB",
+    "specs": []
+  },
+  {
+    "cat": "notebooks",
+    "brand": "Apple",
+    "name": "MacBook AIR M5 15'",
+    "img": "https://cdsassets.apple.com/live/7WUAS350/images/tech-specs/macbook-air-13-inch-m5.png",
+    "price": 1710,
+    "oldPrice": null,
+    "off": null,
+    "storage": "512 GB",
+    "specs": []
+  },
+  {
+    "cat": "notebooks",
+    "brand": "Apple",
+    "name": "MacBook Neo 13",
+    "img": "https://maximstore.com/_next/image?url=https%3A%2F%2Fback.maximstore.com%2Fstatic%2Fimages%2F250bc39a-d70e-46db-b55c-f136c60e0494.png&w=960&q=75",
+    "price": 890,
+    "oldPrice": null,
+    "off": null,
+    "storage": "256GB",
+    "specs": [
+      "Chip A18 Pro",
+      "Pantalla 13 Liquid Retina",
+      "8GB RAM · Batería 16h"
+    ]
+  },
+  {
+    "cat": "notebooks",
+    "brand": "Apple",
+    "name": "MacBook Neo 13",
+    "img": "https://maximstore.com/_next/image?url=https%3A%2F%2Fback.maximstore.com%2Fstatic%2Fimages%2F250bc39a-d70e-46db-b55c-f136c60e0494.png&w=960&q=75",
+    "price": 990,
+    "oldPrice": null,
+    "off": null,
+    "storage": "512GB",
+    "specs": [
+      "Chip A18 Pro",
+      "Pantalla 13 Liquid Retina",
+      "8GB RAM · Batería 16h"
+    ]
+  },
+  {
+    "cat": "notebooks",
+    "brand": "Apple",
+    "name": "MacBook PRO M5 14'",
+    "img": "https://www.cordobadigital.net/wp-content/uploads/2026/06/macbook-pro-m5-14-16gb-1tb-space-galeria.png",
+    "price": 2690,
+    "oldPrice": null,
+    "off": null,
+    "storage": "1TB",
+    "specs": []
   },
   {
     "cat": "audio",
@@ -225,66 +445,98 @@
   },
   {
     "cat": "audio",
+    "brand": "Samsung",
+    "name": "Sound Tower MX-T70 Samsung",
+    "img": "https://images.samsung.com/is/image/samsung/cl-giga-party-audio-mx-t70-mx-t70-zs-frontblack-209501086?$624_624_PNG$",
+    "price": 480,
+    "oldPrice": 552,
+    "off": 15,
+    "storage": null,
+    "specs": [
+      "Potencia Total: 1500 Watts (RMS)",
+      "Audio bidireccional (sonido que llena la sala) y función Bass Booster para intensificar los graves",
+      "2 puertos USB",
+      "Bluetooth 5.0 con códec aptX y multiconexión (soporta 2 dispositivos a la vez)."
+    ]
+  },
+  {
+    "cat": "consolas",
     "brand": "Sony",
-    "name": "Sony WH-CH720N",
-    "img": "https://arsonyb2c.vtexassets.com/arquivos/ids/365181-1600-auto?v=638747953429300000&width=1600&height=auto&aspect=true",
-    "price": 169,
+    "name": "PS5 Digital Edition + Fortnite",
+    "img": "https://gmedia.playstation.com/is/image/SIEPDC/ps5-product-thumbnail-01-en-14sep21?$facebook$",
+    "price": 780,
     "oldPrice": null,
     "off": null,
-    "storage": null,
+    "storage": "825 GB",
     "specs": [
-      "Noise Cancelling V1",
-      "Diseño ligero 192g",
-      "Multipunto 2 dispositivos",
-      "Hasta 35h"
+      "Procesador AMD Zen 2 · 3.5GHz",
+      "SSD ultrarrápido 825GB",
+      "GPU 10.28 TFLOPS · 36 CUs",
+      "Incluye Fortnite + V-Bucks"
     ]
   },
   {
-    "cat": "notebooks",
-    "brand": "ASUS",
-    "name": "ASUS TUF A16 Advantage Edition — Full AMD",
-    "img": "https://dlcdnwebimgs.asus.com/files/media/20c6a4a2-ceb4-496a-a37a-64b3f420e3a7/v1/images/a_kv-m.webp",
-    "price": 1500,
+    "cat": "tablets",
+    "brand": "Apple",
+    "name": "iPad Air 11",
+    "img": "https://cdsassets.apple.com/live/7WUAS350/images/tech-specs/122241-122242-ipad-air-11inch-13inch-m3.png",
+    "price": 610,
     "oldPrice": null,
     "off": null,
-    "storage": "512 GB",
+    "storage": "256GB",
     "specs": [
-      "* Ryzen 7 Serie 7000",
-      "* 16GB RAM DDR5",
-      "* RX 7700S 8GB (rendimiento similar RTX 4060)",
-      "* SSD 512GB"
+      "Chip A16 Bionic",
+      "Pantalla 11 Liquid Retina",
+      "8GB RAM · iPadOS 18",
+      "Cámara 12MP · Face ID"
     ]
   },
   {
-    "cat": "notebooks",
-    "brand": "Lenovo",
-    "name": "Lenovo Legion",
-    "img": "https://p2-ofp.static.pub//fes/cms/2025/04/04/e3u6nyzagi4b7ma1whiwtqzc69jbq1782687.png",
-    "price": 900,
+    "cat": "tablets",
+    "brand": "Apple",
+    "name": "iPad Air 11 M3",
+    "img": "https://cdsassets.apple.com/live/7WUAS350/images/tech-specs/122241-122242-ipad-air-11inch-13inch-m3.png",
+    "price": 690,
     "oldPrice": null,
     "off": null,
-    "storage": null,
+    "storage": "256GB",
     "specs": [
-      "* Intel i5 10ª Gen",
-      "* 16GB RAM",
-      "* RTX 3050 4GB",
-      "* SSD 256GB"
+      "Chip Apple M3",
+      "Pantalla 13 Liquid Retina",
+      "8GB RAM · iPadOS 18",
+      "Cámara 12MP · Face ID"
     ]
   },
   {
-    "cat": "notebooks",
-    "brand": "ACER",
-    "name": "ACER NITRO 5",
-    "img": "https://m.media-amazon.com/images/I/81ixSM8wxBL.jpg",
-    "price": 650,
+    "cat": "relojes",
+    "brand": "Apple",
+    "name": "Apple Watch Series 11 GPS",
+    "img": "https://maximstore.com/_next/image?url=https%3A%2F%2Fback.maximstore.com%2Fstatic%2Fimages%2Fd20bc2a9-ee74-4393-9e91-4d44637bf340.png&w=960&q=75",
+    "price": 450,
+    "oldPrice": 495,
+    "off": 10,
+    "storage": "42mm",
+    "specs": [
+      "Chip Apple S10",
+      "Pantalla OLED 2 Always-On",
+      "ECG · Oxígeno en sangre · Presión arterial",
+      "Batería 24h · Resistente 50m"
+    ]
+  },
+  {
+    "cat": "relojes",
+    "brand": "Apple",
+    "name": "Apple Watch Series 11 GPS",
+    "img": "https://maximstore.com/_next/image?url=https%3A%2F%2Fback.maximstore.com%2Fstatic%2Fimages%2Fd20bc2a9-ee74-4393-9e91-4d44637bf340.png&w=960&q=75",
+    "price": 500,
     "oldPrice": null,
     "off": null,
-    "storage": "1 TB",
+    "storage": "46mm",
     "specs": [
-      "* Intel i5 10ª Gen",
-      "* 16GB RAM",
-      "* GTX 1650 4GB",
-      "* SSD 1TB"
+      "Chip Apple S10",
+      "Pantalla OLED 2 Always-On",
+      "ECG · Oxígeno en sangre · Presión arterial",
+      "Batería 24h · Resistente 50m"
     ]
   }
 ]
