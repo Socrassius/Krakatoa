@@ -350,22 +350,6 @@
     ]
   },
   {
-    "cat": "celulares",
-    "brand": "Samsung",
-    "name": "Samsung Z Fold 5",
-    "img": "https://multipoint.com.ar/Image/0/700_700-e32.jpg",
-    "price": 1525,
-    "oldPrice": null,
-    "off": null,
-    "storage": "512GB",
-    "specs": [
-      "7.6 Dynamic AMOLED 2X",
-      "Octa-Core 3.36GHz",
-      "Triple cámara 50MP",
-      "Batería 4900 mAh"
-    ]
-  },
-  {
     "cat": "notebooks",
     "brand": "Apple",
     "name": "MacBook AIR M5 13'",
