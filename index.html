@@ -717,7 +717,6 @@
 
 <script>
   const WA_NUMBER = "5492942658677"; // ← REEMPLAZÁ con tu número (ej: 5491155554444)
-  const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS8BRrz4g4i7CuHYflGMpzIDgjc9tn20OItwCKjOS2237qCPfNN04NRHuUiDa-oKBpqqrs4fH4T8w8-/pub?output=csv"; // ← PEGÁ acá tu URL de Google Sheets publicada como CSV
 
   let allProducts = [], currentCat = "celulares", currentBrand = "Todos";
   let cart = [], comparator = [];
@@ -758,56 +757,15 @@
       </div>`).join('')}</div>`;
   }
 
-  function loadProducts() {
+    function loadProducts() {
     showSkeleton();
-    if (SHEET_URL) {
-      fetch(SHEET_URL + "&t=" + Date.now()).then(r => r.text()).then(csv => {
-        const data = parseCSV(csv);
-        if (data.length) { allProducts = data; renderBrands(); renderGrid(); }
-        else loadFallback();
-      }).catch(loadFallback);
-    } else { loadFallback(); }
-  }
-
-  function loadFallback() {
-    fetch("productos.json").then(r => r.json()).then(data => {
-      allProducts = data; renderBrands(); renderGrid();
-    }).catch(() => {
-      document.getElementById("grid-wrap").innerHTML =
-        '<p style="color:var(--muted);padding:40px;text-align:center">No se pudo cargar el catálogo.</p>';
-    });
-  }
-
-  function parseCSV(csv) {
-    const lines = csv.trim().split("\n");
-    const headers = lines[0].split(",").map(h => h.trim().replace(/^"|"$/g,''));
-    return lines.slice(1).map(line => {
-      const fields = []; let cur = '', inQ = false;
-      for (let i = 0; i < line.length; i++) {
-        const ch = line[i];
-        if (ch === '"') { inQ = !inQ; }
-        else if (ch === ',' && !inQ) { fields.push(cur.trim()); cur = ''; }
-        else { cur += ch; }
-      }
-      fields.push(cur.trim());
-      const obj = {}; headers.forEach((h,i) => { obj[h] = fields[i] || ''; });
-      let cat = (obj.cat || '').trim().toLowerCase();
-      // handle both spec4 and specs4 column names, strip leading asterisks
-      const clean = v => (v || '').replace(/^[*]\s*/, '').trim();
-      return {
-        cat, brand: obj.brand, name: obj.name, img: obj.img,
-        price: parseFloat(obj.price)||0,
-        oldPrice: obj.oldPrice ? parseFloat(obj.oldPrice) : null,
-        off: obj.off ? parseFloat(obj.off) : null,
-        storage: obj.storage || null,
-        specs: [
-          clean(obj.spec1),
-          clean(obj.spec2),
-          clean(obj.spec3),
-          clean(obj.spec4 || obj.specs4)
-        ].filter(Boolean)
-      };
-    }).filter(p => p.name && p.price);
+    fetch("productos.json?t=" + Date.now())
+      .then(r => r.json())
+      .then(data => { allProducts = data; renderBrands(); renderGrid(); })
+      .catch(() => {
+        document.getElementById("grid-wrap").innerHTML =
+          '<p style="color:var(--muted);padding:40px;text-align:center">No se pudo cargar el catálogo.</p>';
+      });
   }
 
   loadProducts();
