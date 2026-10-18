@@ -193,17 +193,17 @@
   {
     "cat": "celulares",
     "brand": "Motorola",
-    "name": "Motorola Edge 60 Pro",
+    "name": "Motorola Edge 60 Pro 5G",
     "img": "https://tiendanewsan.com.ar/media/catalog/product/cache/e16223670af7ae8877a6c2db5c335df1/2/0/2025_MOTOROLA_EXPLORER_COMAKERTING_SHADOW_FRONTBACK_1.png",
-    "price": 600,
-    "oldPrice": 660,
-    "off": 10,
-    "storage": "512GB",
+    "price": 580,
+    "oldPrice": 680,
+    "off": 15,
+    "storage": "256GB",
     "specs": [
       "Pantalla 6.7 pOLED 165Hz",
       "Snapdragon 8 Elite",
       "Cámara 50MP OIS",
-      "12GB RAM"
+      "8GB RAM"
     ]
   },
   {
