@@ -322,9 +322,9 @@
     "brand": "Samsung",
     "name": "Samsung S26 Ultra",
     "img": "https://tiendaonline.movistar.com.ar/media/catalog/product/cache/d24a34bded6d2df740ef66d66d2112c9/s/a/samsung-s26-ultra-white-hero_1.png",
-    "price": 1350,
-    "oldPrice": null,
-    "off": null,
+    "price": 1300,
+    "oldPrice": 1370,
+    "off": 5,
     "storage": "512GB",
     "specs": [
       "Pantalla 6.8 Antirreflejo",
