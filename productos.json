@@ -141,7 +141,8 @@
       "Pantalla 6.1 Super Retina XDR",
       "MagSafe · IP68 · iOS 26",
       "Cámara 48MP + 2x Teleobjetivo"
-    ]
+    ],
+    "hidden": true
   },
   {
     "cat": "celulares",
