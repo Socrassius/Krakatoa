@@ -78,7 +78,6 @@
     }
     .hpb-count.hidden { display:none; }
     .hpb-count.orange { background:var(--accent); }
-    .hpb-count.purple { background:#6464ff; }
 
     /* hamburger mobile */
     .hamburger {
@@ -183,6 +182,7 @@
 
     /* ── CARDS ───────────────────────────────────────────────── */
     .card {
+      position:relative;
       background:var(--surface); border:0.5px solid var(--border);
       border-radius:16px; overflow:hidden;
       display:flex; flex-direction:column;
@@ -215,21 +215,31 @@
     .price-new { font-family:'Syne',sans-serif; font-size:19px; font-weight:700; color:var(--text); }
     .price-new > span:first-child { font-size:12px; font-weight:400; color:var(--muted); }
     .price-new > span.price-val { font-size:19px; font-weight:700; color:var(--text); font-family:'Syne',sans-serif; }
-    .card-actions { display:flex; gap:5px; flex-shrink:0; }
 
-    .btn-cart { width:32px; height:32px; border-radius:8px; background:rgba(232,99,42,.1); border:0.5px solid rgba(232,99,42,.25); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all .18s ease; flex-shrink:0; position:relative; overflow:hidden; }
-    .btn-cart:hover { background:rgba(232,99,42,.22); border-color:var(--accent); }
-    .btn-cart.in-cart { background:var(--accent); border-color:var(--accent); }
-    .btn-cart.in-cart svg { stroke:#fff; }
-    .btn-cart svg { width:14px; height:14px; stroke:var(--accent); fill:none; transition:stroke .18s; }
-    .btn-cart.ripple::after { content:''; position:absolute; inset:-2px; border-radius:50%; background:rgba(232,99,42,.4); animation:rippleOut .45s cubic-bezier(.22,1,.36,1) forwards; }
-    @keyframes rippleOut { 0%{transform:scale(0);opacity:1} 100%{transform:scale(2.5);opacity:0} }
-
-    .btn-cmp { width:32px; height:32px; border-radius:8px; background:rgba(100,100,255,.08); border:0.5px solid rgba(100,100,255,.2); display:flex; align-items:center; justify-content:center; cursor:pointer; transition:all .18s ease; flex-shrink:0; }
-    .btn-cmp:hover { background:rgba(100,100,255,.18); border-color:rgba(100,100,255,.4); }
-    .btn-cmp.in-cmp { background:rgba(100,100,255,.22); border-color:#6464ff; }
-    .btn-cmp svg { width:14px; height:14px; stroke:#8888ff; fill:none; }
-    .btn-cmp.in-cmp svg { stroke:#aaaaff; }
+    .btn-cart {
+      width:100%; height:36px; margin-top:11px;
+      display:flex; align-items:center; justify-content:center; gap:7px;
+      border-radius:9px; background:transparent; border:0.5px solid var(--accent);
+      color:var(--accent); font-family:'DM Sans',sans-serif; font-size:12px; font-weight:600;
+      white-space:nowrap; cursor:pointer; transition:background .18s ease, color .18s ease;
+      position:relative; overflow:hidden;
+    }
+    .btn-cart:hover { background:rgba(232,99,42,.12); }
+    .btn-cart svg { width:14px; height:14px; stroke:currentColor; fill:none; flex-shrink:0; }
+    .btn-cart .bc-check, .btn-cart .bc-in, .btn-cart .bc-out { display:none; }
+    .btn-cart.in-cart { background:var(--accent); color:#fff; }
+    .btn-cart.in-cart .bc-cart, .btn-cart.in-cart .bc-add { display:none; }
+    .btn-cart.in-cart .bc-check, .btn-cart.in-cart .bc-in { display:inline; }
+    @media (hover:hover) {
+      .btn-cart.in-cart:hover { opacity:.88; }
+      .btn-cart.in-cart:hover .bc-in { display:none; }
+      .btn-cart.in-cart:hover .bc-out { display:inline; }
+    }
+    .btn-cart.ripple::after { content:''; position:absolute; left:50%; top:50%; width:36px; height:36px; margin:-18px 0 0 -18px; border-radius:50%; background:rgba(255,255,255,.35); animation:rippleOut .45s cubic-bezier(.22,1,.36,1) forwards; pointer-events:none; }
+    @keyframes rippleOut { 0%{transform:scale(0);opacity:1} 100%{transform:scale(7);opacity:0} }
+    @media (max-width: 600px) {
+      .btn-cart .bc-long { display:none; }
+    }
 
     .btn-wa { width:32px; height:32px; border-radius:8px; background:rgba(37,211,102,.1); border:0.5px solid rgba(37,211,102,.2); display:flex; align-items:center; justify-content:center; text-decoration:none; transition:all .18s ease; flex-shrink:0; }
     .btn-wa:hover { background:rgba(37,211,102,.22); border-color:rgba(37,211,102,.45); }
@@ -279,8 +289,6 @@
     .about-link-icon { width:32px; height:32px; border-radius:9px; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
     .about-link-icon.wa { background:rgba(37,211,102,.12); }
     .about-link-icon.wa svg { fill:#25D366; width:16px; height:16px; }
-    .about-link-icon.ig { background:rgba(225,48,108,.12); }
-    .about-link-icon.ig svg { fill:#E1306C; width:16px; height:16px; }
     .about-link span { line-height:1.3; }
     .about-link small { display:block; font-size:11px; color:var(--muted); font-weight:400; }
 
@@ -289,7 +297,7 @@
     .footer-logo-dot { width:5px; height:5px; background:var(--accent); border-radius:50%; }
     .footer-copy { font-size:11px; color:var(--muted); }
 
-    /* ── PANELES LATERALES (carrito y comparador) ────────────── */
+    /* ── PANEL LATERAL (carrito) ─────────────────────────────── */
     .panel-overlay { position:fixed; inset:0; background:rgba(0,0,0,.55); z-index:200; opacity:0; pointer-events:none; transition:opacity .25s; }
     .panel-overlay.open { opacity:1; pointer-events:all; }
 
@@ -300,7 +308,6 @@
       transition:transform .32s cubic-bezier(.22,1,.36,1);
     }
     .side-panel.right { right:0; width:390px; max-width:95vw; border-left:0.5px solid var(--border2); transform:translateX(100%); }
-    .side-panel.left  { left:0;  width:480px; max-width:95vw; border-right:0.5px solid var(--border2); transform:translateX(-100%); }
     .side-panel.open  { transform:translateX(0); }
 
     .panel-header { display:flex; align-items:center; justify-content:space-between; padding:20px; border-bottom:0.5px solid var(--border); flex-shrink:0; }
@@ -331,55 +338,6 @@
     .btn-wa-cart:disabled { opacity:.35; cursor:default; }
     .btn-wa-cart svg { width:16px; height:16px; fill:#fff; }
 
-    /* comparador */
-    .cmp-slots { display:grid; grid-template-columns:1fr 1fr; gap:10px; padding:14px 18px; border-bottom:0.5px solid var(--border); flex-shrink:0; }
-    .cmp-slot { background:var(--surface); border:0.5px solid var(--border); border-radius:13px; overflow:hidden; position:relative; min-height:120px; display:flex; flex-direction:column; align-items:center; justify-content:center; }
-    .cmp-slot.filled { border-color:var(--border2); justify-content:flex-start; }
-    .cmp-slot.empty { border:0.5px dashed var(--border2); }
-    .cmp-slot-img { width:100%; height:90px; object-fit:contain; padding:10px; filter:drop-shadow(0 3px 10px var(--shadow)); }
-    .cmp-slot-name { font-family:'Syne',sans-serif; font-size:10px; font-weight:700; text-align:center; padding:0 8px 3px; line-height:1.3; }
-    .cmp-slot-price { font-size:10px; color:var(--accent); font-weight:600; padding-bottom:8px; }
-    .cmp-slot-remove { position:absolute; top:6px; right:6px; width:20px; height:20px; border-radius:5px; border:0.5px solid var(--border2); background:var(--surface2); color:var(--muted); cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .15s; }
-    .cmp-slot-remove:hover { border-color:#e05c5c; color:#e05c5c; }
-    .cmp-slot-remove svg { width:10px; height:10px; }
-    .cmp-slot-empty-label { font-size:11px; color:var(--muted); text-align:center; padding:0 10px; line-height:1.5; }
-    .cmp-slot-empty-icon { width:24px; height:24px; margin-bottom:6px; opacity:.25; }
-    .cmp-body { flex:1; overflow-y:auto; padding:0 18px 16px; }
-    .cmp-empty-state { display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; color:var(--muted); font-size:12px; gap:8px; text-align:center; padding:30px 16px; }
-    .cmp-empty-state svg { width:32px; height:32px; opacity:.2; }
-    .cmp-section { margin-top:14px; }
-    .cmp-section-title { font-size:10px; letter-spacing:1.5px; text-transform:uppercase; color:var(--muted); margin-bottom:6px; padding-top:2px; }
-    .cmp-row { display:grid; grid-template-columns:1fr 1fr; gap:6px; margin-bottom:5px; }
-    .cmp-cell { background:var(--surface); border:0.5px solid var(--border); border-radius:9px; padding:9px 11px; font-size:11px; line-height:1.4; }
-    .cmp-cell-label { font-size:9px; color:var(--muted); margin-bottom:2px; letter-spacing:.3px; }
-    .cmp-cell-val { font-weight:500; color:var(--text); }
-    .cmp-cell.winner { border-color:rgba(62,207,142,.35); background:rgba(62,207,142,.06); }
-    .cmp-cell.winner .cmp-cell-val { color:#3ecf8e; }
-    .cmp-cell.empty-cell { opacity:.3; }
-    .cmp-footer { padding:12px 18px; border-top:0.5px solid var(--border); flex-shrink:0; }
-    .btn-cmp-wa { width:100%; padding:11px; border-radius:11px; background:#25D366; border:none; color:#fff; font-family:'DM Sans',sans-serif; font-size:13px; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:7px; transition:opacity .18s; }
-    .btn-cmp-wa:hover { opacity:.88; }
-    .btn-cmp-wa:disabled { opacity:.35; cursor:default; }
-    .btn-cmp-wa svg { width:15px; height:15px; fill:#fff; }
-
-    .sidebar-cmp-btn {
-      display:flex; align-items:center; gap:10px; width:100%;
-      padding:9px 12px; border-radius:10px;
-      border:0.5px solid rgba(100,100,255,0.25);
-      background:rgba(100,100,255,0.06); color:#8888ff;
-      cursor:pointer; font-family:'DM Sans',sans-serif;
-      font-size:13px; font-weight:500;
-      transition:all .2s cubic-bezier(.22,1,.36,1);
-    }
-    .sidebar-cmp-btn:hover { background:rgba(100,100,255,0.14); border-color:rgba(100,100,255,0.45); transform:translateY(-1px); }
-    .sidebar-cmp-btn svg { width:15px; height:15px; flex-shrink:0; }
-    .sidebar-cmp-count {
-      margin-left:auto; background:#6464ff; color:#fff;
-      font-size:10px; font-weight:700; width:18px; height:18px;
-      border-radius:50%; display:flex; align-items:center;
-      justify-content:center; font-family:'Syne',sans-serif; flex-shrink:0;
-    }
-    .sidebar-cmp-count.hidden { display:none; }
 
 
 
@@ -584,15 +542,6 @@
       </select>
     </div>
 
-    <div class="sidebar-section">
-      <div class="sidebar-label">Comparar</div>
-      <button class="sidebar-cmp-btn" id="sidebar-cmp-btn" onclick="openComparator()">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
-        Compará tus productos
-        <span class="sidebar-cmp-count hidden" id="cmp-count">0</span>
-      </button>
-    </div>
-
   </aside>
 
   <!-- MAIN -->
@@ -638,19 +587,13 @@
       <div class="about-inner">
         <div class="about-eyebrow">Sobre nosotros</div>
         <h2 class="about-heading">Tu tienda de<br><em>tecnología</em> de confianza.</h2>
-        <p class="about-desc">En Krakatoa encontrás los últimos modelos de celulares, notebooks y audio con garantía, precios honestos y atención personalizada.</p>
+        <p class="about-desc">En Krakatoa encontrás los últimos modelos de celulares, notebooks, audio, consolas, tablets y relojes inteligentes con garantía, precios honestos y atención personalizada.</p>
         <div class="about-links">
-          <a href="https://wa.me/549XXXXXXXXXX" target="_blank" class="about-link">
+          <a href="#" id="about-wa-link" target="_blank" class="about-link">
             <div class="about-link-icon wa">
               <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
             </div>
             <span>WhatsApp<small>Consultá disponibilidad</small></span>
-          </a>
-          <a href="https://instagram.com/krakatoa" target="_blank" class="about-link">
-            <div class="about-link-icon ig">
-              <svg viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
-            </div>
-            <span>Instagram<small>@krakatoa</small></span>
           </a>
         </div>
       </div>
@@ -694,33 +637,15 @@
   </div>
 </div>
 
-<!-- PANEL COMPARADOR -->
-<div class="side-panel left" id="cmp-panel">
-  <div class="panel-header">
-    <div class="panel-title">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
-      Comparar productos
-    </div>
-    <button class="panel-close" onclick="closeComparator()">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-    </button>
-  </div>
-  <div class="cmp-slots" id="cmp-slots"></div>
-  <div class="cmp-body" id="cmp-body"></div>
-  <div class="cmp-footer">
-    <button class="btn-cmp-wa" id="btn-cmp-wa" onclick="sendCmpWA()" disabled>
-      <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-      Consultar ambos por WhatsApp
-    </button>
-  </div>
-</div>
-
 <script>
   const WA_NUMBER = "5492942658677"; // ← REEMPLAZÁ con tu número (ej: 5491155554444)
 
+  // ── LINK WHATSAPP "SOBRE NOSOTROS" ───────────────────────────
+  document.getElementById("about-wa-link").href =
+    `https://wa.me/${WA_NUMBER}?text=${encodeURIComponent("Hola! Vi el catálogo de Krakatoa y quería hacer una consulta.")}`;
+
   let allProducts = [], currentCat = "celulares", currentBrand = "Todos";
-  let cart = [], comparator = [];
-  const MAX_CMP = 2;
+  let cart = [];
 
   // ── TEMA ──────────────────────────────────────────────────────
   const savedTheme = localStorage.getItem("kk-theme") || "dark";
@@ -818,7 +743,6 @@
       // active variant tracked by DOM, default = first
       const firstIdx = allProducts.indexOf(g.variants[0]);
       const inCart = cart.some(c => c._idx === firstIdx);
-      const inCmp  = comparator.some(c => c._idx === firstIdx);
       const p = g.variants[0];
       const cardId = 'card-' + firstIdx;
 
@@ -842,18 +766,17 @@
               <div class="price-old" id="price-old-${firstIdx}" style="${p.oldPrice?'':'display:none'}">US$ ${p.oldPrice||''}</div>
               <div class="price-new"><span>US$ </span><span class="price-val" id="price-${firstIdx}">${p.price}</span></div>
             </div>
-            <div class="card-actions">
-              <button class="btn-cart${inCart?' in-cart':''}" id="btn-cart-${firstIdx}" onclick="toggleCartByCard('${cardId}')" title="Agregar al carrito">
-                <svg viewBox="0 0 24 24" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>
-              </button>
-              <button class="btn-cmp${inCmp?' in-cmp':''}" id="btn-cmp-${firstIdx}" onclick="toggleCmpByCard('${cardId}')" title="Comparar">
-                <svg viewBox="0 0 24 24" stroke-width="2"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>
-              </button>
-              <button class="btn-share" onclick="shareProduct('${p.name}','${p.price}','${p.brand}')" title="Compartir">
-                <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-              </button>
-            </div>
+            <button class="btn-share" onclick="shareProduct('${p.name}','${p.price}','${p.brand}')" title="Compartir">
+              <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+            </button>
           </div>
+          <button class="btn-cart${inCart?' in-cart':''}" id="btn-cart-${firstIdx}" onclick="toggleCartByCard('${cardId}')">
+            <svg class="bc-cart" viewBox="0 0 24 24" stroke-width="1.8"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 001.98 1.61h9.72a2 2 0 001.98-1.61L23 6H6"/></svg>
+            <svg class="bc-check" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+            <span class="bc-add">Agregar<span class="bc-long"> al carrito</span></span>
+            <span class="bc-in">En el carrito</span>
+            <span class="bc-out">Quitar</span>
+          </button>
         </div>
       </div>`;
     }).join('')}</div>`;
@@ -905,13 +828,9 @@
     card.querySelectorAll('.variant-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
 
-    // update cart/cmp button state
-    const inCart = cart.some(c => c._idx === newIdx);
-    const inCmp  = comparator.some(c => c._idx === newIdx);
-    const cartBtn = document.getElementById('btn-cart-' + cardFirstIdx);
-    const cmpBtn  = document.getElementById('btn-cmp-'  + cardFirstIdx);
-    cartBtn.className = 'btn-cart' + (inCart ? ' in-cart' : '');
-    cmpBtn.className  = 'btn-cmp'  + (inCmp  ? ' in-cmp'  : '');
+    // update cart button state
+    document.getElementById('btn-cart-' + cardFirstIdx)
+      .classList.toggle('in-cart', cart.some(c => c._idx === newIdx));
   }
 
   function getActiveIdx(cardId) {
@@ -922,9 +841,6 @@
     toggleCart(getActiveIdx(cardId));
   }
 
-  function toggleCmpByCard(cardId) {
-    toggleCmp(getActiveIdx(cardId));
-  }
 
   // ── CARRITO ───────────────────────────────────────────────────
   function toggleCart(idx) {
@@ -934,9 +850,9 @@
       cart.splice(ex, 1);
     } else {
       cart.push({ _idx:idx, name:p.name, price:p.price, img:p.img, storage:p.storage });
-      triggerRipple(idx);
     }
-    updateCartCount(); renderGrid();
+    updateCartCount(); syncCardButtons();
+    if (ex < 0) triggerRipple(idx);
   }
   function updateCartCount() {
     const el = document.getElementById("cart-count");
@@ -976,7 +892,7 @@
     document.getElementById("cart-total-num").textContent = cart.reduce((a,c)=>a+c.price,0).toLocaleString();
   }
   function removeFromCart(i) {
-    cart.splice(i,1); updateCartCount(); renderCartPanel(); renderGrid();
+    cart.splice(i,1); updateCartCount(); renderCartPanel(); syncCardButtons();
   }
   function sendCartWA() {
     if (!cart.length) return;
@@ -986,98 +902,9 @@
     window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
   }
 
-  // ── COMPARADOR ────────────────────────────────────────────────
-  function toggleCmp(idx) {
-    const ex = comparator.findIndex(c => c._idx === idx);
-    if (ex >= 0) comparator.splice(ex,1);
-    else { if (comparator.length >= MAX_CMP) comparator.shift(); comparator.push({_idx:idx,...allProducts[idx]}); }
-    updateCmpCount(); renderGrid();
-    if (document.getElementById("cmp-panel").classList.contains("open")) renderCmpPanel();
-  }
-  function updateCmpCount() {
-    const el = document.getElementById("cmp-count");
-    el.textContent = comparator.length;
-    el.classList.toggle("hidden", comparator.length === 0);
-    // Update sidebar button label
-    const btn = document.getElementById("sidebar-cmp-btn");
-    if (btn) {
-      const label = comparator.length > 0 ? `Comparar (${comparator.length}/${2})` : 'Compará tus productos';
-      btn.childNodes[2].textContent = ' ' + label;
-    }
-  }
-  function openComparator() {
-    closePanels();
-    document.getElementById("cmp-panel").classList.add("open");
-    document.getElementById("panel-overlay").classList.add("open");
-    renderCmpPanel();
-  }
-  function closeComparator() {
-    document.getElementById("cmp-panel").classList.remove("open");
-    document.getElementById("panel-overlay").classList.remove("open");
-  }
   function closePanels() {
     document.getElementById("cart-panel").classList.remove("open");
-    document.getElementById("cmp-panel").classList.remove("open");
     document.getElementById("panel-overlay").classList.remove("open");
-  }
-  function renderCmpPanel() {
-    renderCmpSlots(); renderCmpBody();
-    document.getElementById("btn-cmp-wa").disabled = comparator.length < 2;
-  }
-  function renderCmpSlots() {
-    let html = "";
-    for (let i = 0; i < MAX_CMP; i++) {
-      const p = comparator[i];
-      if (p) {
-        html += `<div class="cmp-slot filled">
-          <img class="cmp-slot-img" src="${p.img}" onerror="this.style.opacity='.15'">
-          <div class="cmp-slot-name">${p.name}${p.storage?` · ${p.storage}`:''}</div>
-          <div class="cmp-slot-price">US$ ${p.price}</div>
-          <button class="cmp-slot-remove" onclick="toggleCmp(${p._idx})">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-          </button></div>`;
-      } else {
-        html += `<div class="cmp-slot empty">
-          <svg class="cmp-slot-empty-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="3"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
-          <span class="cmp-slot-empty-label">Agregá un producto</span></div>`;
-      }
-    }
-    document.getElementById("cmp-slots").innerHTML = html;
-  }
-  function renderCmpBody() {
-    const body = document.getElementById("cmp-body");
-    if (!comparator.length) { body.innerHTML = `<div class="cmp-empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>Seleccioná productos con el botón comparar en cada card</div>`; return; }
-    if (comparator.length === 1) { body.innerHTML = `<div class="cmp-empty-state"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:26px;height:26px;opacity:.2"><rect x="3" y="3" width="18" height="18" rx="3"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>Agregá un segundo producto para comparar</div>`; return; }
-    const [a,b] = comparator;
-    const priceWinA = a.price < b.price;
-    let html = `<div class="cmp-section"><div class="cmp-section-title">Precio</div><div class="cmp-row">
-      <div class="cmp-cell${priceWinA?' winner':''}"><div class="cmp-cell-label">${a.name.split(" ").slice(0,2).join(" ")}</div><div class="cmp-cell-val">US$ ${a.price}${priceWinA?' ✓':''}</div></div>
-      <div class="cmp-cell${!priceWinA?' winner':''}"><div class="cmp-cell-label">${b.name.split(" ").slice(0,2).join(" ")}</div><div class="cmp-cell-val">US$ ${b.price}${!priceWinA?' ✓':''}</div></div>
-    </div></div>`;
-    if (a.off||b.off) html += `<div class="cmp-section"><div class="cmp-section-title">Descuento</div><div class="cmp-row">
-      <div class="cmp-cell${(a.off||0)>=(b.off||0)&&a.off?' winner':''}"><div class="cmp-cell-val">${a.off?`-${a.off}%`:'—'}</div></div>
-      <div class="cmp-cell${(b.off||0)>(a.off||0)&&b.off?' winner':''}"><div class="cmp-cell-val">${b.off?`-${b.off}%`:'—'}</div></div>
-    </div></div>`;
-    if (a.storage||b.storage) html += `<div class="cmp-section"><div class="cmp-section-title">Storage</div><div class="cmp-row">
-      <div class="cmp-cell"><div class="cmp-cell-val">${a.storage||'—'}</div></div>
-      <div class="cmp-cell"><div class="cmp-cell-val">${b.storage||'—'}</div></div>
-    </div></div>`;
-    const maxS = Math.max(a.specs.length,b.specs.length);
-    if (maxS) {
-      html += `<div class="cmp-section"><div class="cmp-section-title">Especificaciones</div>`;
-      for (let i=0;i<maxS;i++) html += `<div class="cmp-row">
-        <div class="cmp-cell${!a.specs[i]?' empty-cell':''}"><div class="cmp-cell-val">${a.specs[i]||'—'}</div></div>
-        <div class="cmp-cell${!b.specs[i]?' empty-cell':''}"><div class="cmp-cell-val">${b.specs[i]||'—'}</div></div>
-      </div>`;
-      html += `</div>`;
-    }
-    body.innerHTML = html;
-  }
-  function sendCmpWA() {
-    if (comparator.length < 2) return;
-    const [a,b] = comparator;
-    const msg = `Hola! Me interesan estos dos productos:\n\n1. ${a.name}${a.storage?` ${a.storage}`:''} — US$ ${a.price}\n2. ${b.name}${b.storage?` ${b.storage}`:''} — US$ ${b.price}\n\n¿Cuál me recomendás? ¿Están disponibles?`;
-    window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
   }
 
   // ── FADE GRID ─────────────────────────────────────────────────
@@ -1092,13 +919,20 @@
 
   // ── RIPPLE EN CARRITO ─────────────────────────────────────────
   function triggerRipple(idx) {
-    const btns = document.querySelectorAll(`.btn-cart`);
-    // find the one matching this idx via onclick attr
-    btns.forEach(btn => {
-      if (btn.getAttribute('onclick') && btn.getAttribute('onclick').includes(`(${idx})`)) {
-        btn.classList.add('ripple');
-        setTimeout(() => btn.classList.remove('ripple'), 450);
-      }
+    document.querySelectorAll(`.card[data-active-idx="${idx}"] .btn-cart`).forEach(btn => {
+      btn.classList.remove('ripple');
+      void btn.offsetWidth; // reinicia la animación si se vuelve a disparar
+      btn.classList.add('ripple');
+      setTimeout(() => btn.classList.remove('ripple'), 450);
+    });
+  }
+
+  // ── SINCRONIZAR BOTONES DE CARRITO SIN REDIBUJAR ──────────────
+  function syncCardButtons() {
+    document.querySelectorAll('.card[data-active-idx]').forEach(card => {
+      const idx = parseInt(card.getAttribute('data-active-idx'));
+      const cartBtn = card.querySelector('.btn-cart');
+      if (cartBtn) cartBtn.classList.toggle('in-cart', cart.some(c => c._idx === idx));
     });
   }
 
