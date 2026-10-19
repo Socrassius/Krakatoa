@@ -28,6 +28,8 @@
     .product-info h1 { font-family:'Syne',sans-serif; font-size: 32px; margin-bottom: 10px; }
     .product-brand { color: var(--accent); font-weight: 700; text-transform: uppercase; font-size: 12px; letter-spacing: 1px; margin-bottom: 20px; display: block; }
     .product-price { font-family:'Syne',sans-serif; font-size: 36px; font-weight: 700; margin-bottom: 30px; }
+    .product-price-ars { font-family:'DM Sans',sans-serif; font-size: 14px; font-weight: 400; color: var(--muted); margin-top: 4px; }
+    .product-price-ars:empty { display:none; }
     
     .specs-list { list-style: none; margin-bottom: 30px; }
     .specs-list li { padding: 12px 0; border-bottom: 0.5px solid var(--border); color: var(--text); display:flex; align-items:center; gap:10px; }
@@ -37,6 +39,12 @@
     .btn-buy:hover { opacity: 0.85; }
     .btn-back { display:inline-block; margin: 20px 28px; color: var(--muted); text-decoration: none; font-size:14px; }
     .btn-back:hover { color: var(--text); }
+
+    .unavailable { max-width: 460px; margin: 60px auto; padding: 0 20px; text-align: center; }
+    .unavailable h1 { font-family:'Syne',sans-serif; font-size: 24px; margin-bottom: 10px; }
+    .unavailable p { color: var(--muted); font-size: 14px; margin-bottom: 24px; }
+    .btn-catalog { display:inline-block; background: var(--accent); color: #fff; padding: 12px 22px; border-radius: 10px; text-decoration: none; font-weight: 500; font-size: 14px; transition: opacity .2s; }
+    .btn-catalog:hover { opacity: .88; }
 
     @media (max-width: 768px) {
       .product-container { grid-template-columns: 1fr; }
@@ -58,52 +66,75 @@
   const params = new URLSearchParams(window.location.search);
   const prodName = params.get('prod');
   const WA_NUMBER = "5492942658677"; // Tu número
-  const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS8BRrz4g4i7CuHYflGMpzIDgjc9tn20OItwCKjOS2237qCPfNN04NRHuUiDa-oKBpqqrs4fH4T8w8-/pub?output=csv";
 
   let currentVariants = [];
 
+  // ── DÓLAR OFICIAL Y PRECIO EN PESOS ───────────────────────────
+  const DOLAR_URL = "https://dolarapi.com/v1/dolares/oficial";
+  const DOLAR_REFRESH_MS = 10 * 60 * 1000;
+  let dolarRate = null;
+  let dolarLastFetch = 0;
+
+  function formatARS(usd) {
+    const n = Number(usd);
+    if (!dolarRate || !isFinite(n) || n <= 0) return '';
+    return 'ARS $ ' + Math.round(n * dolarRate).toLocaleString('es-AR', { maximumFractionDigits: 0 });
+  }
+
+  function updatePricesARS() {
+    document.querySelectorAll('[data-usd]').forEach(el => {
+      el.textContent = formatARS(el.dataset.usd);
+    });
+  }
+
+  async function fetchDolarRate() {
+    dolarLastFetch = Date.now();
+    try {
+      const res = await fetch(DOLAR_URL, { cache: "no-store" });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      const venta = Number((await res.json()).venta);
+      if (!(venta > 0)) throw new Error("cotización inválida");
+      dolarRate = venta;
+      updatePricesARS();
+    } catch(e) {
+      console.warn("No se pudo obtener cotización del dólar:", e);
+    }
+  }
+
+  fetchDolarRate();
+  setInterval(fetchDolarRate, DOLAR_REFRESH_MS);
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible" && Date.now() - dolarLastFetch > DOLAR_REFRESH_MS) fetchDolarRate();
+  });
+
   if (prodName) {
-    fetch(SHEET_URL + "&t=" + Date.now()).then(r => r.text()).then(csv => {
-      const data = parseCSV(csv);
-      
-      // Agrupamos todas las filas que tengan el mismo nombre y categoría (las variantes)
-      const variants = data.filter(p => p.name === prodName);
-      
+    fetch("productos.json?t=" + Date.now()).then(r => r.json()).then(data => {
+      // Todas las filas con el mismo nombre son variantes del producto
+      const all = (Array.isArray(data) ? data : []).filter(p => p.name === prodName);
+      const variants = all.filter(p => p.hidden !== true);
+
       if (variants.length > 0) {
         currentVariants = variants;
         renderProducto(variants[0], variants);
+      } else if (all.length > 0) {
+        // existe pero está oculto desde el admin
+        showMessage("Este producto no está disponible");
       } else {
-        document.getElementById('product-view').innerHTML = '<p style="text-align:center; padding:40px;">Producto no encontrado.</p>';
+        showMessage("Producto no encontrado");
       }
-    });
+    }).catch(() => showMessage("No se pudo cargar el producto"));
   } else {
     window.location.href = 'index.html';
   }
 
-  function parseCSV(csv) {
-    const lines = csv.trim().split("\n");
-    const headers = lines[0].split(",").map(h => h.trim().replace(/^"|"$/g,''));
-    return lines.slice(1).map(line => {
-      const fields = []; let cur = '', inQ = false;
-      for (let i = 0; i < line.length; i++) {
-        const ch = line[i];
-        if (ch === '"') inQ = !inQ;
-        else if (ch === ',' && !inQ) { fields.push(cur.trim()); cur = ''; }
-        else cur += ch;
-      }
-      fields.push(cur.trim());
-      const obj = {}; headers.forEach((h,i) => { obj[h] = fields[i] || ''; });
-      const clean = v => (v || '').replace(/^[*]\s*/, '').trim();
-      return {
-        cat: (obj.cat || '').trim().toLowerCase(),
-        brand: obj.brand, name: obj.name, img: obj.img, 
-        price: parseFloat(obj.price)||0,
-        oldPrice: obj.oldPrice ? parseFloat(obj.oldPrice) : null,
-        off: obj.off ? parseFloat(obj.off) : null,
-        storage: obj.storage || null,
-        specs: [clean(obj.spec1), clean(obj.spec2), clean(obj.spec3), clean(obj.spec4 || obj.specs4)].filter(Boolean)
-      };
-    }).filter(p => p.name && p.price);
+  function showMessage(text) {
+    document.title = "Krakatoa";
+    document.getElementById('product-view').innerHTML = `
+      <div class="unavailable">
+        <h1>${text}</h1>
+        <p>Podés ver el resto de los productos en el catálogo.</p>
+        <a href="index.html" class="btn-catalog">Volver al catálogo</a>
+      </div>`;
   }
 
   function renderProducto(p, variants) {
@@ -148,7 +179,10 @@
             </div>
           ` : ''}
 
-          <div class="product-price" id="detail-price">US$ ${p.price}</div>
+          <div class="product-price">
+            <span id="detail-price">US$ ${p.price}</span>
+            <div class="product-price-ars" id="detail-price-ars" data-usd="${p.price}">${formatARS(p.price)}</div>
+          </div>
           
           <ul class="specs-list" id="detail-specs">
             ${p.specs.map(s => `<li>${s}</li>`).join('')}
@@ -177,6 +211,9 @@
     // Actualizamos imagen, precio y especificaciones en pantalla
     document.getElementById('detail-img').src = p.img;
     document.getElementById('detail-price').textContent = `US$ ${p.price}`;
+    const arsEl = document.getElementById('detail-price-ars');
+    arsEl.dataset.usd = p.price;
+    arsEl.textContent = formatARS(p.price);
     document.getElementById('detail-specs').innerHTML = p.specs.map(s => `<li>${s}</li>`).join('');
 
     updateWhatsAppLink(p);

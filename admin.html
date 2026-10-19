@@ -102,6 +102,10 @@
     }
     .icon-btn:hover { border-color: var(--border2); color: var(--text); background: var(--surface3); }
     .icon-btn.danger:hover { border-color: var(--red); color: var(--red); background: var(--red2); }
+    .icon-btn.off { color: var(--yellow); }
+    /* producto oculto del catálogo */
+    .row.is-hidden .thumb, .row.is-hidden .r-title { opacity: .45; }
+    .tag.tag-hidden { color: var(--yellow); border-color: rgba(245,184,74,.4); background: rgba(245,184,74,.1); }
     .icon-btn svg { width: 14px; height: 14px; }
     .empty { text-align: center; padding: 50px 20px; color: var(--muted); font-size: 13px; border: 0.5px dashed var(--border2); border-radius: 12px; }
 
@@ -154,7 +158,7 @@
     /* vista previa: copia de la card del catálogo */
     .preview-label { display: flex; justify-content: space-between; align-items: baseline; }
     .preview-wrap { display: flex; justify-content: center; padding: 14px; background: var(--bg); border-radius: 12px; border: 0.5px solid var(--border); }
-    .pcard { width: 230px; background: #141414; border: 0.5px solid rgba(255,255,255,.07); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; }
+    .pcard { position: relative; width: 230px; background: #141414; border: 0.5px solid rgba(255,255,255,.07); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; }
     .pcimg { background: #181818; height: 178px; padding: 22px; position: relative; display: flex; align-items: center; justify-content: center; }
     .pcimg img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 6px 20px rgba(0,0,0,.5)); }
     .pc-noimg { font-size: 11px; color: #555; }
@@ -172,6 +176,22 @@
     .pold { font-size: 11px; color: #777; text-decoration: line-through; margin-bottom: 2px; }
     .pprice { font-family: 'Syne', sans-serif; font-size: 19px; font-weight: 700; }
     .pprice > span:first-child { font-size: 12px; font-weight: 400; color: #777; }
+    .pv-hidden { position: absolute; inset: 0; z-index: 1; border-radius: 16px; background: rgba(10,10,10,.6); display: flex; align-items: center; justify-content: center; }
+    .pv-hidden span { display: flex; align-items: center; gap: 7px; font-size: 13px; font-weight: 600; color: var(--yellow); background: #1c1c1c; border: 0.5px solid rgba(245,184,74,.45); padding: 7px 14px; border-radius: 100px; }
+    .pv-hidden svg { width: 15px; height: 15px; }
+
+    /* switch "Visible en el catálogo" */
+    .toggle { flex-basis: 100%; display: flex; align-items: center; gap: 10px; font-size: 13px; cursor: pointer; user-select: none; }
+    .toggle input {
+      appearance: none; -webkit-appearance: none; margin: 0; flex-shrink: 0; cursor: pointer;
+      width: 34px; height: 20px; border-radius: 100px; position: relative;
+      background: var(--surface3); border: 0.5px solid var(--border2); transition: background .15s, border-color .15s;
+    }
+    .toggle input::before { content: ''; position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 50%; background: var(--muted); transition: transform .15s, background .15s; }
+    .toggle input:checked { background: var(--accent); border-color: var(--accent); }
+    .toggle input:checked::before { transform: translateX(14px); background: #fff; }
+    .toggle input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .toggle-hint { font-size: 11px; color: var(--yellow); }
 
     .fp-foot {
       position: sticky; bottom: 0; background: var(--surface); z-index: 2;
@@ -373,6 +393,9 @@
         <div class="preview-label"><span class="flabel">Así se va a ver en el catálogo</span></div>
         <div class="preview-wrap">
           <div class="pcard">
+            <div class="pv-hidden hidden" id="pv-hidden">
+              <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>Oculto</span>
+            </div>
             <div class="pcimg">
               <div id="pv-img"><span class="pc-noimg">Sin imagen</span></div>
               <div class="pbadge-off hidden" id="pv-off"></div>
@@ -393,6 +416,7 @@
     </div>
 
     <div class="fp-foot">
+      <label class="toggle"><input type="checkbox" id="f-visible" checked> Visible en el catálogo <span class="toggle-hint hidden" id="f-visible-hint">· no va a aparecer en la web</span></label>
       <div class="kbd-hint"><kbd>Ctrl</kbd>+<kbd>Enter</kbd> guardar · <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Enter</kbd> guardar y seguir con otra variante</div>
       <button class="btn" id="btn-variant" onclick="saveProduct(true)" title="Guarda y deja el formulario listo para otra variante del mismo modelo">Guardar + otra variante</button>
       <button class="btn primary" id="btn-save" onclick="saveProduct(false)">Guardar</button>
@@ -452,8 +476,12 @@
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
   const fmt = n => Number(n).toLocaleString("es-AR");
   const showImg = path => imgCache[path] || path;
+  const pLabel = p => `${p.name}${p.storage ? " " + p.storage : ""}`;
+  const EYE_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
+  const EYE_OFF_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17.94 17.94A10.07 10.07 0 0112 20c-7 0-11-8-11-8a18.45 18.45 0 015.06-5.94M9.9 4.24A9.12 9.12 0 0112 4c7 0 11 8 11 8a18.5 18.5 0 01-2.16 3.19m-6.72-1.07a3 3 0 11-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>`;
 
   // ─── UTILIDADES DE PRODUCTOS ───────────────────────────────
+  // "hidden" solo se guarda cuando es true; los visibles no llevan el campo
   function normalize(list) {
     return (Array.isArray(list) ? list : []).map(p => ({
       cat: String(p.cat || "").trim().toLowerCase(),
@@ -464,7 +492,8 @@
       oldPrice: Number(p.oldPrice) > 0 ? Number(p.oldPrice) : null,
       off: Number(p.off) > 0 ? Number(p.off) : null,
       storage: p.storage ? String(p.storage).trim() : null,
-      specs: (Array.isArray(p.specs) ? p.specs : []).map(s => String(s).trim()).filter(Boolean).slice(0, 4)
+      specs: (Array.isArray(p.specs) ? p.specs : []).map(s => String(s).trim()).filter(Boolean).slice(0, 4),
+      ...(p.hidden === true || p.hidden === "true" ? { hidden: true } : {})
     })).filter(p => p.name && p.price);
   }
 
@@ -671,7 +700,9 @@
         oldPrice: o.oldPrice ? parseFloat(o.oldPrice) : null,
         off: o.off ? parseFloat(o.off) : null,
         storage: o.storage || null,
-        specs: [clean(o.spec1), clean(o.spec2), clean(o.spec3), clean(o.spec4 || o.specs4)]
+        specs: [clean(o.spec1), clean(o.spec2), clean(o.spec3), clean(o.spec4 || o.specs4)],
+        // columna opcional "hidden" en la planilla (true / 1 / si / x)
+        hidden: /^(true|1|si|sí|x)$/i.test((o.hidden || "").trim())
       };
     });
   }
@@ -716,15 +747,17 @@
   function renderList() {
     const counts = {};
     products.forEach(p => { counts[p.cat] = (counts[p.cat] || 0) + 1; });
-    $("list-chips").innerHTML = [["todos", "Todos"], ...CATS].map(([id, label]) => {
-      const n = id === "todos" ? products.length : (counts[id] || 0);
+    const nHidden = products.filter(p => p.hidden).length;
+    if (filterCat === "ocultos" && !nHidden) filterCat = "todos";
+    $("list-chips").innerHTML = [["todos", "Todos"], ...CATS, ["ocultos", "Ocultos"]].map(([id, label]) => {
+      const n = id === "todos" ? products.length : id === "ocultos" ? nHidden : (counts[id] || 0);
       if (id !== "todos" && !n) return "";
       return `<button class="chip${filterCat === id ? " active" : ""}" onclick="setFilter('${id}')">${label}<span class="n">${n}</span></button>`;
     }).join("");
 
     const q = query.trim().toLowerCase();
     const items = products.map((p, i) => ({ p, i })).filter(({ p }) =>
-      (filterCat === "todos" || p.cat === filterCat) &&
+      (filterCat === "todos" || (filterCat === "ocultos" ? p.hidden : p.cat === filterCat)) &&
       (!q || `${p.brand} ${p.name} ${p.storage || ""}`.toLowerCase().includes(q))
     );
     $("list-count").textContent = mode ? `${items.length} de ${products.length}` : "";
@@ -736,14 +769,17 @@
     }
 
     $("rows").innerHTML = items.map(({ p, i }) => `
-      <div class="row${editingIndex === i ? " editing" : ""}">
+      <div class="row${editingIndex === i ? " editing" : ""}${p.hidden ? " is-hidden" : ""}">
         <div class="thumb">${p.img ? `<img src="${esc(showImg(p.img))}" alt="" loading="lazy" onerror="this.style.opacity='.12'">` : ""}</div>
         <div style="min-width:0">
-          <div class="r-name">${esc(p.name)}${p.storage ? `<span class="tag">${esc(p.storage)}</span>` : ""}</div>
+          <div class="r-name"><span class="r-title">${esc(p.name)}${p.storage ? `<span class="tag">${esc(p.storage)}</span>` : ""}</span>${p.hidden ? `<span class="tag tag-hidden">Oculto</span>` : ""}</div>
           <div class="r-meta">${esc(p.brand)} · ${esc(CAT_LABEL[p.cat] || p.cat)}${p.off ? ` · <span style="color:var(--accent)">-${p.off}%</span>` : ""}</div>
         </div>
         <div class="r-price">${p.oldPrice ? `<small>US$ ${fmt(p.oldPrice)}</small>` : ""}US$ ${fmt(p.price)}</div>
         <div class="r-actions">
+          <button class="icon-btn${p.hidden ? " off" : ""}" title="${p.hidden ? "Oculto en el catálogo · clic para mostrar" : "Visible en el catálogo · clic para ocultar"}" onclick="toggleHidden(${i})">
+            ${p.hidden ? EYE_OFF_SVG : EYE_SVG}
+          </button>
           <button class="icon-btn" title="Editar" onclick="editProduct(${i})">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
           </button>
@@ -792,7 +828,8 @@
       oldPrice: num("f-oldprice"),
       off: num("f-off"),
       storage: other || fStorage || null,
-      specs: [1, 2, 3, 4].map(n => $("f-spec" + n).value.trim()).filter(Boolean)
+      specs: [1, 2, 3, 4].map(n => $("f-spec" + n).value.trim()).filter(Boolean),
+      ...($("f-visible").checked ? {} : { hidden: true })
     };
   }
 
@@ -808,6 +845,7 @@
     $("f-off").value = p.off || "";
     offManual = !!(p.off && p.off !== calcOff(p.price, p.oldPrice));
     for (let n = 1; n <= 4; n++) $("f-spec" + n).value = (p.specs && p.specs[n - 1]) || "";
+    $("f-visible").checked = !p.hidden;
     clearPending(); imgSrc = null; currentImg = p.img || "";
     setImgStatus("");
     renderFormCats(); renderStorageChips(); updateImgUI();
@@ -896,6 +934,8 @@
     $("pv-old").textContent = p.oldPrice ? `US$ ${fmt(p.oldPrice)}` : "";
     $("pv-old").classList.toggle("hidden", !p.oldPrice);
     $("pv-price").textContent = p.price ? fmt(p.price) : "0";
+    $("pv-hidden").classList.toggle("hidden", !p.hidden);
+    $("f-visible-hint").classList.toggle("hidden", !p.hidden);
   }
 
   // ─── IMÁGENES ──────────────────────────────────────────────
@@ -1154,6 +1194,31 @@
     }
   }
 
+  // Ocultar / mostrar en el catálogo sin borrar (publica al instante)
+  async function toggleHidden(i) {
+    if (busy) return;
+    const p = products[i];
+    const hide = !p.hidden;
+    const label = pLabel(p);
+    busy = true;
+    const prev = products.slice();
+    const next = { ...p };
+    if (hide) next.hidden = true; else delete next.hidden;
+    products[i] = next;
+    renderList();
+    try {
+      if (mode === "repo") { setSaving("Publicando…"); await commitProducts(`${hide ? "Ocultar" : "Mostrar"}: ${label}`); }
+      toast(`${hide ? "Oculto" : "Visible"}: ${label}` + (mode === "repo" ? ". La web se actualiza en ~1 minuto." : " (modo demo)."));
+    } catch (e) {
+      products = prev;
+      toast(errMsg(e), "err");
+    } finally {
+      busy = false; setSaving(null); renderAll();
+      // si ese producto está abierto en el formulario, el switch refleja el estado real
+      if (editingIndex === i) { $("f-visible").checked = !products[i].hidden; updatePreview(); }
+    }
+  }
+
   // ─── AVISOS ────────────────────────────────────────────────
   let toastTimer;
   function toast(msg, type = "ok") {
@@ -1174,6 +1239,7 @@
   // ─── EVENTOS ───────────────────────────────────────────────
   ["f-brand", "f-name", "f-spec1", "f-spec2", "f-spec3", "f-spec4"].forEach(id => $(id).addEventListener("input", updatePreview));
   $("f-name").addEventListener("change", onNameChange);
+  $("f-visible").addEventListener("change", updatePreview);
   $("f-price").addEventListener("input", () => { updateOff(); updatePreview(); });
   $("f-oldprice").addEventListener("input", () => { updateOff(); updatePreview(); });
   $("f-off").addEventListener("input", () => { offManual = $("f-off").value !== ""; if (!offManual) updateOff(); updatePreview(); });

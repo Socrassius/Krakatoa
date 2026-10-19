@@ -11,15 +11,15 @@
 
     [data-theme="dark"] {
       --bg:#0a0a0a; --surface:#141414; --surface2:#1c1c1c;
-      --border:rgba(255,255,255,0.07); --border2:rgba(255,255,255,0.14);
-      --text:#f0ede8; --muted:#777; --accent:#e8632a;
+      --border:rgba(255,255,255,0.07); --border2:rgba(255,255,255,0.14); --border-btn:rgba(255,255,255,0.16);
+      --text:#f0ede8; --muted:#777; --muted-soft:#9a9a9a; --accent:#e8632a;
       --img-bg:#181818; --shadow:rgba(0,0,0,0.5);
       --panel-bg:#111; --spec-sep:rgba(255,255,255,0.04);
     }
     [data-theme="light"] {
       --bg:#f5f4f2; --surface:#ffffff; --surface2:#f0eeeb;
-      --border:rgba(0,0,0,0.08); --border2:rgba(0,0,0,0.16);
-      --text:#1a1a1a; --muted:#999; --accent:#e8632a;
+      --border:rgba(0,0,0,0.08); --border2:rgba(0,0,0,0.16); --border-btn:rgba(0,0,0,0.16);
+      --text:#1a1a1a; --muted:#999; --muted-soft:#6f6f6f; --accent:#e8632a;
       --img-bg:#f8f7f5; --shadow:rgba(0,0,0,0.12);
       --panel-bg:#fafaf9; --spec-sep:rgba(0,0,0,0.06);
     }
@@ -199,7 +199,6 @@
     .cimg img { width:100%; height:100%; object-fit:contain; filter:drop-shadow(0 6px 20px var(--shadow)); transition:transform .3s ease; }
     .card:hover .cimg img { transform:scale(1.06); }
 
-    .badge-off { position:absolute; top:10px; right:10px; background:var(--accent); color:#fff; font-size:10px; font-weight:700; padding:3px 9px; border-radius:100px; font-family:'Syne',sans-serif; }
     .badge-brand { position:absolute; top:10px; left:10px; background:rgba(128,128,128,.12); border:0.5px solid rgba(128,128,128,.2); color:var(--muted); font-size:9px; font-weight:500; padding:3px 8px; border-radius:100px; text-transform:uppercase; letter-spacing:1px; }
     .badge-storage { position:absolute; bottom:10px; left:10px; background:rgba(128,128,128,.1); border:0.5px solid var(--border); color:var(--muted); font-size:9px; padding:3px 7px; border-radius:6px; }
 
@@ -210,14 +209,17 @@
     .cspecs li:last-child { border-bottom:none; }
     .cspecs li::before { content:''; width:3px; height:3px; border-radius:50%; background:var(--accent); flex-shrink:0; }
 
-    .cfooter { display:flex; align-items:flex-end; justify-content:space-between; padding-top:11px; border-top:0.5px solid var(--border); gap:6px; }
-    .price-old { font-size:11px; color:var(--muted); text-decoration:line-through; margin-bottom:2px; }
-    .price-new { font-family:'Syne',sans-serif; font-size:19px; font-weight:700; color:var(--text); }
-    .price-new > span:first-child { font-size:12px; font-weight:400; color:var(--muted); }
-    .price-new > span.price-val { font-size:19px; font-weight:700; color:var(--text); font-family:'Syne',sans-serif; }
+    .cfooter { padding-top:11px; border-top:0.5px solid var(--border); }
+    .price-old-row { display:flex; align-items:center; flex-wrap:wrap; gap:4px 6px; margin-bottom:3px; }
+    .price-old { font-size:12px; color:var(--muted); text-decoration:line-through; }
+    .price-off { font-size:11px; font-weight:600; color:var(--accent); background:rgba(232,99,42,.14); padding:2px 6px; border-radius:5px; line-height:1.2; }
+    .price-new { color:var(--text); line-height:1.15; }
+    .price-new > span:first-child { font-family:'DM Sans',sans-serif; font-size:12px; font-weight:400; color:var(--muted); }
+    .price-new > span.price-val { font-family:'Syne',sans-serif; font-size:22px; font-weight:700; color:var(--text); }
 
+    .card-actions { display:flex; gap:8px; margin-top:14px; container-type:inline-size; }
     .btn-cart {
-      width:100%; height:36px; margin-top:11px;
+      flex:1; min-width:0; height:38px; padding:0 10px;
       display:flex; align-items:center; justify-content:center; gap:7px;
       border-radius:9px; background:transparent; border:0.5px solid var(--accent);
       color:var(--accent); font-family:'DM Sans',sans-serif; font-size:12px; font-weight:600;
@@ -226,7 +228,7 @@
     }
     .btn-cart:hover { background:rgba(232,99,42,.12); }
     .btn-cart svg { width:14px; height:14px; stroke:currentColor; fill:none; flex-shrink:0; }
-    .btn-cart .bc-check, .btn-cart .bc-in, .btn-cart .bc-out { display:none; }
+    .btn-cart .bc-check, .btn-cart .bc-in, .btn-cart .bc-out, .btn-cart .bc-short { display:none; }
     .btn-cart.in-cart { background:var(--accent); color:#fff; }
     .btn-cart.in-cart .bc-cart, .btn-cart.in-cart .bc-add { display:none; }
     .btn-cart.in-cart .bc-check, .btn-cart.in-cart .bc-in { display:inline; }
@@ -235,10 +237,18 @@
       .btn-cart.in-cart:hover .bc-in { display:none; }
       .btn-cart.in-cart:hover .bc-out { display:inline; }
     }
-    .btn-cart.ripple::after { content:''; position:absolute; left:50%; top:50%; width:36px; height:36px; margin:-18px 0 0 -18px; border-radius:50%; background:rgba(255,255,255,.35); animation:rippleOut .45s cubic-bezier(.22,1,.36,1) forwards; pointer-events:none; }
+    .btn-cart.ripple::after { content:''; position:absolute; left:50%; top:50%; width:38px; height:38px; margin:-19px 0 0 -19px; border-radius:50%; background:rgba(255,255,255,.35); animation:rippleOut .45s cubic-bezier(.22,1,.36,1) forwards; pointer-events:none; }
     @keyframes rippleOut { 0%{transform:scale(0);opacity:1} 100%{transform:scale(7);opacity:0} }
+    /* Texto corto en mobile, o cuando la card es angosta aunque la pantalla sea grande */
     @media (max-width: 600px) {
+      .btn-cart { gap:5px; padding:0 6px; }
       .btn-cart .bc-long { display:none; }
+      .btn-cart .bc-short { display:inline; }
+    }
+    @container (max-width: 200px) {
+      .btn-cart { gap:5px; padding:0 6px; }
+      .btn-cart .bc-long { display:none; }
+      .btn-cart .bc-short { display:inline; }
     }
 
     .btn-wa { width:32px; height:32px; border-radius:8px; background:rgba(37,211,102,.1); border:0.5px solid rgba(37,211,102,.2); display:flex; align-items:center; justify-content:center; text-decoration:none; transition:all .18s ease; flex-shrink:0; }
@@ -357,30 +367,27 @@
       color:var(--accent); font-weight:600;
     }
 
-    /* ── CONVERSOR DE MONEDA ─────────────────────────────────── */
-    .currency-btn { font-size:11px; }
-    .currency-btn.ars { border-color:var(--accent); color:var(--accent); background:rgba(232,99,42,.08); }
-
+    /* ── PRECIOS EN PESOS ────────────────────────────────────── */
     .price-ars {
-      font-size:11px; color:var(--muted); margin-top:2px;
-      display:none; font-family:'DM Sans',sans-serif;
+      font-family:'DM Sans',sans-serif; font-size:12px; font-weight:400;
+      color:var(--muted-soft); margin-top:3px;
     }
-    .currency-ars .price-ars { display:block; }
-    .currency-ars .price-new { font-size:15px; }
+    .price-ars:empty, .cart-total-ars:empty { display:none; }
+    .cart-item-ars:not(:empty)::before { content:' · '; }
+    .cart-total-ars { text-align:right; font-size:12px; color:var(--muted); margin:-8px 0 12px; }
 
-    .dolar-tag {
-      font-size:10px; color:var(--muted); margin-left:4px;
-      font-family:'DM Sans',sans-serif; font-weight:400;
+    /* ── INDICADOR DÓLAR OFICIAL ─────────────────────────────── */
+    .dolar-ind {
+      display:flex; align-items:center; gap:7px; height:36px;
+      padding:0 12px; border-radius:10px; border:0.5px solid var(--border2);
+      color:var(--muted); font-size:12px; white-space:nowrap; cursor:default;
     }
-
-    .rate-indicator {
-      position:fixed; bottom:16px; left:50%; transform:translateX(-50%);
-      background:var(--surface2); border:0.5px solid var(--border2);
-      color:var(--muted); font-size:11px; padding:6px 14px;
-      border-radius:100px; z-index:99; opacity:0; pointer-events:none;
-      transition:opacity .3s; white-space:nowrap;
-    }
-    .rate-indicator.show { opacity:1; }
+    .dolar-ind.hidden { display:none; }
+    .dolar-dot { width:6px; height:6px; border-radius:50%; background:#3ecf8e; flex-shrink:0; animation:pulse 2s ease-in-out infinite; }
+    .dolar-val { font-family:'Syne',sans-serif; font-size:15px; font-weight:700; color:var(--text); }
+    .dolar-ind.loading .dolar-val { font-family:'DM Sans',sans-serif; font-size:12px; font-weight:400; color:var(--muted); }
+    .dolar-time { font-size:10px; color:var(--muted); }
+    .dolar-time:empty { display:none; }
     /* ── SKELETON LOADER ─────────────────────────────────────── */
     @keyframes shimmer {
       0%   { background-position: -600px 0; }
@@ -408,14 +415,14 @@
 
     /* ── BOTÓN COMPARTIR ─────────────────────────────────────── */
     .btn-share {
-      width:32px; height:32px; border-radius:8px;
-      background:rgba(20,184,166,0.08); border:0.5px solid rgba(20,184,166,0.2);
+      width:38px; height:38px; border-radius:9px;
+      background:transparent; border:0.5px solid var(--border-btn);
       display:flex; align-items:center; justify-content:center;
       cursor:pointer; transition:all .18s ease; flex-shrink:0; position:relative;
     }
-    .btn-share:hover { background:rgba(20,184,166,0.18); border-color:rgba(20,184,166,0.45); }
-    .btn-share svg { width:14px; height:14px; stroke:#14b8a6; fill:none; transition:stroke .18s; }
-    .btn-share:hover svg { stroke:#14b8a6; }
+    .btn-share:hover { background:var(--surface2); }
+    .btn-share svg { width:14px; height:14px; stroke:var(--muted); fill:none; transition:stroke .18s; }
+    .btn-share:hover svg { stroke:var(--text); }
 
     .share-toast {
       position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(10px);
@@ -453,6 +460,18 @@
       .about-heading { font-size:24px; }
       .site-footer { padding:16px; }
     }
+    /* En pantallas chicas el indicador del dólar baja a una franja bajo el header */
+    @media (max-width: 600px) {
+      .dolar-ind {
+        position:absolute; top:100%; left:0; right:0; height:28px;
+        justify-content:center; gap:6px; border:none; border-radius:0;
+        border-bottom:0.5px solid var(--border); background:var(--bg);
+      }
+      .dolar-val { font-size:13px; }
+      .dolar-time, .dolar-label-long { display:none; }
+      .layout { padding-top:28px; }
+      body.dolar-off .layout { padding-top:0; }
+    }
   </style>
 </head>
 <body>
@@ -466,9 +485,12 @@
     <div class="logo"><div class="logo-dot"></div><span class="logo-text">KRAKATOA</span></div>
   </div>
   <div class="header-actions">
-    <button class="icon-btn currency-btn" id="currency-btn" onclick="toggleCurrency()" title="Cambiar moneda">
-      <span id="currency-label" style="font-family:'Syne',sans-serif;font-size:11px;font-weight:700;letter-spacing:.5px">USD</span>
-    </button>
+    <div class="dolar-ind loading" id="dolar-ind" role="status" aria-live="polite">
+      <span class="dolar-dot"></span>
+      <span class="dolar-label">Dólar<span class="dolar-label-long"> oficial</span></span>
+      <span class="dolar-val" id="dolar-val">Cotizando…</span>
+      <span class="dolar-time" id="dolar-time"></span>
+    </div>
     <button class="icon-btn" onclick="toggleTheme()" title="Cambiar tema">
       <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/></svg>
       <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
@@ -627,6 +649,7 @@
       <span class="cart-total-label">Total estimado</span>
       <span class="cart-total-val"><span>US$ </span><span id="cart-total-num">0</span></span>
     </div>
+    <div class="cart-total-ars" id="cart-total-ars" data-usd="0"></div>
     <div style="font-size:11px;color:var(--muted);text-align:center;margin-bottom:10px;line-height:1.5;">
       Al consultar te contactamos por WhatsApp<br>para coordinar el pago y entrega.
     </div>
@@ -686,7 +709,11 @@
     showSkeleton();
     fetch("productos.json?t=" + Date.now())
       .then(r => r.json())
-      .then(data => { allProducts = data; renderBrands(); renderGrid(); })
+      .then(data => {
+        // los productos ocultos desde el admin no se muestran en ningún lado
+        allProducts = (Array.isArray(data) ? data : []).filter(p => p.hidden !== true);
+        renderBrands(); renderGrid();
+      })
       .catch(() => {
         document.getElementById("grid-wrap").innerHTML =
           '<p style="color:var(--muted);padding:40px;text-align:center">No se pudo cargar el catálogo.</p>';
@@ -749,7 +776,6 @@
       return `<div class="card" id="${cardId}" style="animation-delay:${i*55}ms" data-active-idx="${firstIdx}">
         <div class="cimg" onclick="verDetalle('${p.name}')" style="cursor:pointer;" title="Ver detalles">
           <img src="${p.img}" alt="${p.name}" loading="lazy" onerror="this.style.opacity='.12'" id="img-${firstIdx}">
-          ${p.off ? `<div class="badge-off" id="badge-off-${firstIdx}">-${p.off}%</div>` : `<div class="badge-off" id="badge-off-${firstIdx}" style="display:none"></div>`}
           <div class="badge-brand">${p.brand}</div>
         </div>
         <div class="cbody">
@@ -762,21 +788,25 @@
           </div>` : ''}
           <ul class="cspecs" id="specs-${firstIdx}">${p.specs.map(s=>`<li>${s}</li>`).join('')}</ul>
           <div class="cfooter">
-            <div>
-              <div class="price-old" id="price-old-${firstIdx}" style="${p.oldPrice?'':'display:none'}">US$ ${p.oldPrice||''}</div>
-              <div class="price-new"><span>US$ </span><span class="price-val" id="price-${firstIdx}">${p.price}</span></div>
+            <div class="price-old-row" id="price-old-row-${firstIdx}"${oldPriceRow(p).show ? '' : ' style="display:none"'}>
+              <span class="price-old" id="price-old-${firstIdx}">${oldPriceRow(p).old}</span>
+              <span class="price-off" id="price-off-${firstIdx}">${oldPriceRow(p).off}</span>
             </div>
-            <button class="btn-share" onclick="shareProduct('${p.name}','${p.price}','${p.brand}')" title="Compartir">
-              <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
-            </button>
+            <div class="price-new"><span>US$ </span><span class="price-val" id="price-${firstIdx}">${formatUSD(p.price)}</span></div>
+            <div class="price-ars" id="price-ars-${firstIdx}" data-usd="${p.price}">${formatARS(p.price)}</div>
+            <div class="card-actions">
+              <button class="btn-cart${inCart?' in-cart':''}" id="btn-cart-${firstIdx}" onclick="toggleCartByCard('${cardId}')">
+                <svg class="bc-cart" viewBox="0 0 24 24" stroke-width="1.8"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 001.98 1.61h9.72a2 2 0 001.98-1.61L23 6H6"/></svg>
+                <svg class="bc-check" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+                <span class="bc-add">Agregar<span class="bc-long"> al carrito</span></span>
+                <span class="bc-in"><span class="bc-long">En el carrito</span><span class="bc-short">Agregado</span></span>
+                <span class="bc-out">Quitar</span>
+              </button>
+              <button class="btn-share" onclick="shareProduct('${p.name}','${p.price}','${p.brand}')" title="Compartir">
+                <svg viewBox="0 0 24 24" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+              </button>
+            </div>
           </div>
-          <button class="btn-cart${inCart?' in-cart':''}" id="btn-cart-${firstIdx}" onclick="toggleCartByCard('${cardId}')">
-            <svg class="bc-cart" viewBox="0 0 24 24" stroke-width="1.8"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 001.98 1.61h9.72a2 2 0 001.98-1.61L23 6H6"/></svg>
-            <svg class="bc-check" viewBox="0 0 24 24" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
-            <span class="bc-add">Agregar<span class="bc-long"> al carrito</span></span>
-            <span class="bc-in">En el carrito</span>
-            <span class="bc-out">Quitar</span>
-          </button>
         </div>
       </div>`;
     }).join('')}</div>`;
@@ -814,15 +844,16 @@
       p.specs.map(s => `<li>${s}</li>`).join('');
 
     // update price
-    document.getElementById('price-' + cardFirstIdx).textContent = p.price;
-    const oldEl = document.getElementById('price-old-' + cardFirstIdx);
-    if (p.oldPrice) { oldEl.style.display=''; oldEl.textContent = 'US$ ' + p.oldPrice; }
-    else { oldEl.style.display='none'; }
+    document.getElementById('price-' + cardFirstIdx).textContent = formatUSD(p.price);
+    const arsEl = document.getElementById('price-ars-' + cardFirstIdx);
+    arsEl.dataset.usd = p.price;
+    arsEl.textContent = formatARS(p.price);
 
-    // update off badge
-    const offEl = document.getElementById('badge-off-' + cardFirstIdx);
-    if (p.off) { offEl.style.display=''; offEl.textContent = '-' + p.off + '%'; }
-    else { offEl.style.display='none'; }
+    // update old price + discount chip
+    const row = oldPriceRow(p);
+    document.getElementById('price-old-row-' + cardFirstIdx).style.display = row.show ? '' : 'none';
+    document.getElementById('price-old-' + cardFirstIdx).textContent = row.old;
+    document.getElementById('price-off-' + cardFirstIdx).textContent = row.off;
 
     // update variant buttons
     card.querySelectorAll('.variant-btn').forEach(b => b.classList.remove('active'));
@@ -872,9 +903,11 @@
   function renderCartPanel() {
     const container = document.getElementById("cart-items");
     const waBtn = document.getElementById("btn-wa-cart");
+    const totalArsEl = document.getElementById("cart-total-ars");
     if (!cart.length) {
       container.innerHTML = `<div class="cart-empty"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/><path d="M16 10a4 4 0 01-8 0"/></svg>Tu lista está vacía</div>`;
       document.getElementById("cart-total-num").textContent = "0";
+      totalArsEl.dataset.usd = 0; totalArsEl.textContent = "";
       waBtn.disabled = true; return;
     }
     waBtn.disabled = false;
@@ -883,13 +916,16 @@
         <img class="cart-item-img" src="${item.img}" onerror="this.style.opacity='.2'">
         <div style="flex:1;min-width:0">
           <div class="cart-item-name">${item.name}${item.storage?` · ${item.storage}`:''}</div>
-          <div class="cart-item-price">US$ ${item.price}</div>
+          <div class="cart-item-price">US$ ${item.price}<span class="cart-item-ars" data-usd="${item.price}">${formatARS(item.price)}</span></div>
         </div>
         <button class="cart-item-remove" onclick="removeFromCart(${i})">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
       </div>`).join('');
-    document.getElementById("cart-total-num").textContent = cart.reduce((a,c)=>a+c.price,0).toLocaleString();
+    const total = cart.reduce((a,c)=>a+c.price,0);
+    document.getElementById("cart-total-num").textContent = total.toLocaleString();
+    totalArsEl.dataset.usd = total;
+    totalArsEl.textContent = formatARS(total);
   }
   function removeFromCart(i) {
     cart.splice(i,1); updateCartCount(); renderCartPanel(); syncCardButtons();
@@ -898,7 +934,8 @@
     if (!cart.length) return;
     const lines = cart.map(c=>`• ${c.name}${c.storage?` ${c.storage}`:''} — US$ ${c.price}`).join("\n");
     const total = cart.reduce((a,c)=>a+c.price,0);
-    const msg = `Hola! Me interesan los siguientes productos:\n\n${lines}\n\nTotal estimado: US$ ${total.toLocaleString()}\n\n¿Están disponibles?`;
+    let msg = `Hola! Me interesan los siguientes productos:\n\n${lines}\n\nTotal estimado: US$ ${total.toLocaleString()}\n\n¿Están disponibles?`;
+    if (dolarRate) msg += `\n\nTotal aprox. en pesos: ${formatARS(total)} (dólar oficial ${formatRate(dolarRate)})`;
     window.open(`https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
   }
 
@@ -968,86 +1005,82 @@
     });
   }
 
-  // ── CONVERSOR USD / ARS ───────────────────────────────────────
-  let currentCurrency = "USD";
-  let dolarRate = null;
+  // ── DÓLAR OFICIAL Y PRECIOS EN PESOS ──────────────────────────
+  const DOLAR_URL = "https://dolarapi.com/v1/dolares/oficial";
+  const DOLAR_REFRESH_MS = 10 * 60 * 1000;
+  let dolarRate = null;      // cotización "venta"; null = no disponible
+  let dolarLastFetch = 0;
 
-  // Fetch cotización oficial BNA desde dolarapi.com
-  async function fetchDolarRate() {
-    try {
-      const res = await fetch("https://dolarapi.com/v1/dolares/oficial");
-      const data = await res.json();
-      dolarRate = data.venta; // precio de venta BNA
-      showRateIndicator(`Dólar oficial BNA: $${dolarRate.toLocaleString('es-AR', {minimumFractionDigits:2, maximumFractionDigits:2})}`);
-    } catch(e) {
-      console.warn("No se pudo obtener cotización del dólar:", e);
-      dolarRate = null;
-    }
+  // "$ 1.594.320" — vacío si todavía no hay cotización
+  function formatARS(usd) {
+    const n = Number(usd);
+    if (!dolarRate || !isFinite(n) || n <= 0) return '';
+    return 'ARS $ ' + Math.round(n * dolarRate).toLocaleString('es-AR', { maximumFractionDigits: 0 });
+  }
+  // "1.200" (separador de miles es-AR)
+  function formatUSD(usd) {
+    return Number(usd).toLocaleString('es-AR', { maximumFractionDigits: 2 });
+  }
+  // Precio anterior tachado + chip de descuento (usa "off" o lo calcula desde oldPrice)
+  function oldPriceRow(p) {
+    const hasOld = p.oldPrice > p.price;
+    const off = p.off || (hasOld ? Math.round((1 - p.price / p.oldPrice) * 100) : 0);
+    return {
+      show: hasOld || off > 0,
+      old: hasOld ? 'US$ ' + formatUSD(p.oldPrice) : '',
+      off: off > 0 ? '-' + off + '%' : ''
+    };
+  }
+  function formatRate(rate) {
+    return 'ARS $ ' + rate.toLocaleString('es-AR', { maximumFractionDigits: 2 });
   }
 
-  function showRateIndicator(msg) {
-    const el = document.getElementById("rate-indicator");
-    el.textContent = msg;
-    el.classList.add("show");
-    setTimeout(() => el.classList.remove("show"), 3500);
-  }
-
-  function toggleCurrency() {
-    if (currentCurrency === "USD") {
-      if (!dolarRate) {
-        showRateIndicator("No se pudo obtener la cotización. Intentá de nuevo.");
-        fetchDolarRate();
-        return;
-      }
-      currentCurrency = "ARS";
-      document.getElementById("currency-label").textContent = "ARS";
-      document.getElementById("currency-btn").classList.add("ars");
-      document.getElementById("grid-wrap").classList.add("currency-ars");
-      updatePricesARS();
-      showRateIndicator(`Dólar oficial BNA: $${dolarRate.toLocaleString('es-AR', {minimumFractionDigits:2, maximumFractionDigits:2})}`);
-    } else {
-      currentCurrency = "USD";
-      document.getElementById("currency-label").textContent = "USD";
-      document.getElementById("currency-btn").classList.remove("ars");
-      document.getElementById("grid-wrap").classList.remove("currency-ars");
-      updatePricesUSD();
-    }
-  }
-
-  function formatARS(usdAmount) {
-    if (!dolarRate) return '';
-    const ars = usdAmount * dolarRate;
-    return '$' + ars.toLocaleString('es-AR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  }
-
+  // Recalcula en el lugar todos los precios en pesos (cards y carrito)
   function updatePricesARS() {
-    document.querySelectorAll('[id^="price-"]').forEach(el => {
-      const idx = el.id.replace('price-', '');
-      const usd = parseFloat(el.textContent);
-      if (!isNaN(usd)) {
-        let arsEl = document.getElementById('price-ars-' + idx);
-        if (!arsEl) {
-          arsEl = document.createElement('div');
-          arsEl.className = 'price-ars';
-          arsEl.id = 'price-ars-' + idx;
-          el.closest('.price-new').insertAdjacentElement('afterend', arsEl);
-        }
-        arsEl.textContent = formatARS(usd);
-      }
+    document.querySelectorAll('[data-usd]').forEach(el => {
+      el.textContent = formatARS(el.dataset.usd);
     });
   }
 
-  function updatePricesUSD() {
-    document.querySelectorAll('[id^="price-ars-"]').forEach(el => el.remove());
+  function setDolarIndicator(state, fecha) {
+    const ind = document.getElementById("dolar-ind");
+    ind.classList.toggle("hidden", state === "error");
+    ind.classList.toggle("loading", state === "loading");
+    document.body.classList.toggle("dolar-off", state === "error");
+    if (state !== "ok") return;
+    document.getElementById("dolar-val").textContent = formatRate(dolarRate);
+    const d = new Date(fecha);
+    document.getElementById("dolar-time").textContent = isNaN(d) ? '' :
+      'Actualizado ' + d.toLocaleTimeString('es-AR', { hour:'2-digit', minute:'2-digit', hour12:false, timeZone:'America/Argentina/Buenos_Aires' });
   }
 
-  // Fetch al cargar la página en segundo plano
+  async function fetchDolarRate() {
+    dolarLastFetch = Date.now();
+    try {
+      const res = await fetch(DOLAR_URL, { cache: "no-store" });
+      if (!res.ok) throw new Error("HTTP " + res.status);
+      const data = await res.json();
+      const venta = Number(data.venta);
+      if (!(venta > 0)) throw new Error("cotización inválida");
+      dolarRate = venta;
+      setDolarIndicator("ok", data.fechaActualizacion);
+      updatePricesARS();
+    } catch(e) {
+      console.warn("No se pudo obtener cotización del dólar:", e);
+      // Si ya teníamos una cotización válida, se mantiene la última
+      if (!dolarRate) setDolarIndicator("error");
+    }
+  }
+
   fetchDolarRate();
+  setInterval(fetchDolarRate, DOLAR_REFRESH_MS);
+  document.addEventListener("visibilitychange", () => {
+    if (document.visibilityState === "visible" && Date.now() - dolarLastFetch > DOLAR_REFRESH_MS) fetchDolarRate();
+  });
   function verDetalle(nombre) {
   window.location.href = 'producto.html?prod=' + encodeURIComponent(nombre);
 }
 </script>
-<div class="rate-indicator" id="rate-indicator"></div>
 <!-- SHARE TOAST -->
 <div class="share-toast" id="share-toast">
   <svg viewBox="0 0 24 24" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
