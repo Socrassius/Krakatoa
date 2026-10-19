@@ -105,6 +105,50 @@
     .hamburger:hover { background:var(--surface2); color:var(--text); }
     .hamburger svg { width:16px; height:16px; }
 
+    /* ── BUSCADOR ────────────────────────────────────────────── */
+    .search-wrap { position:relative; flex:1 1 auto; min-width:0; max-width:420px; margin:0 20px; }
+    .search-icon { position:absolute; left:12px; top:50%; transform:translateY(-50%); width:15px; height:15px; color:var(--muted); pointer-events:none; transition:color .15s; }
+    .search-wrap:focus-within .search-icon { color:var(--text); }
+    .search-input {
+      -webkit-appearance:none; appearance:none;
+      width:100%; height:40px; padding:0 38px 0 36px; border-radius:10px;
+      background:var(--surface); border:0.5px solid var(--border2); color:var(--text);
+      font-family:'DM Sans',sans-serif; font-size:13px; outline:none; transition:border-color .15s;
+    }
+    .search-input::placeholder { color:var(--muted); }
+    .search-input:focus { border-color:var(--accent); }
+    .search-input::-webkit-search-cancel-button, .search-input::-webkit-search-decoration { -webkit-appearance:none; display:none; }
+    .search-clear {
+      position:absolute; right:6px; top:50%; transform:translateY(-50%);
+      width:28px; height:28px; border-radius:7px; border:none; background:transparent;
+      color:var(--muted); cursor:pointer; display:flex; align-items:center; justify-content:center; transition:all .15s;
+    }
+    .search-clear[hidden] { display:none; }
+    .search-clear:hover { background:var(--surface2); color:var(--text); }
+    .search-clear svg { width:14px; height:14px; }
+
+    /* mientras hay búsqueda: sidebar atenuado y sin selección */
+    body.searching .sidebar-cat, body.searching .sidebar-brands { opacity:.45; }
+    body.searching .sidebar-cat-btn.active { background:transparent; border-color:transparent; color:var(--muted); }
+    body.searching .sidebar-cat-btn.active svg { opacity:.6; }
+    body.searching .sidebar-cat-btn.active .scat-dot { background:var(--muted); }
+    body.searching .sidebar-brand-btn.active { color:var(--muted); }
+    body.searching .sidebar-brand-btn.active .brand-check { opacity:0; }
+    .sidebar-cat, .sidebar-brands { transition:opacity .2s; }
+
+    /* sin resultados */
+    .search-empty { text-align:center; padding:56px 20px; color:var(--muted); font-size:13px; }
+    .search-empty > svg { width:30px; height:30px; opacity:.35; margin-bottom:12px; }
+    .se-title { font-family:'Syne',sans-serif; font-size:17px; font-weight:700; color:var(--text); margin-bottom:6px; word-break:break-word; }
+    .se-sub { margin-bottom:20px; line-height:1.5; }
+    .se-wa {
+      display:inline-flex; align-items:center; gap:8px; padding:11px 18px; border-radius:11px;
+      background:#25D366; color:#fff; text-decoration:none; font-family:'DM Sans',sans-serif;
+      font-size:13px; font-weight:600; transition:opacity .18s;
+    }
+    .se-wa:hover { opacity:.88; }
+    .se-wa svg { width:16px; height:16px; fill:#fff; }
+
     /* ── LAYOUT PRINCIPAL ────────────────────────────────────── */
     .layout {
       display:flex; max-width:1380px; margin:0 auto;
@@ -215,6 +259,7 @@
     .cimg img { width:100%; height:100%; object-fit:contain; filter:drop-shadow(0 6px 20px var(--shadow)); transition:transform .3s ease; }
     .card:hover .cimg img { transform:scale(1.06); }
 
+    .badge-cat { position:absolute; top:10px; right:10px; background:rgba(232,99,42,.12); border:0.5px solid rgba(232,99,42,.3); color:var(--accent); font-size:9px; font-weight:600; padding:3px 8px; border-radius:100px; text-transform:uppercase; letter-spacing:1px; }
     .badge-brand { position:absolute; top:10px; left:10px; background:rgba(128,128,128,.12); border:0.5px solid rgba(128,128,128,.2); color:var(--muted); font-size:9px; font-weight:500; padding:3px 8px; border-radius:100px; text-transform:uppercase; letter-spacing:1px; }
     .badge-storage { position:absolute; bottom:10px; left:10px; background:rgba(128,128,128,.1); border:0.5px solid var(--border); color:var(--muted); font-size:9px; padding:3px 7px; border-radius:6px; }
 
@@ -455,10 +500,20 @@
     .empty-grid { grid-column:1/-1; text-align:center; padding:60px 0; color:var(--muted); font-size:13px; }
 
     /* ── RESPONSIVE ──────────────────────────────────────────── */
+    /* el indicador del dólar se compacta para dejarle lugar al buscador */
+    @media (max-width: 1100px) {
+      .dolar-time { display:none; }
+    }
+    @media (max-width: 900px) {
+      .dolar-label-long { display:none; }
+      .search-wrap { margin:0 12px; }
+    }
     @media (max-width: 768px) {
+      header { padding:0 16px; }
       .sidebar {
-        position:fixed; top:60px; left:0; z-index:99;
-        width:260px; height:calc(100vh - 60px);
+        /* --header-h lo calcula el JS: el header crece cuando el buscador baja de fila */
+        position:fixed; top:var(--header-h, 60px); left:0; z-index:99;
+        width:260px; height:calc(100vh - var(--header-h, 60px));
         transform:translateX(-100%);
         box-shadow:4px 0 24px rgba(0,0,0,.35);
         /* Override sticky so it scrolls independently */
@@ -475,6 +530,13 @@
       .about-section { padding:32px 16px 48px; }
       .about-heading { font-size:24px; }
       .site-footer { padding:16px; }
+    }
+    /* El buscador pasa a una fila propia debajo del header */
+    @media (max-width: 700px) {
+      header { flex-wrap:wrap; height:auto; }
+      .header-left, .header-actions { height:60px; }
+      .search-wrap { order:3; flex:1 0 100%; max-width:none; margin:0 0 12px; }
+      .search-input { font-size:16px; } /* evita el zoom automático de iOS al enfocar */
     }
     /* En pantallas chicas el indicador del dólar baja a una franja bajo el header */
     @media (max-width: 600px) {
@@ -494,11 +556,18 @@
 
 <!-- HEADER -->
 <header>
-  <div style="display:flex;align-items:center;gap:12px">
+  <div class="header-left" style="display:flex;align-items:center;gap:12px">
     <button class="hamburger" id="hamburger" onclick="toggleSidebar()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
     </button>
     <div class="logo"><div class="logo-dot"></div><span class="logo-text">KRAKATOA</span></div>
+  </div>
+  <div class="search-wrap" role="search">
+    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input type="search" class="search-input" id="search-input" placeholder="Buscar iPhone 16, AirPods, 512GB…" autocomplete="off" spellcheck="false" enterkeyhint="search" aria-label="Buscar productos">
+    <button type="button" class="search-clear" id="search-clear" hidden aria-label="Borrar búsqueda" title="Borrar (Esc)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
   </div>
   <div class="header-actions">
     <div class="dolar-ind loading" id="dolar-ind" role="status" aria-live="polite">
@@ -685,6 +754,9 @@
 
   let allProducts = [], currentCat = "celulares", currentBrand = "Todos";
   let cart = [];
+  let productsLoaded = false;
+  let searchQuery = "";   // búsqueda activa (vacía = navegación normal por categoría)
+  const CAT_LABELS = { celulares:"Celulares", notebooks:"Notebooks", audio:"Audio", consolas:"Consolas", tablets:"Tablets", relojes:"Reloj Inteligente" };
 
   // ── TEMA ──────────────────────────────────────────────────────
   const savedTheme = localStorage.getItem("kk-theme") || "dark";
@@ -728,6 +800,7 @@
       .then(data => {
         // los productos ocultos desde el admin no se muestran en ningún lado
         allProducts = (Array.isArray(data) ? data : []).filter(p => p.hidden !== true);
+        productsLoaded = true;
         renderBrands(); renderGrid();
       })
       .catch(() => {
@@ -751,14 +824,19 @@
   }
 
   // ── GRID ──────────────────────────────────────────────────────
-  function renderGrid() {
-    let list = allProducts.filter(p => p.cat === currentCat && (currentBrand === "Todos" || p.brand === currentBrand));
-    const sort = document.getElementById("sort-select").value;
-    if (sort === "price-asc")  list = [...list].sort((a,b) => a.price - b.price);
-    if (sort === "price-desc") list = [...list].sort((a,b) => b.price - a.price);
-    if (sort === "off")        list = [...list].sort((a,b) => (b.off||0) - (a.off||0));
+  const WA_SVG = `<svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>`;
 
-    // ── AGRUPAR VARIANTES por nombre+cat ──────────────────────
+  // Aplica el orden elegido en el sidebar
+  function sortList(list) {
+    const sort = document.getElementById("sort-select").value;
+    if (sort === "price-asc")  return [...list].sort((a,b) => a.price - b.price);
+    if (sort === "price-desc") return [...list].sort((a,b) => b.price - a.price);
+    if (sort === "off")        return [...list].sort((a,b) => (b.off||0) - (a.off||0));
+    return list;
+  }
+
+  // Agrupa variantes por nombre+cat
+  function groupVariants(list) {
     const groups = [];
     const seen = {};
     list.forEach(p => {
@@ -770,6 +848,15 @@
         groups.push({ ...p, variants: [p] });
       }
     });
+    return groups;
+  }
+
+  function renderGrid() {
+    if (!productsLoaded) return;   // no pisar el skeleton ni el error de carga
+    if (searchQuery) { renderSearch(); return; }
+
+    const groups = groupVariants(sortList(
+      allProducts.filter(p => p.cat === currentCat && (currentBrand === "Todos" || p.brand === currentBrand))));
 
     document.getElementById("count-bar").innerHTML =
       `<strong>${groups.length}</strong> producto${groups.length !== 1 ? 's' : ''}`;
@@ -779,27 +866,34 @@
       return;
     }
 
-    const WA_SVG = `<svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>`;
+    document.getElementById("grid-wrap").innerHTML =
+      `<div class="grid">${groups.map((g, i) => cardHTML(g, i)).join('')}</div>`;
+  }
 
-    document.getElementById("grid-wrap").innerHTML = `<div class="grid">${groups.map((g, i) => {
+  // Template único de card (catálogo y resultados de búsqueda).
+  // opts.activeIdx: variante que arranca seleccionada · opts.showCat: chip de categoría · opts.delay: ms de animación
+  function cardHTML(g, i, opts = {}) {
       const hasVariants = g.variants.length > 1;
-      // active variant tracked by DOM, default = first
+      // los ids de la card usan la primera variante; la activa se sigue en data-active-idx
       const firstIdx = allProducts.indexOf(g.variants[0]);
-      const inCart = cart.some(c => c._idx === firstIdx);
-      const p = g.variants[0];
+      const activeIdx = opts.activeIdx ?? firstIdx;
+      const inCart = cart.some(c => c._idx === activeIdx);
+      const p = allProducts[activeIdx];
       const cardId = 'card-' + firstIdx;
+      const delay = opts.delay ?? i * 55;
 
-      return `<div class="card" id="${cardId}" style="animation-delay:${i*55}ms" data-active-idx="${firstIdx}">
+      return `<div class="card" id="${cardId}" style="animation-delay:${delay}ms" data-active-idx="${activeIdx}">
         <div class="cimg" onclick="verDetalle('${p.name}')" style="cursor:pointer;" title="Ver detalles">
           <img src="${p.img}" alt="${p.name}" loading="lazy" onerror="this.style.opacity='.12'" id="img-${firstIdx}">
           <div class="badge-brand">${p.brand}</div>
+          ${opts.showCat ? `<div class="badge-cat">${CAT_LABELS[p.cat] || p.cat}</div>` : ''}
         </div>
         <div class="cbody">
           <div class="cname" onclick="verDetalle('${p.name}')" style="cursor:pointer;" title="Ver detalles">${p.name}</div>
           ${hasVariants ? `<div class="variants" id="variants-${firstIdx}">
-            ${g.variants.map((v, vi) => {
+            ${g.variants.map(v => {
                 const vidx = allProducts.indexOf(v);
-                return `<button class="variant-btn${vi===0?' active':''}" onclick="selectVariant(${firstIdx},${vidx},this)">${v.storage || v.name}</button>`;
+                return `<button class="variant-btn${vidx===activeIdx?' active':''}" onclick="selectVariant(${firstIdx},${vidx},this)">${v.storage || v.name}</button>`;
               }).join('')}
           </div>` : ''}
           <ul class="cspecs" id="specs-${firstIdx}">${p.specs.map(s=>`<li>${s}</li>`).join('')}</ul>
@@ -825,11 +919,117 @@
           </div>
         </div>
       </div>`;
-    }).join('')}</div>`;
   }
+
+  // ── BUSCADOR ──────────────────────────────────────────────────
+  const searchInput = document.getElementById("search-input");
+  const searchClear = document.getElementById("search-clear");
+  let searchTimer = null;
+
+  // minúsculas y sin tildes: "Teléfono" → "telefono"
+  const fold = s => String(s ?? "").normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+  const escHTML = s => String(s).replace(/[&<>"']/g, c => ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[c]));
+
+  function searchText(p) {
+    return fold([p.name, p.brand, p.storage, ...(p.specs || []), CAT_LABELS[p.cat], p.cat].join(" "));
+  }
+
+  function renderSearch() {
+    const terms = fold(searchQuery).split(/\s+/).filter(Boolean);
+    const matches = v => { const t = searchText(v); return terms.every(term => t.includes(term)); };
+    // todas las categorías; la card abre en la primera variante que coincide (ej. "512")
+    const results = [];
+    groupVariants(sortList(allProducts)).forEach(g => {
+      const hit = g.variants.find(matches);
+      if (hit) results.push({ g, activeIdx: allProducts.indexOf(hit) });
+    });
+
+    const q = escHTML(searchQuery);
+    document.getElementById("count-bar").innerHTML =
+      `<strong>${results.length}</strong> resultado${results.length !== 1 ? 's' : ''} para «${q}»`;
+
+    if (!results.length) {
+      const waText = `Hola! Estoy buscando: ${searchQuery}. ¿Lo tienen?`;
+      document.getElementById("grid-wrap").innerHTML = `<div class="search-empty">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <div class="se-title">No encontramos «${q}»</div>
+        <div class="se-sub">Puede que lo consigamos igual. Escribinos y te confirmamos.</div>
+        <a class="se-wa" href="https://wa.me/${WA_NUMBER}?text=${encodeURIComponent(waText)}" target="_blank" rel="noopener">${WA_SVG}Consultanos por WhatsApp</a>
+      </div>`;
+      return;
+    }
+
+    document.getElementById("grid-wrap").innerHTML = `<div class="grid">${results.map(({ g, activeIdx }, i) =>
+      cardHTML(g, i, { activeIdx, showCat: true, delay: Math.min(i, 10) * 30 })).join('')}</div>`;
+  }
+
+  function applySearch(raw) {
+    const q = raw.trim().replace(/\s+/g, " ");
+    if (q === searchQuery) return;
+    searchQuery = q;
+    document.body.classList.toggle("searching", !!q);
+    renderGrid();
+    // si el usuario estaba más abajo, que vea los resultados
+    const top = document.getElementById("grid-wrap").getBoundingClientRect().top;
+    if (q && top < 0) window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+
+  // Limpia la búsqueda sin redibujar (lo usa la navegación por categoría/marca)
+  function resetSearchState() {
+    clearTimeout(searchTimer);
+    searchInput.value = "";
+    searchClear.hidden = true;
+    searchQuery = "";
+    document.body.classList.remove("searching");
+  }
+
+  // Borra la búsqueda y vuelve a la categoría y marca que estaban
+  function clearSearch() {
+    const had = !!searchQuery;
+    resetSearchState();
+    if (had) renderGrid();
+  }
+
+  searchInput.addEventListener("input", () => {
+    searchClear.hidden = !searchInput.value;
+    clearTimeout(searchTimer);
+    if (!searchInput.value.trim()) { applySearch(""); return; }
+    searchTimer = setTimeout(() => applySearch(searchInput.value), 150);
+  });
+  searchInput.addEventListener("keydown", e => {
+    if (e.key === "Escape") { e.preventDefault(); clearSearch(); searchInput.blur(); }
+    if (e.key === "Enter") {
+      clearTimeout(searchTimer);
+      applySearch(searchInput.value);
+      if (window.matchMedia("(max-width: 700px)").matches) searchInput.blur(); // cierra el teclado en mobile
+    }
+  });
+  searchClear.addEventListener("click", () => { clearSearch(); searchInput.focus(); });
+
+  // "/" enfoca el buscador, salvo que ya se esté escribiendo en otro campo
+  document.addEventListener("keydown", e => {
+    if (e.key !== "/" || e.ctrlKey || e.metaKey || e.altKey) return;
+    const el = e.target;
+    if (el.isContentEditable || (el.closest && el.closest("input, textarea, select"))) return;
+    e.preventDefault();
+    searchInput.focus();
+    searchInput.select();
+  });
+
+  // Alto real del header (crece cuando el buscador o el dólar bajan de fila) para ubicar el sidebar mobile
+  function syncHeaderHeight() {
+    const header = document.querySelector("header");
+    const ind = document.getElementById("dolar-ind");
+    let h = header.offsetHeight;
+    if (ind.offsetParent !== null && getComputedStyle(ind).position === "absolute") h += ind.offsetHeight;
+    document.documentElement.style.setProperty("--header-h", h + "px");
+  }
+  window.addEventListener("resize", syncHeaderHeight);
+  syncHeaderHeight();
 
   // ── NAVEGACIÓN ────────────────────────────────────────────────
   function setCategory(cat, btn) {
+    resetSearchState();
     currentCat = cat; currentBrand = "Todos";
     document.querySelectorAll('.sidebar-cat-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
@@ -839,6 +1039,7 @@
     closeSidebar();
   }
   function setBrand(brand, btn) {
+    resetSearchState();
     currentBrand = brand;
     document.querySelectorAll('.sidebar-brand-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
@@ -1063,6 +1264,7 @@
     ind.classList.toggle("hidden", state === "error");
     ind.classList.toggle("loading", state === "loading");
     document.body.classList.toggle("dolar-off", state === "error");
+    syncHeaderHeight();
     if (state !== "ok") return;
     document.getElementById("dolar-val").textContent = formatRate(dolarRate);
     const d = new Date(fecha);
