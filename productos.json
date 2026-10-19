@@ -60,7 +60,8 @@
       "Chip A18 Bionic",
       "Cámara 48MP",
       "Batería 3561 mAh"
-    ]
+    ],
+    "hidden": true
   },
   {
     "cat": "celulares",
