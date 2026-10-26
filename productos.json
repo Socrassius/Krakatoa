@@ -228,6 +228,22 @@
   {
     "cat": "celulares",
     "brand": "Motorola",
+    "name": "Motorola G67",
+    "img": "img/productos/motorola-g67-256gb-mvpk8rz5.webp",
+    "price": 370,
+    "oldPrice": null,
+    "off": null,
+    "storage": "256GB",
+    "specs": [
+      "Panel de 6,78\" a 120 Hz",
+      "Cámara principal Sony de 50 MP",
+      "Batería extendida de 5200 mAh",
+      "Resistencia de grado militar"
+    ]
+  },
+  {
+    "cat": "celulares",
+    "brand": "Motorola",
     "name": "Motorola Moto G56 5G",
     "img": "img/productos/motorola-moto-g56-5g-256gb-mve6ftgz.webp",
     "price": 340,
