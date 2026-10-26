@@ -12,7 +12,8 @@
       "Pantalla 6.1 Super Retina XDR",
       "Chip A15 Bionic · GPU 5 núcleos",
       "IP68 · MagSafe · Face ID"
-    ]
+    ],
+    "hidden": true
   },
   {
     "cat": "celulares",
