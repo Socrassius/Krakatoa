@@ -46,7 +46,8 @@
       "Chip A18 Bionic",
       "Dual 48MP + 12MP",
       "Batería 3561 mAh"
-    ]
+    ],
+    "hidden": true
   },
   {
     "cat": "celulares",
