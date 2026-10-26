@@ -366,7 +366,8 @@
       "Exynos 2400e",
       "Cámara Triple 50MP",
       "Batería 4500 mAh"
-    ]
+    ],
+    "hidden": true
   },
   {
     "cat": "celulares",
