@@ -293,9 +293,9 @@
     "brand": "Samsung",
     "name": "Samsung Galaxy A57 5G",
     "img": "https://tiendaonline.movistar.com.ar/media/catalog/product/cache/d24a34bded6d2df740ef66d66d2112c9/s/a/samsung-s57-lilac-hero.png",
-    "price": 540,
-    "oldPrice": null,
-    "off": null,
+    "price": 520,
+    "oldPrice": 550,
+    "off": 5,
     "storage": "256GB",
     "specs": [
       "Exynos 1680",
