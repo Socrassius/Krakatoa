@@ -183,9 +183,9 @@
     "brand": "Motorola",
     "name": "Motorola Edge 60 Fusion",
     "img": "img/productos/motorola-edge-60-fusion-256gb-mve6nu3l.webp",
-    "price": 380,
-    "oldPrice": 475,
-    "off": 20,
+    "price": 470,
+    "oldPrice": 525,
+    "off": 10,
     "storage": "256GB",
     "specs": [
       "Pantalla 6.67 pOLED 120Hz",
