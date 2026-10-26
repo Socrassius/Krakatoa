@@ -353,6 +353,22 @@
     ]
   },
   {
+    "cat": "celulares",
+    "brand": "Xiaomi",
+    "name": "Redmi Note 14s",
+    "img": "img/productos/redmi-note-14s-512gb-mvpateph.webp",
+    "price": 345,
+    "oldPrice": null,
+    "off": null,
+    "storage": "512GB",
+    "specs": [
+      "Cámara principal de 200 MP",
+      "Procesador Helio G99 Ultra",
+      "Pantalla AMOLED a 120 H",
+      "Batería de 5000 mAh y carga rápida"
+    ]
+  },
+  {
     "cat": "notebooks",
     "brand": "Apple",
     "name": "MacBook AIR M5 13'",
