@@ -340,6 +340,21 @@
   {
     "cat": "celulares",
     "brand": "Samsung",
+    "name": "Samsung S25 5G",
+    "img": "img/productos/samsung-s25-5g-256gb-mvplxb3u.webp",
+    "price": 830,
+    "oldPrice": null,
+    "off": null,
+    "storage": "256GB",
+    "specs": [
+      "Memoria RAM 12 GB | Procesador Snapdragon 8 Elite",
+      "Pantalla Dynamic AMOLED 2X 6.2\" | 120Hz | Vision Booster",
+      "Cámara Triple 50 MP | Zoom óptico 3x | Galaxy AI"
+    ]
+  },
+  {
+    "cat": "celulares",
+    "brand": "Samsung",
     "name": "Samsung S25 FE",
     "img": "https://bairesit.com.ar/Image/0/700_700-Celular-Samsung-Galaxy-S25FE-5G-256-8GB-Jetblack-11.webp",
     "price": 590,
