@@ -4,9 +4,9 @@
     "brand": "Apple",
     "name": "Iphone 15",
     "img": "https://back.maximstore.com/static/images/0bb0c6a5-603e-4338-8527-1fda8f2df096.png",
-    "price": 780,
-    "oldPrice": null,
-    "off": null,
+    "price": 740,
+    "oldPrice": 820,
+    "off": 10,
     "storage": "128GB",
     "specs": [
       "Pantalla 6.1 Super Retina XDR",
