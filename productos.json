@@ -54,9 +54,9 @@
     "brand": "Apple",
     "name": "iPhone 16e",
     "img": "https://maximstore.com/_next/image?url=https%3A%2F%2Fback.maximstore.com%2Fstatic%2Fimages%2F5f9473a8-0d72-4a25-9b85-b9765f9acc1b.png&w=960&q=75",
-    "price": 645,
-    "oldPrice": 759,
-    "off": 15,
+    "price": 675,
+    "oldPrice": 840,
+    "off": 20,
     "storage": "256GB",
     "specs": [
       "Pantalla 6.1 OLED",
