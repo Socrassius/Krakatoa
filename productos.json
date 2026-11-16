@@ -164,6 +164,22 @@
   {
     "cat": "celulares",
     "brand": "Apple",
+    "name": "iPhone 18 Pro",
+    "img": "img/productos/iphone-18-pro-mve5ir4j.webp",
+    "price": 1700,
+    "oldPrice": null,
+    "off": null,
+    "storage": "512GB",
+    "specs": [
+      "Chip A20 Pro",
+      "Cámara Pro Fusion de 48 MP",
+      "Panel Super Retina XDR súper fluido a 120 Hz",
+      "Apple Intelligence total"
+    ]
+  },
+  {
+    "cat": "celulares",
+    "brand": "Apple",
     "name": "Iphone 18 Pro MAX",
     "img": "img/productos/iphone-18-pro-max-256gb-mwjwfxp0.webp",
     "price": 1630,
