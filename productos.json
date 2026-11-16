@@ -163,6 +163,22 @@
   },
   {
     "cat": "celulares",
+    "brand": "Apple",
+    "name": "Iphone 18 Pro MAX",
+    "img": "img/productos/iphone-18-pro-max-256gb-mwjwfxp0.webp",
+    "price": 1630,
+    "oldPrice": 1820,
+    "off": 10,
+    "storage": "256GB",
+    "specs": [
+      "Pantalla Super Retina XDR 6.9\" | ProMotion 120Hz",
+      "Chip Apple A20 Pro | 12 GB RAM",
+      "Cámara Triple 48 MP | Apertura variable | Zoom óptico 8x",
+      "Batería hasta 43 horas de video | Carga rápida 50% en 15 min"
+    ]
+  },
+  {
+    "cat": "celulares",
     "brand": "Motorola",
     "name": "Motorola Edge 50 Ultra",
     "img": "https://armoto.vtexassets.com/arquivos/ids/166369-1200-auto?v=638949310430470000&width=1200&height=auto&aspect=true",
